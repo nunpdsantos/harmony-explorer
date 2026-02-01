@@ -13,6 +13,8 @@ const SHORTCUT_GROUPS: ShortcutGroup[] = [
     shortcuts: [
       { keys: 'Space', description: 'Play / Stop' },
       { keys: 'L', description: 'Toggle loop' },
+      { keys: 'V', description: 'Toggle voice leading overlay' },
+      { keys: 'B', description: 'Toggle bridge chord suggestions' },
       { keys: '[', description: 'Decrease BPM by 5' },
       { keys: ']', description: 'Increase BPM by 5' },
     ],
@@ -22,6 +24,8 @@ const SHORTCUT_GROUPS: ShortcutGroup[] = [
     shortcuts: [
       { keys: '1-7', description: 'Add diatonic chord (I through vii\u00B0)' },
       { keys: 'Backspace', description: 'Remove last chord' },
+      { keys: '\u2318/Ctrl+Z', description: 'Undo progression change' },
+      { keys: '\u2318/Ctrl+Shift+Z', description: 'Redo progression change' },
       { keys: 'Escape', description: 'Deselect chord' },
     ],
   },
@@ -32,6 +36,7 @@ const SHORTCUT_GROUPS: ShortcutGroup[] = [
       { keys: 'N', description: 'Switch to Learn mode' },
       { keys: '\u2190 / \u2192', description: 'Previous / Next lesson (Learn mode)' },
       { keys: '?', description: 'Toggle this shortcuts reference' },
+      { keys: '\\', description: 'Toggle sidebar collapse' },
     ],
   },
 ];

@@ -9,6 +9,7 @@ interface ModalProps {
 
 export const Modal: React.FC<ModalProps> = ({ open, onClose, title, children }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const previousFocusRef = useRef<Element | null>(null);
   const titleId = useId();
 
   useEffect(() => {
@@ -16,9 +17,16 @@ export const Modal: React.FC<ModalProps> = ({ open, onClose, title, children }) 
     if (!dialog) return;
 
     if (open && !dialog.open) {
+      // Capture the currently focused element before opening
+      previousFocusRef.current = document.activeElement;
       dialog.showModal();
     } else if (!open && dialog.open) {
       dialog.close();
+      // Restore focus to the element that was focused before the modal opened
+      if (previousFocusRef.current instanceof HTMLElement) {
+        previousFocusRef.current.focus();
+      }
+      previousFocusRef.current = null;
     }
   }, [open]);
 
@@ -54,7 +62,7 @@ export const Modal: React.FC<ModalProps> = ({ open, onClose, title, children }) 
     >
       <div className="bg-gray-900 border border-white/10 rounded-xl shadow-2xl overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
-          <h2 id={titleId} className="text-sm font-semibold text-white">
+          <h2 id={titleId} className="text-sm font-semibold text-white" style={{ fontFamily: 'var(--font-display)' }}>
             {title}
           </h2>
           <button

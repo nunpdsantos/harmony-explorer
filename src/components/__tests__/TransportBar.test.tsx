@@ -143,10 +143,86 @@ describe('TransportBar', () => {
     expect(screen.getByText('1 chord')).toBeInTheDocument();
   });
 
+  it('renders voice leading toggle', () => {
+    render(<TransportBar />);
+    expect(screen.getByRole('button', { name: 'Toggle voice leading overlay' })).toBeInTheDocument();
+  });
+
+  it('voice leading toggle is disabled when fewer than 2 chords', () => {
+    useStore.setState({
+      progression: [{ root: 0, quality: 'major' }],
+    });
+    render(<TransportBar />);
+    expect(screen.getByRole('button', { name: 'Toggle voice leading overlay' })).toBeDisabled();
+  });
+
+  it('voice leading toggle is enabled with 2+ chords', () => {
+    useStore.setState({
+      progression: [
+        { root: 0, quality: 'major' },
+        { root: 5, quality: 'major' },
+      ],
+    });
+    render(<TransportBar />);
+    expect(screen.getByRole('button', { name: 'Toggle voice leading overlay' })).not.toBeDisabled();
+  });
+
+  it('clicking voice leading toggle updates store', async () => {
+    useStore.setState({
+      progression: [
+        { root: 0, quality: 'major' },
+        { root: 5, quality: 'major' },
+      ],
+    });
+    const user = userEvent.setup();
+    render(<TransportBar />);
+
+    await user.click(screen.getByRole('button', { name: 'Toggle voice leading overlay' }));
+    expect(useStore.getState().showVoiceLeading).toBe(true);
+  });
+
   it('renders volume slider', () => {
     render(<TransportBar />);
     const volSlider = screen.getByRole('slider', { name: /Volume/ });
     expect(volSlider).toBeInTheDocument();
     expect(volSlider).toHaveValue('-8');
+  });
+
+  it('renders bridge chord toggle', () => {
+    render(<TransportBar />);
+    expect(screen.getByRole('button', { name: 'Toggle bridge chord suggestions' })).toBeInTheDocument();
+  });
+
+  it('bridge chord toggle is disabled when fewer than 2 chords', () => {
+    useStore.setState({
+      progression: [{ root: 0, quality: 'major' }],
+    });
+    render(<TransportBar />);
+    expect(screen.getByRole('button', { name: 'Toggle bridge chord suggestions' })).toBeDisabled();
+  });
+
+  it('bridge chord toggle is enabled with 2+ chords', () => {
+    useStore.setState({
+      progression: [
+        { root: 0, quality: 'major' },
+        { root: 5, quality: 'major' },
+      ],
+    });
+    render(<TransportBar />);
+    expect(screen.getByRole('button', { name: 'Toggle bridge chord suggestions' })).not.toBeDisabled();
+  });
+
+  it('clicking bridge chord toggle updates store', async () => {
+    useStore.setState({
+      progression: [
+        { root: 0, quality: 'major' },
+        { root: 5, quality: 'major' },
+      ],
+    });
+    const user = userEvent.setup();
+    render(<TransportBar />);
+
+    await user.click(screen.getByRole('button', { name: 'Toggle bridge chord suggestions' }));
+    expect(useStore.getState().showBridgeChords).toBe(true);
   });
 });

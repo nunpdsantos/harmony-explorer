@@ -95,6 +95,22 @@ describe('Keyboard Shortcut Store Actions', () => {
     expect(useStore.getState().currentLessonIndex).toBe(11);
   });
 
+  it('toggle voice leading overlay', () => {
+    expect(useStore.getState().showVoiceLeading).toBe(false);
+    useStore.setState({ showVoiceLeading: true });
+    expect(useStore.getState().showVoiceLeading).toBe(true);
+    useStore.setState({ showVoiceLeading: false });
+    expect(useStore.getState().showVoiceLeading).toBe(false);
+  });
+
+  it('toggle bridge chord suggestions', () => {
+    expect(useStore.getState().showBridgeChords).toBe(false);
+    useStore.setState({ showBridgeChords: true });
+    expect(useStore.getState().showBridgeChords).toBe(true);
+    useStore.setState({ showBridgeChords: false });
+    expect(useStore.getState().showBridgeChords).toBe(false);
+  });
+
   it('Backspace removes last chord', () => {
     const chords = [
       { root: 0, quality: 'major' as const },

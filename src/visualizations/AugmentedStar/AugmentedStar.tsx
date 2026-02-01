@@ -6,6 +6,15 @@ import { getAugmentedReachability, getUniqueAugmentedTriads } from '../../core/s
 import { noteName } from '../../core/constants';
 import { qualityColor } from '../shared/colors';
 import { useStore } from '../../state/store';
+import {
+  QUALITY_COLORS,
+  COLOR_TEXT_MUTED,
+  COLOR_TEXT_FAINT,
+  COLOR_TEXT_DIM,
+  FONT_SIZE_XS,
+  FONT_SIZE_SM,
+  FONT_SIZE_BASE,
+} from '../../styles/theme';
 
 export const AugmentedStar: React.FC<VisualizationProps> = ({
   selectedChord,
@@ -79,8 +88,8 @@ export const AugmentedStar: React.FC<VisualizationProps> = ({
             x={midX}
             y={midY - 8}
             textAnchor="middle"
-            fill="rgba(255,255,255,0.35)"
-            fontSize={9}
+            fill={COLOR_TEXT_DIM}
+            fontSize={FONT_SIZE_XS}
             transform={`rotate(${angle > 90 || angle < -90 ? angle + 180 : angle}, ${midX}, ${midY - 8})`}
           >
             {sp.description}
@@ -132,15 +141,15 @@ export const AugmentedStar: React.FC<VisualizationProps> = ({
         x={cx}
         y={cy + centerBubbleR + 20}
         textAnchor="middle"
-        fill="rgba(255,255,255,0.5)"
-        fontSize={10}
+        fill={COLOR_TEXT_MUTED}
+        fontSize={FONT_SIZE_SM}
       >
         Notes: {chordPitchClasses(currentAug).map(pc => noteName(pc)).join(', ')}
       </text>
 
       {/* Aug triad selector */}
       <g transform={`translate(${width - 140}, 20)`}>
-        <text x={0} y={0} fill="rgba(255,255,255,0.3)" fontSize={9} fontWeight={600}>SELECT AUG TRIAD</text>
+        <text x={0} y={0} fill={COLOR_TEXT_DIM} fontSize={FONT_SIZE_XS} fontWeight={600}>SELECT AUG TRIAD</text>
         {uniqueAugs.map((aug, i) => (
           <g
             key={i}
@@ -154,15 +163,15 @@ export const AugmentedStar: React.FC<VisualizationProps> = ({
               height={20}
               rx={4}
               fill={i === augIndex ? 'rgba(245,158,11,0.15)' : 'rgba(255,255,255,0.05)'}
-              stroke={i === augIndex ? '#f59e0b' : 'transparent'}
+              stroke={i === augIndex ? QUALITY_COLORS.augmented : 'transparent'}
               strokeWidth={1}
             />
             <text
               x={60}
               y={24 + i * 24}
               textAnchor="middle"
-              fill={i === augIndex ? '#f59e0b' : 'rgba(255,255,255,0.4)'}
-              fontSize={11}
+              fill={i === augIndex ? QUALITY_COLORS.augmented : COLOR_TEXT_FAINT}
+              fontSize={FONT_SIZE_BASE}
               fontWeight={i === augIndex ? 600 : 400}
             >
               {chordName(aug)} ({chordPitchClasses(aug).map(pc => noteName(pc)).join(', ')})

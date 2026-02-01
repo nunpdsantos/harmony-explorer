@@ -4,6 +4,19 @@ import { ChordBubble } from '../shared/ChordBubble';
 import { chordsEqual, chordKey } from '../../core/chords';
 import { getDiatonicChords, getNextMoves, functionColor, type NextMove } from '../../core/harmony';
 import { useStore } from '../../state/store';
+import {
+  COLOR_FN_TONIC,
+  COLOR_FN_SUBDOMINANT,
+  COLOR_FN_DOMINANT,
+  COLOR_MOVE_STRONG,
+  COLOR_MOVE_COMMON,
+  COLOR_ACCENT,
+  COLOR_TEXT_DIM,
+  COLOR_TEXT_DIMMER,
+  COLOR_LINE_FAINT,
+  FONT_SIZE_BASE,
+  FONT_SIZE_LG,
+} from '../../styles/theme';
 
 interface ColumnDef {
   label: string;
@@ -13,9 +26,9 @@ interface ColumnDef {
 }
 
 const COLUMNS: ColumnDef[] = [
-  { label: 'Tonic (T)', fn: 'tonic', degrees: [0, 2, 5], color: '#22c55e' },
-  { label: 'Subdominant (S)', fn: 'subdominant', degrees: [1, 3], color: '#3b82f6' },
-  { label: 'Dominant (D)', fn: 'dominant', degrees: [4, 6], color: '#ef4444' },
+  { label: 'Tonic (T)', fn: 'tonic', degrees: [0, 2, 5], color: COLOR_FN_TONIC },
+  { label: 'Subdominant (S)', fn: 'subdominant', degrees: [1, 3], color: COLOR_FN_SUBDOMINANT },
+  { label: 'Dominant (D)', fn: 'dominant', degrees: [4, 6], color: COLOR_FN_DOMINANT },
 ];
 
 const FUNCTION_ABBREV = { tonic: 'T', subdominant: 'S', dominant: 'D' } as const;
@@ -92,10 +105,10 @@ export const TonalFunctionChart: React.FC<VisualizationProps> = ({
       <desc>Chart organizing diatonic chords by harmonic function: Tonic, Subdominant, and Dominant, with arrows showing common voice-leading paths</desc>
       <defs>
         <marker id="tfc-arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" fill="rgba(255,255,255,0.3)" />
+          <polygon points="0 0, 8 3, 0 6" fill={COLOR_TEXT_DIM} />
         </marker>
         <marker id="tfc-arrow-active" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" fill="#fbbf24" />
+          <polygon points="0 0, 8 3, 0 6" fill={COLOR_ACCENT} />
         </marker>
       </defs>
 
@@ -120,7 +133,7 @@ export const TonalFunctionChart: React.FC<VisualizationProps> = ({
             y={30}
             textAnchor="middle"
             fill={col.color}
-            fontSize={13}
+            fontSize={FONT_SIZE_LG}
             fontWeight={600}
           >
             {col.label}
@@ -146,7 +159,7 @@ export const TonalFunctionChart: React.FC<VisualizationProps> = ({
             <path
               d={`M ${fromX} ${midY} Q ${(fromX + toX) / 2} ${cpY} ${toX} ${midY}`}
               fill="none"
-              stroke={isActiveFlow ? '#fbbf24' : 'rgba(255,255,255,0.12)'}
+              stroke={isActiveFlow ? COLOR_ACCENT : COLOR_LINE_FAINT}
               strokeWidth={isActiveFlow ? 2 : 1}
               strokeDasharray={arrow.strength === 'common' ? '6 4' : undefined}
               markerEnd={isActiveFlow ? 'url(#tfc-arrow-active)' : 'url(#tfc-arrow)'}
@@ -208,7 +221,7 @@ export const TonalFunctionChart: React.FC<VisualizationProps> = ({
                   y1={fromPos.y + ny * (bubbleRadius + 4)}
                   x2={toPos.x - nx * (bubbleRadius + 10)}
                   y2={toPos.y - ny * (bubbleRadius + 10)}
-                  stroke={m.strength === 'strong' ? '#fbbf24' : '#a78bfa'}
+                  stroke={m.strength === 'strong' ? COLOR_MOVE_STRONG : COLOR_MOVE_COMMON}
                   strokeWidth={2}
                   opacity={m.strength === 'strong' ? 0.7 : 0.4}
                   strokeDasharray={m.strength === 'common' ? '6 4' : undefined}
@@ -224,8 +237,8 @@ export const TonalFunctionChart: React.FC<VisualizationProps> = ({
           x={width / 2}
           y={height - 16}
           textAnchor="middle"
-          fill="rgba(255,255,255,0.25)"
-          fontSize={11}
+          fill={COLOR_TEXT_DIMMER}
+          fontSize={FONT_SIZE_BASE}
         >
           Hover a chord to see harmonic flow
         </text>

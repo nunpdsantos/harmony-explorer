@@ -4,6 +4,7 @@ import { VisualizationArea } from './components/VisualizationArea';
 import { TransportBar } from './components/TransportBar';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
+import { useAnnouncements } from './hooks/useAnnouncements';
 import { useStore } from './state/store';
 
 // Lazy-load modals — not needed on initial render
@@ -14,12 +15,23 @@ const OnboardingTour = React.lazy(() =>
   import('./components/OnboardingTour').then(m => ({ default: m.OnboardingTour }))
 );
 
+/** Global aria-live region for screen reader announcements */
+const AriaAnnouncer: React.FC = () => {
+  const lastAnnouncement = useStore(s => s.lastAnnouncement);
+  return (
+    <div role="status" aria-live="polite" className="sr-only">
+      {lastAnnouncement}
+    </div>
+  );
+};
+
 const App: React.FC = () => {
   const { sidebarOpen, setSidebarOpen } = useStore();
   useKeyboardShortcuts();
+  useAnnouncements();
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-gray-950 text-white overflow-hidden">
+    <div className="h-screen w-screen flex flex-col text-white overflow-hidden" style={{ background: 'radial-gradient(ellipse at 30% 20%, #0c1222 0%, #030712 70%)' }}>
       {/* Skip to content — keyboard accessibility */}
       <a
         href="#main-content"
@@ -29,7 +41,7 @@ const App: React.FC = () => {
       </a>
 
       {/* Mobile header */}
-      <header className="lg:hidden flex items-center justify-between px-4 py-2 bg-gray-900 border-b border-white/10">
+      <header className="lg:hidden flex items-center justify-between px-4 py-2 border-b border-white/10" style={{ backgroundColor: 'var(--color-bg-surface)' }}>
         <button
           onClick={() => setSidebarOpen(true)}
           className="text-white/60 hover:text-white/80"
@@ -79,6 +91,9 @@ const App: React.FC = () => {
       <Suspense fallback={null}>
         <OnboardingTour />
       </Suspense>
+
+      {/* Screen reader announcements */}
+      <AriaAnnouncer />
     </div>
   );
 };

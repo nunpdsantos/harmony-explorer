@@ -67,7 +67,7 @@ export const OnboardingTour: React.FC = () => {
             Step {tour.currentStep + 1} of {tour.totalSteps}
           </div>
 
-          <h2 className="text-base font-bold text-white mb-2">{step.title}</h2>
+          <h2 className="text-base font-bold text-white mb-2" style={{ fontFamily: 'var(--font-display)' }}>{step.title}</h2>
           <p className="text-sm text-white/60 leading-relaxed">{step.description}</p>
         </div>
 

@@ -25,6 +25,9 @@ const TritoneSubDiagram = React.lazy(() =>
 const AlternationCircle = React.lazy(() =>
   import('../visualizations/AlternationCircle/AlternationCircle').then(m => ({ default: m.AlternationCircle }))
 );
+const ModulationMap = React.lazy(() =>
+  import('../visualizations/ModulationMap/ModulationMap').then(m => ({ default: m.ModulationMap }))
+);
 const LessonView = React.lazy(() =>
   import('../learn/LessonView').then(m => ({ default: m.LessonView }))
 );
@@ -65,6 +68,7 @@ export const VisualizationArea: React.FC = () => {
             {activeViz === 'augmentedStar' && <AugmentedStar {...vizProps} />}
             {activeViz === 'tritoneSubDiagram' && <TritoneSubDiagram {...vizProps} />}
             {activeViz === 'alternationCircle' && <AlternationCircle {...vizProps} />}
+            {activeViz === 'modulationMap' && <ModulationMap {...vizProps} />}
           </>
         )}
       </Suspense>

@@ -1,28 +1,109 @@
 /* Design Tokens */
 :root {
-  /* Type scale */
+  /* ─── Type scale ─── */
+  --text-3xs: 7px;
   --text-2xs: 10px;
   --text-xs: 12px;
   --text-sm: 14px;
   --text-base: 16px;
   --text-lg: 20px;
+  --text-xl: 22px;
+  --text-2xl: 24px;
+  --text-3xl: 28px;
 
-  /* Semantic colors */
-  --color-tonic: #22c55e;
-  --color-subdominant: #3b82f6;
-  --color-dominant: #ef4444;
-  --color-accent: #f59e0b;
+  /* ─── Fonts ─── */
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* ─── Semantic colors — tonal function ─── */
+  --color-tonic: #34d399;
+  --color-subdominant: #60a5fa;
+  --color-dominant: #f87171;
+  --color-accent: #fbbf24;
+
+  /* ─── Function colors (foreground + bg variants) ─── */
+  --color-fn-tonic: #34d399;
+  --color-fn-subdominant: #60a5fa;
+  --color-fn-dominant: #f87171;
+  --color-fn-tonic-bg: rgba(52, 211, 153, 0.15);
+  --color-fn-subdominant-bg: rgba(96, 165, 250, 0.15);
+  --color-fn-dominant-bg: rgba(248, 113, 113, 0.15);
+
+  /* ─── Chord quality colors (13) ─── */
+  --color-quality-major: #3b82f6;
+  --color-quality-minor: #8b5cf6;
+  --color-quality-diminished: #ef4444;
+  --color-quality-augmented: #f59e0b;
+  --color-quality-dom7: #06b6d4;
+  --color-quality-maj7: #2563eb;
+  --color-quality-min7: #7c3aed;
+  --color-quality-dim7: #dc2626;
+  --color-quality-halfDim7: #ea580c;
+  --color-quality-minMaj7: #9333ea;
+  --color-quality-aug7: #d97706;
+  --color-quality-sus4: #059669;
+  --color-quality-sus2: #0d9488;
+
+  /* ─── Shared-note colors (0–3) ─── */
+  --color-shared-0: #ef4444;
+  --color-shared-1: #f59e0b;
+  --color-shared-2: #3b82f6;
+  --color-shared-3: #22c55e;
+
+  /* ─── Next-move strength colors ─── */
+  --color-move-strong: #fbbf24;
+  --color-move-common: #a78bfa;
+  --color-move-creative: #6b7280;
+
+  /* ─── Bridge type colors ─── */
+  --color-bridge-tritone-sub: #ec4899;
+  --color-bridge-passing-dim: #f59e0b;
+  --color-bridge-secondary-dom: #8b5cf6;
+
+  /* ─── Voice colors (bass → soprano + 5th) ─── */
+  --color-voice-bass: #a78bfa;
+  --color-voice-tenor: #60a5fa;
+  --color-voice-alto: #34d399;
+  --color-voice-soprano: #fbbf24;
+  --color-voice-5th: #f472b6;
+
+  /* ─── Tritone pair colors (6) ─── */
+  --color-pair-1: #ef4444;
+  --color-pair-2: #3b82f6;
+  --color-pair-3: #22c55e;
+  --color-pair-4: #f59e0b;
+  --color-pair-5: #8b5cf6;
+  --color-pair-6: #ec4899;
+
+  /* ─── Neo-Riemannian transform colors ─── */
+  --color-transform-P: #f59e0b;
+  --color-transform-L: #8b5cf6;
+  --color-transform-R: #06b6d4;
+
+  /* ─── Background tokens ─── */
+  --color-bg-primary: #030712;
+  --color-bg-surface: rgba(12, 18, 34, 0.95);
+  --color-bg-elevated: rgba(15, 23, 42, 0.98);
+
+  /* ─── Surface / interaction tokens ─── */
   --color-surface: rgba(255, 255, 255, 0.05);
   --color-surface-hover: rgba(255, 255, 255, 0.08);
   --color-surface-active: rgba(255, 255, 255, 0.12);
   --color-border: rgba(255, 255, 255, 0.10);
   --color-border-hover: rgba(255, 255, 255, 0.20);
+
+  /* ─── Text tokens ─── */
   --color-text-primary: rgba(255, 255, 255, 0.90);
   --color-text-secondary: rgba(255, 255, 255, 0.60);
   --color-text-muted: rgba(255, 255, 255, 0.50);
   --color-text-faint: rgba(255, 255, 255, 0.40);
 
-  /* Spacing */
+  /* ─── Interaction state colors ─── */
+  --color-playing-glow: rgba(251, 191, 36, 0.5);
+  --color-selected-border: #ffffff;
+  --color-hovered-border: #e2e8f0;
+
+  /* ─── Spacing ─── */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -30,9 +111,19 @@
   --space-5: 20px;
   --space-6: 24px;
 
-  /* Radii */
+  /* ─── Radii ─── */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-full: 9999px;
+
+  /* ─── Layout ─── */
+  --sidebar-width: 288px;
+  --sidebar-rail-width: 56px;
+  --transport-height: auto;
+
+  /* ─── Duration / animation ─── */
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
 }

@@ -6,8 +6,23 @@ import { getTritoneSubPairs } from '../../core/symmetricStructures';
 import { CIRCLE_OF_FIFTHS_ORDER, noteName } from '../../core/constants';
 import { qualityColor } from '../shared/colors';
 import { useStore } from '../../state/store';
+import {
+  PAIR_COLORS as THEME_PAIR_COLORS,
+  COLOR_ACCENT,
+  COLOR_RING_STROKE,
+  COLOR_TEXT_SECONDARY,
+  COLOR_TEXT_FAINT,
+  COLOR_TEXT_DIM,
+  COLOR_TEXT_DIMMER,
+  FONT_SIZE_XS,
+  FONT_SIZE_SM,
+  FONT_SIZE_BASE,
+  FONT_SIZE_LG,
+  FONT_SIZE_MD,
+  FONT_SIZE_2XL,
+} from '../../styles/theme';
 
-const PAIR_COLORS = ['#ef4444', '#3b82f6', '#22c55e', '#f59e0b', '#8b5cf6', '#ec4899'];
+const PAIR_COLORS = THEME_PAIR_COLORS;
 
 export const TritoneSubDiagram: React.FC<VisualizationProps> = ({
   selectedChord,
@@ -72,7 +87,7 @@ export const TritoneSubDiagram: React.FC<VisualizationProps> = ({
       <title>Tritone Substitution Diagram</title>
       <desc>Circle diagram showing the six pairs of dominant seventh chords related by tritone substitution, each pair sharing the same tritone interval</desc>
       {/* Background circle */}
-      <circle cx={cx} cy={cy} r={circleRadius + bubbleRadius + 10} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
+      <circle cx={cx} cy={cy} r={circleRadius + bubbleRadius + 10} fill="none" stroke={COLOR_RING_STROKE} strokeWidth={1} />
 
       {/* Tritone pair lines through center */}
       {pairs.map((pair, i) => {
@@ -128,25 +143,25 @@ export const TritoneSubDiagram: React.FC<VisualizationProps> = ({
       {/* Center info */}
       {activePair ? (
         <g>
-          <text x={cx} y={cy - 30} textAnchor="middle" fill="white" fontSize={16} fontWeight={700}>
+          <text x={cx} y={cy - 30} textAnchor="middle" fill="white" fontSize={FONT_SIZE_2XL} fontWeight={700}>
             {chordName(activePair.dom7)} \u2194 {chordName(activePair.tritoneSubDom7)}
           </text>
-          <text x={cx} y={cy - 8} textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize={12}>
+          <text x={cx} y={cy - 8} textAnchor="middle" fill={COLOR_TEXT_SECONDARY} fontSize={FONT_SIZE_MD}>
             Shared tritone: {noteName(activePair.sharedTritone[0])} &amp; {noteName(activePair.sharedTritone[1])}
           </text>
-          <text x={cx} y={cy + 12} textAnchor="middle" fill="#fbbf24" fontSize={12}>
+          <text x={cx} y={cy + 12} textAnchor="middle" fill={COLOR_ACCENT} fontSize={FONT_SIZE_MD}>
             Both resolve to {chordName(activePair.commonResolution)}
           </text>
-          <text x={cx} y={cy + 32} textAnchor="middle" fill="rgba(255,255,255,0.35)" fontSize={10}>
+          <text x={cx} y={cy + 32} textAnchor="middle" fill={COLOR_TEXT_DIM} fontSize={FONT_SIZE_SM}>
             Roots a tritone (6 semitones) apart
           </text>
         </g>
       ) : (
         <g>
-          <text x={cx} y={cy - 10} textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize={13}>
+          <text x={cx} y={cy - 10} textAnchor="middle" fill={COLOR_TEXT_FAINT} fontSize={FONT_SIZE_LG}>
             Tritone Substitutions
           </text>
-          <text x={cx} y={cy + 10} textAnchor="middle" fill="rgba(255,255,255,0.25)" fontSize={11}>
+          <text x={cx} y={cy + 10} textAnchor="middle" fill={COLOR_TEXT_DIMMER} fontSize={FONT_SIZE_BASE}>
             Click a chord to highlight its tritone pair
           </text>
         </g>
@@ -154,7 +169,7 @@ export const TritoneSubDiagram: React.FC<VisualizationProps> = ({
 
       {/* Legend */}
       <g transform={`translate(12, ${height - 20})`}>
-        <text x={0} y={0} fill="rgba(255,255,255,0.25)" fontSize={9}>
+        <text x={0} y={0} fill={COLOR_TEXT_DIMMER} fontSize={FONT_SIZE_XS}>
           6 tritone pairs {'\u00B7'} 12 dom7 chords arranged by circle of fifths
         </text>
       </g>

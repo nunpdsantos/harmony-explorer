@@ -1,5 +1,14 @@
 import React, { useCallback } from 'react';
 import { chordName, chordFullName, type Chord } from '../../core/chords';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import {
+  COLOR_SELECTED_BORDER, COLOR_HOVERED_BORDER, COLOR_ACCENT,
+  COLOR_MOVE_STRONG, COLOR_MOVE_COMMON, COLOR_MOVE_CREATIVE,
+  COLOR_DIATONIC_STROKE, COLOR_NON_DIATONIC_STROKE,
+  COLOR_FN_TONIC, COLOR_FN_SUBDOMINANT, COLOR_FN_DOMINANT,
+  COLOR_TEXT_SECONDARY,
+  FONT_SIZE_2XS, FONT_SIZE_XS, FONT_SIZE_XL,
+} from '../../styles/theme';
 
 interface ChordBubbleProps {
   chord: Chord;
@@ -40,17 +49,18 @@ export const ChordBubble: React.FC<ChordBubbleProps> = ({
   onClick,
   onHover,
 }) => {
+  const prefersReducedMotion = useReducedMotion();
   const strokeColor = isSelected
-    ? '#fff'
+    ? COLOR_SELECTED_BORDER
     : isHovered
-    ? '#e2e8f0'
+    ? COLOR_HOVERED_BORDER
     : isNextMove
-    ? nextMoveStrength === 'strong' ? '#fbbf24' : nextMoveStrength === 'common' ? '#a78bfa' : '#6b7280'
+    ? nextMoveStrength === 'strong' ? COLOR_MOVE_STRONG : nextMoveStrength === 'common' ? COLOR_MOVE_COMMON : COLOR_MOVE_CREATIVE
     : isReference
-    ? '#fbbf24'
+    ? COLOR_ACCENT
     : isDiatonic
-    ? 'rgba(255,255,255,0.35)'
-    : 'rgba(255,255,255,0.12)';
+    ? COLOR_DIATONIC_STROKE
+    : COLOR_NON_DIATONIC_STROKE;
 
   const strokeWidth = isSelected || isHovered ? 3
     : isNextMove ? 2.5
@@ -108,12 +118,16 @@ export const ChordBubble: React.FC<ChordBubbleProps> = ({
         <circle
           r={radius + 6}
           fill="none"
-          stroke={nextMoveStrength === 'strong' ? '#fbbf24' : nextMoveStrength === 'common' ? '#a78bfa' : '#6b7280'}
+          stroke={nextMoveStrength === 'strong' ? COLOR_MOVE_STRONG : nextMoveStrength === 'common' ? COLOR_MOVE_COMMON : COLOR_MOVE_CREATIVE}
           strokeWidth={2}
           opacity={0.5}
         >
-          <animate attributeName="r" values={`${radius + 4};${radius + 8};${radius + 4}`} dur="2s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.5;0.2;0.5" dur="2s" repeatCount="indefinite" />
+          {!prefersReducedMotion && (
+            <>
+              <animate attributeName="r" values={`${radius + 4};${radius + 8};${radius + 4}`} dur="2s" repeatCount="indefinite" />
+              <animate attributeName="opacity" values="0.5;0.2;0.5" dur="2s" repeatCount="indefinite" />
+            </>
+          )}
         </circle>
       )}
 
@@ -122,7 +136,7 @@ export const ChordBubble: React.FC<ChordBubbleProps> = ({
         <circle
           r={radius + 4}
           fill="none"
-          stroke="#fbbf24"
+          stroke={COLOR_ACCENT}
           strokeWidth={2}
           strokeDasharray="4 3"
           opacity={0.7}
@@ -142,7 +156,7 @@ export const ChordBubble: React.FC<ChordBubbleProps> = ({
         textAnchor="middle"
         dominantBaseline="central"
         fill="white"
-        fontSize={radius > 24 ? 14 : 11}
+        fontSize={radius > 24 ? FONT_SIZE_XL : FONT_SIZE_XS + 2}
         fontWeight={isSelected ? 700 : 500}
         style={{ pointerEvents: 'none', userSelect: 'none' }}
         dy={label ? -3 : 0}
@@ -155,8 +169,8 @@ export const ChordBubble: React.FC<ChordBubbleProps> = ({
       {label && (
         <text
           textAnchor="middle"
-          fill="rgba(255,255,255,0.7)"
-          fontSize={8}
+          fill={COLOR_TEXT_SECONDARY}
+          fontSize={FONT_SIZE_2XS}
           fontWeight={400}
           style={{ pointerEvents: 'none', userSelect: 'none' }}
           dy={radius + 14}
@@ -170,8 +184,8 @@ export const ChordBubble: React.FC<ChordBubbleProps> = ({
       {sublabel && (
         <text
           textAnchor="middle"
-          fill={sublabel === 'T' ? '#22c55e' : sublabel === 'S' ? '#3b82f6' : '#ef4444'}
-          fontSize={7}
+          fill={sublabel === 'T' ? COLOR_FN_TONIC : sublabel === 'S' ? COLOR_FN_SUBDOMINANT : COLOR_FN_DOMINANT}
+          fontSize={FONT_SIZE_2XS - 1}
           fontWeight={600}
           style={{ pointerEvents: 'none', userSelect: 'none' }}
           dy={radius + 24}

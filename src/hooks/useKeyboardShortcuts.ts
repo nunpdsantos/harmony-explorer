@@ -23,6 +23,17 @@ export function useKeyboardShortcuts() {
 
     const state = useStore.getState();
 
+    // Cmd/Ctrl+Z: Undo, Cmd/Ctrl+Shift+Z: Redo
+    if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
+      e.preventDefault();
+      if (e.shiftKey) {
+        useStore.getState().redo();
+      } else {
+        useStore.getState().undo();
+      }
+      return;
+    }
+
     switch (e.key) {
       case ' ': {
         // Space: Play/Stop
@@ -148,6 +159,27 @@ export function useKeyboardShortcuts() {
             currentLessonIndex: Math.min(11, state.currentLessonIndex + 1),
           });
         }
+        break;
+      }
+
+      case 'v':
+      case 'V': {
+        // V: Toggle voice leading overlay
+        useStore.setState({ showVoiceLeading: !state.showVoiceLeading });
+        break;
+      }
+
+      case 'b':
+      case 'B': {
+        // B: Toggle bridge chord suggestions
+        useStore.setState({ showBridgeChords: !state.showBridgeChords });
+        break;
+      }
+
+      case '\\': {
+        // \: Toggle sidebar collapsed (desktop rail mode)
+        e.preventDefault();
+        useStore.getState().toggleSidebarCollapsed();
         break;
       }
     }

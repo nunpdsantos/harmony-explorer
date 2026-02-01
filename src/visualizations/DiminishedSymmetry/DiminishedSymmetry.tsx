@@ -5,8 +5,24 @@ import { chord, chordName, chordKey, chordsEqual, chordPitchClasses, type Chord 
 import { getDiminished7thGroups, getDiminishedResolutions } from '../../core/symmetricStructures';
 import { noteName } from '../../core/constants';
 import { useStore } from '../../state/store';
+import {
+  DIM_GROUP_COLORS,
+  COLOR_ACCENT,
+  COLOR_RING_STROKE,
+  COLOR_TEXT_SECONDARY,
+  COLOR_TEXT_FAINT,
+  COLOR_TEXT_DIM,
+  COLOR_TEXT_DIMMER,
+  COLOR_TEXT_MUTED,
+  FONT_SIZE_XS,
+  FONT_SIZE_SM,
+  FONT_SIZE_BASE,
+  FONT_SIZE_MD,
+  FONT_SIZE_LG,
+  FONT_SIZE_3XL,
+} from '../../styles/theme';
 
-const GROUP_COLORS = ['#ef4444', '#3b82f6', '#22c55e']; // Red, Blue, Green for the 3 groups
+const GROUP_COLORS = DIM_GROUP_COLORS; // Red, Blue, Green for the 3 groups
 const GROUP_LABELS = ['Group I', 'Group II', 'Group III'];
 
 export const DiminishedSymmetry: React.FC<VisualizationProps> = ({
@@ -63,12 +79,12 @@ export const DiminishedSymmetry: React.FC<VisualizationProps> = ({
       <desc>Diagram showing the three diminished seventh chord groups that partition all 12 pitch classes, with resolution arrows to major and minor triads</desc>
       <defs>
         <marker id="dim-res-arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" fill="#fbbf24" />
+          <polygon points="0 0, 8 3, 0 6" fill={COLOR_ACCENT} />
         </marker>
       </defs>
 
       {/* Background chromatic circle */}
-      <circle cx={cx} cy={cy} r={circleRadius + bubbleRadius + 10} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
+      <circle cx={cx} cy={cy} r={circleRadius + bubbleRadius + 10} fill="none" stroke={COLOR_RING_STROKE} strokeWidth={1} />
 
       {/* Draw inscribed squares for each dim7 group */}
       {groups.map((group, gi) => {
@@ -119,7 +135,7 @@ export const DiminishedSymmetry: React.FC<VisualizationProps> = ({
               y1={from.y + ny * (bubbleRadius + 4)}
               x2={toX - nx * 12}
               y2={toY - ny * 12}
-              stroke="#fbbf24"
+              stroke={COLOR_ACCENT}
               strokeWidth={1.5}
               opacity={0.6}
               markerEnd="url(#dim-res-arrow)"
@@ -129,8 +145,8 @@ export const DiminishedSymmetry: React.FC<VisualizationProps> = ({
               y={toY + ny * 4}
               textAnchor="middle"
               dominantBaseline="central"
-              fill="#fbbf24"
-              fontSize={10}
+              fill={COLOR_ACCENT}
+              fontSize={FONT_SIZE_SM}
               fontWeight={600}
             >
               {chordName(res)}
@@ -173,22 +189,22 @@ export const DiminishedSymmetry: React.FC<VisualizationProps> = ({
       {/* Center info */}
       {activeDim7 ? (
         <g>
-          <text x={cx} y={cy - 20} textAnchor="middle" fill="white" fontSize={18} fontWeight={700}>
+          <text x={cx} y={cy - 20} textAnchor="middle" fill="white" fontSize={FONT_SIZE_3XL} fontWeight={700}>
             {chordName(activeDim7)}
           </text>
-          <text x={cx} y={cy + 2} textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize={12}>
+          <text x={cx} y={cy + 2} textAnchor="middle" fill={COLOR_TEXT_SECONDARY} fontSize={FONT_SIZE_MD}>
             Notes: {chordPitchClasses(activeDim7).map(pc => noteName(pc)).join(', ')}
           </text>
-          <text x={cx} y={cy + 20} textAnchor="middle" fill="#fbbf24" fontSize={11}>
+          <text x={cx} y={cy + 20} textAnchor="middle" fill={COLOR_ACCENT} fontSize={FONT_SIZE_BASE}>
             Resolves to: {resolutions.map(r => chordName(r)).join(', ')}
           </text>
         </g>
       ) : (
         <g>
-          <text x={cx} y={cy - 10} textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize={13}>
+          <text x={cx} y={cy - 10} textAnchor="middle" fill={COLOR_TEXT_FAINT} fontSize={FONT_SIZE_LG}>
             Diminished 7th Symmetry
           </text>
-          <text x={cx} y={cy + 10} textAnchor="middle" fill="rgba(255,255,255,0.25)" fontSize={11}>
+          <text x={cx} y={cy + 10} textAnchor="middle" fill={COLOR_TEXT_DIMMER} fontSize={FONT_SIZE_BASE}>
             Click a vertex to see resolutions
           </text>
         </g>
@@ -196,11 +212,11 @@ export const DiminishedSymmetry: React.FC<VisualizationProps> = ({
 
       {/* Legend */}
       <g transform={`translate(${width - 130}, ${height - 70})`}>
-        <text x={0} y={0} fill="rgba(255,255,255,0.3)" fontSize={9} fontWeight={600}>DIM7 GROUPS</text>
+        <text x={0} y={0} fill={COLOR_TEXT_DIM} fontSize={FONT_SIZE_XS} fontWeight={600}>DIM7 GROUPS</text>
         {GROUP_LABELS.map((label, i) => (
           <g key={label}>
             <circle cx={8} cy={14 + i * 16} r={5} fill={GROUP_COLORS[i]} opacity={0.8} />
-            <text x={18} y={18 + i * 16} fill="rgba(255,255,255,0.5)" fontSize={9}>{label}</text>
+            <text x={18} y={18 + i * 16} fill={COLOR_TEXT_MUTED} fontSize={FONT_SIZE_XS}>{label}</text>
           </g>
         ))}
       </g>

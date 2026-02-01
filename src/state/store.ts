@@ -3,6 +3,7 @@ import type { Chord } from '../core/chords';
 import type { ChordQuality } from '../core/constants';
 import type { PresetName } from '../audio/presets';
 import { generateId, saveProgression, listProgressions, deleteProgression as deleteProg, type SavedProgression } from '../utils/persistence';
+import { undoable, type UndoSlice } from './undoMiddleware';
 
 export type VisualizationMode =
   | 'circleOfFifths'
@@ -11,7 +12,8 @@ export type VisualizationMode =
   | 'diminishedSymmetry'
   | 'augmentedStar'
   | 'tritoneSubDiagram'
-  | 'alternationCircle';
+  | 'alternationCircle'
+  | 'modulationMap';
 export type AppMode = 'explore' | 'learn';
 export type RelationshipFilter = 'sharedNotes' | 'dominant' | 'tritone' | 'neoRiemannian';
 
@@ -101,16 +103,37 @@ interface AppState {
   addToExerciseProgression: (chordKey: string) => void;
   resetExerciseProgression: () => void;
 
+  // Voice leading overlay
+  showVoiceLeading: boolean;
+  setShowVoiceLeading: (show: boolean) => void;
+
+  // Bridge chords overlay
+  showBridgeChords: boolean;
+  setShowBridgeChords: (show: boolean) => void;
+
   // Modals
   showShortcutsModal: boolean;
   setShowShortcutsModal: (show: boolean) => void;
 
+  // Modulation explorer
+  modulationTarget: number;
+  setModulationTarget: (target: number) => void;
+
   // Sidebar visibility (for mobile)
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
+
+  // Sidebar collapsed (desktop rail mode)
+  sidebarCollapsed: boolean;
+  setSidebarCollapsed: (collapsed: boolean) => void;
+  toggleSidebarCollapsed: () => void;
+
+  // Announcements for screen readers
+  lastAnnouncement: string;
+  announce: (text: string) => void;
 }
 
-export const useStore = create<AppState>((set, get) => ({
+export const useStore = create<AppState & UndoSlice>()(undoable<AppState>((set, get) => ({
   // Mode
   mode: 'explore',
   setMode: (mode) => set({ mode }),
@@ -190,7 +213,7 @@ export const useStore = create<AppState>((set, get) => ({
   // Learn mode
   currentLessonIndex: 0,
   setCurrentLessonIndex: (currentLessonIndex) => set({ currentLessonIndex }),
-  lessonProgress: Array(12).fill(false),
+  lessonProgress: Array(16).fill(false),
   completeLessonAt: (index) => set(state => {
     const next = [...state.lessonProgress];
     next[index] = true;
@@ -204,13 +227,34 @@ export const useStore = create<AppState>((set, get) => ({
   })),
   resetExerciseProgression: () => set({ exerciseBuildProgression: [] }),
 
+  // Voice leading overlay
+  showVoiceLeading: false,
+  setShowVoiceLeading: (showVoiceLeading) => set({ showVoiceLeading }),
+
+  // Bridge chords overlay
+  showBridgeChords: false,
+  setShowBridgeChords: (showBridgeChords) => set({ showBridgeChords }),
+
   // Modals
   showShortcutsModal: false,
   setShowShortcutsModal: (showShortcutsModal) => set({ showShortcutsModal }),
 
+  // Modulation explorer
+  modulationTarget: 7, // G (one fifth from C)
+  setModulationTarget: (modulationTarget) => set({ modulationTarget }),
+
   // Sidebar
   sidebarOpen: false,
   setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
+
+  // Sidebar collapsed (desktop rail mode)
+  sidebarCollapsed: false,
+  setSidebarCollapsed: (sidebarCollapsed) => set({ sidebarCollapsed }),
+  toggleSidebarCollapsed: () => set(state => ({ sidebarCollapsed: !state.sidebarCollapsed })),
+
+  // Announcements
+  lastAnnouncement: '',
+  announce: (text) => set({ lastAnnouncement: text }),
 
   // Saved progressions
   savedProgressions: [],
@@ -244,4 +288,4 @@ export const useStore = create<AppState>((set, get) => ({
       });
     }
   },
-}));
+})));

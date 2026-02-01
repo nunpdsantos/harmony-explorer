@@ -6,6 +6,13 @@ import { chord, chordsEqual, chordKey, chordName } from '../../core/chords';
 import { buildProximityPyramid } from '../../core/proximityPyramid';
 import { getDiatonicInfo, functionColor } from '../../core/harmony';
 import { useStore } from '../../state/store';
+import {
+  COLOR_TEXT_MUTED,
+  COLOR_TEXT_DIM,
+  FONT_SIZE_SM,
+  FONT_SIZE_BASE,
+  FONT_SIZE_MD,
+} from '../../styles/theme';
 
 export const ProximityPyramid: React.FC<VisualizationProps> = ({
   referenceRoot,
@@ -45,7 +52,7 @@ export const ProximityPyramid: React.FC<VisualizationProps> = ({
       <title>Proximity Pyramid from {chordName(referenceChord)}</title>
       <desc>Pyramid showing chords organized by proximity to {chordName(referenceChord)}, with closest chords at the top</desc>
       {/* Title */}
-      <text x={width / 2} y={28} textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize={12}>
+      <text x={width / 2} y={28} textAnchor="middle" fill={COLOR_TEXT_MUTED} fontSize={FONT_SIZE_MD}>
         Proximity Pyramid from {chordName(referenceChord)}
       </text>
 
@@ -78,7 +85,7 @@ export const ProximityPyramid: React.FC<VisualizationProps> = ({
         return (
           <g key={level.sharedCount}>
             {/* Level label */}
-            <text x={16} y={y + 4} fill={sharedNoteColor(level.sharedCount)} fontSize={11} fontWeight={500}>
+            <text x={16} y={y + 4} fill={sharedNoteColor(level.sharedCount)} fontSize={FONT_SIZE_BASE} fontWeight={500}>
               {level.sharedCount}
             </text>
 
@@ -123,7 +130,7 @@ export const ProximityPyramid: React.FC<VisualizationProps> = ({
             })}
 
             {/* Level description */}
-            <text x={width - 16} y={y + 4} textAnchor="end" fill="rgba(255,255,255,0.3)" fontSize={10}>
+            <text x={width - 16} y={y + 4} textAnchor="end" fill={COLOR_TEXT_DIM} fontSize={FONT_SIZE_SM}>
               {level.sharedCount === 0 ? 'No shared notes' : `${level.sharedCount} shared note${level.sharedCount > 1 ? 's' : ''}`}
             </text>
           </g>

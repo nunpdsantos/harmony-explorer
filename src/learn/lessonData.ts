@@ -511,4 +511,185 @@ export const LESSONS: LessonDefinition[] = [
       },
     ],
   },
+
+  // ── Advanced Lessons 13–16 ─────────────────────────────────────────
+
+  {
+    title: 'Voice Leading',
+    subtitle: 'Smooth connections between chords',
+    visualization: 'circleOfFifths',
+    sections: [
+      {
+        heading: 'What is Voice Leading?',
+        text: 'Voice leading describes how individual notes (voices) move from one chord to the next. Good voice leading minimizes the distance each voice travels, creating smooth, connected harmony. Each note in a chord is treated as a separate "voice" that should move as little as possible.',
+      },
+      {
+        heading: 'Common Tones',
+        text: 'When two chords share notes, those shared notes (common tones) stay in place while the other voices move. For example, going from C (C-E-G) to Am (A-C-E), the notes C and E are common tones that stay put \u2014 only G moves down to A.',
+      },
+      {
+        heading: 'Measuring Smoothness',
+        text: 'Voice-leading quality can be measured by total semitone movement across all voices. A "smooth" transition averages 4 or fewer semitones of movement per voice. The ii-V-I progression is prized because each transition moves voices by minimal distances, with the 7th of each chord stepping down to become the 3rd of the next.',
+      },
+    ],
+    exercises: [
+      {
+        type: 'identify-function',
+        question: 'What is the primary goal of smooth voice leading?',
+        correctFunction: 'minimal',
+        options: ['Minimal voice movement', 'Maximum contrast', 'Parallel octaves', 'Wide leaps'],
+        optionKeys: ['minimal', 'contrast', 'parallel', 'leaps'],
+        explanation: 'Smooth voice leading minimizes the distance each voice moves between chords. This creates connected, flowing harmony where individual voices trace singable lines rather than jumping unpredictably.',
+      },
+      {
+        type: 'identify-function',
+        question: 'When C major (C-E-G) moves to A minor (A-C-E), how many common tones are there?',
+        correctFunction: '2',
+        options: ['0', '1', '2', '3'],
+        optionKeys: ['0', '1', '2', '3'],
+        explanation: 'C major and A minor share 2 common tones: C and E. These notes stay in place while only G moves down to A. This is why I\u2192vi is such a smooth progression \u2014 two of three voices don\u2019t move at all.',
+      },
+      {
+        type: 'identify-function',
+        question: 'In the ii-V-I progression, what happens to the 7th of each chord?',
+        correctFunction: 'steps-down',
+        options: ['Steps down to 3rd of next chord', 'Leaps up an octave', 'Stays as common tone', 'Drops out entirely'],
+        optionKeys: ['steps-down', 'leaps-up', 'common-tone', 'drops-out'],
+        explanation: 'The 7th of each chord falls by a single step to become the 3rd of the next chord. In Dm7-G7-C: the C (7th of Dm7) steps down to B (3rd of G7), and F (7th of G7) steps down to E (3rd of C). This stepwise descent is the voice-leading magic of ii-V-I.',
+      },
+    ],
+  },
+  {
+    title: 'Modulation',
+    subtitle: 'Changing keys through pivot chords',
+    visualization: 'modulationMap',
+    sections: [
+      {
+        heading: 'What is Modulation?',
+        text: 'Modulation is the process of changing from one key to another within a piece of music. A smooth modulation uses a "pivot chord" \u2014 a chord that belongs to both the old key and the new key, so the listener\u2019s ear is gently redirected.',
+      },
+      {
+        heading: 'Pivot Chords',
+        text: 'The most common modulation technique uses chords diatonic in both keys. For example, Am is vi in C major and ii in G major. By reinterpreting Am as ii in G, we smoothly transition to the new key. Closely related keys (adjacent on the Circle of Fifths) share more common chords, making modulation easier.',
+      },
+      {
+        heading: 'Key Distance',
+        text: 'Key distance is measured on the Circle of Fifths: adjacent keys (distance 1) share 6 notes, while tritone-apart keys (distance 6) are maximally distant. Diminished 7th and augmented chords can bridge distant keys because their symmetry lets them resolve in multiple directions.',
+      },
+    ],
+    exercises: [
+      {
+        type: 'identify-function',
+        question: 'How many common chords do C major and G major share?',
+        correctFunction: '4',
+        options: ['2', '3', '4', '6'],
+        optionKeys: ['2', '3', '4', '6'],
+        explanation: 'C major and G major share 4 common chords: C (I/IV), Em (iii/vi), G (V/I), and Am (vi/ii). These chords can serve as pivots because they are diatonic in both keys. Adjacent keys on the Circle of Fifths always share the most common chords.',
+      },
+      {
+        type: 'identify-function',
+        question: 'What is the distance between C and G on the Circle of Fifths?',
+        correctFunction: '1',
+        options: ['1 (one fifth)', '2 (two fifths)', '3 (three fifths)', '6 (tritone)'],
+        optionKeys: ['1', '2', '3', '6'],
+        explanation: 'C and G are separated by 1 step on the Circle of Fifths (one fifth apart). This makes them closely related keys that share 6 of 7 scale notes \u2014 only F vs F# differs. Modulation between adjacent keys is the smoothest possible.',
+      },
+      {
+        type: 'select-chord',
+        question: 'Which chord can serve as a pivot between C major (vi) and G major (ii)?',
+        correctAnswer: '9-minor',
+        options: ['Em', 'Am', 'Dm', 'F'],
+        optionKeys: ['4-minor', '9-minor', '2-minor', '5-major'],
+        explanation: 'Am is vi in C major and ii in G major, making it a perfect pivot chord. By reinterpreting Am from a tonic-function chord (vi in C) to a subdominant-function chord (ii in G), the listener is smoothly redirected to the new key.',
+      },
+    ],
+  },
+  {
+    title: 'Bridge Chords',
+    subtitle: 'Chromatic connections between chords',
+    visualization: 'circleOfFifths',
+    sections: [
+      {
+        heading: 'What are Bridge Chords?',
+        text: 'A bridge chord is inserted between two existing chords to create a smoother or more interesting connection. Instead of jumping directly from one chord to the next, a bridge chord fills the gap with chromatic movement or added tension.',
+      },
+      {
+        heading: 'Secondary Dominants as Bridges',
+        text: 'A secondary dominant (V7 of the target chord) creates strong directional pull. For example, inserting A7 before Dm makes the progression C\u2192A7\u2192Dm instead of C\u2192Dm. The A7 borrows dominant tension to propel the harmony forward. Any diatonic chord (except the diminished vii\u00B0) can be approached by its secondary dominant.',
+      },
+      {
+        heading: 'Tritone Subs and Chromatic Passing',
+        text: 'The tritone substitution of V7/target creates smooth chromatic bass motion. A chromatic passing diminished chord fills in half-step gaps between bass notes. These techniques create elegant chromatic bass lines that connect otherwise distant chords.',
+      },
+    ],
+    exercises: [
+      {
+        type: 'identify-function',
+        question: 'What is the purpose of inserting a bridge chord between two chords?',
+        correctFunction: 'smoother',
+        options: ['Smoother connection', 'Louder dynamics', 'Faster tempo', 'Longer duration'],
+        optionKeys: ['smoother', 'louder', 'faster', 'longer'],
+        explanation: 'Bridge chords create smoother connections between chords by adding chromatic motion, dominant tension, or passing tones. They fill harmonic gaps and give the bass line more stepwise movement.',
+      },
+      {
+        type: 'select-chord',
+        question: 'Which secondary dominant could serve as a bridge chord approaching Dm?',
+        correctAnswer: '9-dom7',
+        options: ['D7', 'A7', 'E7', 'G7'],
+        optionKeys: ['2-dom7', '9-dom7', '4-dom7', '7-dom7'],
+        explanation: 'A7 is V7/ii (the secondary dominant of Dm). It contains C# \u2014 the leading tone of D \u2014 which creates strong chromatic pull toward D minor. Inserting A7 before Dm adds dramatic tension to the arrival.',
+      },
+      {
+        type: 'identify-function',
+        question: 'What type of bass motion does a tritone substitution approach create?',
+        correctFunction: 'chromatic',
+        options: ['Chromatic (half-step)', 'Stepwise (whole-step)', 'Leaping (fourth/fifth)', 'Static (pedal)'],
+        optionKeys: ['chromatic', 'stepwise', 'leaping', 'static'],
+        explanation: 'Tritone substitution approaches create chromatic (half-step) bass motion. For example, approaching C via Db7 instead of G7 gives a Db\u2192C bass movement \u2014 a satisfying descending semitone that leads smoothly into the target chord.',
+      },
+    ],
+  },
+  {
+    title: 'Capstone: Harmonic Analysis',
+    subtitle: 'Combining all concepts in comprehensive analysis',
+    visualization: 'tonalFunctionChart',
+    sections: [
+      {
+        heading: 'Putting It All Together',
+        text: 'A complete harmonic analysis identifies: the key, the Roman numeral of each chord, the tonal function of each chord (T/S/D), the quality of voice leading between chords, and any modulations or chromatic elements. These layers of understanding reveal why a progression sounds the way it does.',
+      },
+      {
+        heading: 'Analysis Approach',
+        text: 'Start by identifying the key from the diatonic chords. Label each chord with its Roman numeral and function. Look for secondary dominants, tritone substitutions, or borrowed chords. Evaluate the voice leading \u2014 do voices move smoothly or leap? Finally, identify any modulations by finding pivot chords.',
+      },
+      {
+        heading: 'Creative Application',
+        text: 'Use these tools to build your own progressions. Start with a functional template (T\u2192S\u2192D\u2192T), add bridge chords for chromatic interest, check your voice leading for smoothness, and experiment with modulation to reach new keys. The Explore mode\u2019s visualization tools help you see these relationships as you compose.',
+      },
+    ],
+    exercises: [
+      {
+        type: 'identify-function',
+        question: 'In I-vi-IV-V, what is the functional sequence?',
+        correctFunction: 'ttsd',
+        options: ['T\u2192S\u2192D\u2192T', 'T\u2192T\u2192S\u2192D', 'S\u2192D\u2192T\u2192T', 'D\u2192T\u2192S\u2192D'],
+        optionKeys: ['tsdt', 'ttsd', 'sdtt', 'dtsd'],
+        explanation: 'I is Tonic, vi is Tonic (shares 2 notes with I), IV is Subdominant, V is Dominant \u2014 giving T\u2192T\u2192S\u2192D. The double tonic at the start creates a gentle departure before moving through subdominant and dominant. The V at the end sets up the return to I.',
+      },
+      {
+        type: 'build-progression',
+        question: 'Build a I-IV-V-I progression in G major (G, C, D, G).',
+        expectedProgression: ['7-major', '0-major', '2-major', '7-major'],
+        explanation: 'I-IV-V-I in G major is G-C-D-G. This is the same T\u2192S\u2192D\u2192T functional pattern from Lesson 5, now transposed to a new key. The ability to recognize this pattern in any key is fundamental to harmonic analysis.',
+      },
+      {
+        type: 'identify-function',
+        question: 'What is the smoothest way to modulate between closely related keys?',
+        correctFunction: 'pivot',
+        options: ['Pivot (common) chords', 'Diminished 7th pivots', 'Direct key change', 'Augmented pivots'],
+        optionKeys: ['pivot', 'diminished', 'direct', 'augmented'],
+        explanation: 'Pivot (common) chords provide the smoothest modulation because the chord belongs to both keys \u2014 the listener barely notices the shift. Diminished and augmented pivots are useful for distant keys, while direct key changes are the most abrupt.',
+      },
+    ],
+  },
 ];

@@ -26,4 +26,15 @@ export default defineConfig([
       'react-hooks/immutability': 'off',
     },
   },
+  // Token enforcement: warn on raw hex color literals in .tsx files outside /src/styles/
+  {
+    files: ['src/**/*.tsx'],
+    ignores: ['src/styles/**'],
+    rules: {
+      'no-restricted-syntax': ['warn', {
+        selector: 'Literal[value=/^#[0-9a-fA-F]{3,8}$/]',
+        message: 'Use a token from src/styles/theme.ts instead of a raw hex color literal.',
+      }],
+    },
+  },
 ])

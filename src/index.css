@@ -8,10 +8,11 @@
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
+  background: radial-gradient(ellipse at 30% 20%, #0c1222 0%, #030712 70%);
 }
 
 /* Scrollbar styling */
@@ -47,17 +48,50 @@ input[type="range"]::-webkit-slider-thumb {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #3b82f6;
+  background: var(--color-subdominant);
   cursor: pointer;
 }
 
 /* Focus-visible indicator for keyboard navigation */
 :focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--color-subdominant);
   outline-offset: 2px;
 }
 
 /* Remove focus outline for mouse users */
 :focus:not(:focus-visible) {
   outline: none;
+}
+
+/* Reduced motion: disable animations, set durations to 0 */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-slow: 0ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast: increase border/text contrast, bolder focus ring */
+@media (prefers-contrast: more) {
+  :root {
+    --color-border: rgba(255, 255, 255, 0.30);
+    --color-border-hover: rgba(255, 255, 255, 0.50);
+    --color-text-secondary: rgba(255, 255, 255, 0.80);
+    --color-text-muted: rgba(255, 255, 255, 0.70);
+    --color-text-faint: rgba(255, 255, 255, 0.60);
+  }
+
+  :focus-visible {
+    outline-width: 3px;
+  }
 }

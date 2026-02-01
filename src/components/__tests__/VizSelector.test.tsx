@@ -9,16 +9,16 @@ describe('VizSelector', () => {
     useStore.setState({ activeViz: 'circleOfFifths' });
   });
 
-  it('renders all 7 visualization options', () => {
+  it('renders all 8 visualization options', () => {
     render(<VizSelector />);
     const radios = screen.getAllByRole('radio');
-    expect(radios).toHaveLength(7);
+    expect(radios).toHaveLength(8);
   });
 
   it('renders category groups with radiogroup role', () => {
     render(<VizSelector />);
     const groups = screen.getAllByRole('radiogroup');
-    expect(groups).toHaveLength(3);
+    expect(groups).toHaveLength(4);
   });
 
   it('shows Circle of Fifths as checked by default', () => {
@@ -59,6 +59,7 @@ describe('VizSelector', () => {
     expect(screen.getByText('Aug')).toBeInTheDocument();
     expect(screen.getByText('Tri')).toBeInTheDocument();
     expect(screen.getByText('Neo-R')).toBeInTheDocument();
+    expect(screen.getByText('Mod')).toBeInTheDocument();
   });
 
   it('renders category labels', () => {
@@ -66,5 +67,6 @@ describe('VizSelector', () => {
     expect(screen.getByText('Circle-based')).toBeInTheDocument();
     expect(screen.getByText('Function-based')).toBeInTheDocument();
     expect(screen.getByText('Symmetry')).toBeInTheDocument();
+    expect(screen.getByText('Keys')).toBeInTheDocument();
   });
 });

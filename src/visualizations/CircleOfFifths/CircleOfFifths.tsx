@@ -9,6 +9,29 @@ import { getDiatonicInfo, getNextMoves, functionColor, type NextMove } from '../
 import { getSecondaryDominants } from '../../core/secondaryDominants';
 import { DominantChainOverlay } from './DominantChainOverlay';
 import { useStore } from '../../state/store';
+import {
+  COLOR_FN_TONIC,
+  COLOR_FN_SUBDOMINANT,
+  COLOR_FN_DOMINANT,
+  COLOR_MOVE_STRONG,
+  COLOR_MOVE_COMMON,
+  BRIDGE_TYPE_COLORS,
+  SHARED_NOTE_COLORS,
+  QUALITY_COLORS,
+  COLOR_RING_STROKE,
+  COLOR_RING_FILL,
+  COLOR_TEXT_SECONDARY,
+  COLOR_TEXT_MUTED,
+  COLOR_TEXT_FAINT,
+  COLOR_TEXT_DIM,
+  COLOR_TEXT_DIMMER,
+  FONT_SIZE_2XS,
+  FONT_SIZE_XS,
+  FONT_SIZE_SM,
+  FONT_SIZE_BASE,
+  FONT_SIZE_LG,
+  FONT_SIZE_4XL,
+} from '../../styles/theme';
 
 interface ChordPosition {
   chord: Chord;
@@ -233,36 +256,36 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
       <desc>Interactive circle of fifths diagram showing major and minor chords arranged by fifth relationships</desc>
       <defs>
         <marker id="arrow-dominant" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" fill="#8b5cf6" />
+          <polygon points="0 0, 8 3, 0 6" fill={QUALITY_COLORS.minor} />
         </marker>
         <marker id="arrow-next-strong" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" fill="#fbbf24" />
+          <polygon points="0 0, 8 3, 0 6" fill={COLOR_MOVE_STRONG} />
         </marker>
         <marker id="arrow-next-common" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" fill="#a78bfa" />
+          <polygon points="0 0, 8 3, 0 6" fill={COLOR_MOVE_COMMON} />
         </marker>
         <marker id="arrow-secondary-dom" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" fill="#ec4899" />
+          <polygon points="0 0, 8 3, 0 6" fill={BRIDGE_TYPE_COLORS['tritone-sub']} />
         </marker>
       </defs>
 
       {/* Background circles */}
-      <circle cx={cx} cy={cy} r={outerRadius + bubbleRadius + 8} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
+      <circle cx={cx} cy={cy} r={outerRadius + bubbleRadius + 8} fill="none" stroke={COLOR_RING_STROKE} strokeWidth={1} />
       {showDom7Ring && (
-        <circle cx={cx} cy={cy} r={midRadius + bubbleRadius * 0.78 + 6} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth={1} />
+        <circle cx={cx} cy={cy} r={midRadius + bubbleRadius * 0.78 + 6} fill="none" stroke={COLOR_RING_FILL} strokeWidth={1} />
       )}
-      <circle cx={cx} cy={cy} r={innerRadius + bubbleRadius * 0.85 + 6} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
+      <circle cx={cx} cy={cy} r={innerRadius + bubbleRadius * 0.85 + 6} fill="none" stroke={COLOR_RING_STROKE} strokeWidth={1} />
 
       {/* Ring labels */}
-      <text x={cx + outerRadius + bubbleRadius + 18} y={cy - outerRadius - bubbleRadius - 4} textAnchor="start" fill="rgba(255,255,255,0.3)" fontSize={10}>
+      <text x={cx + outerRadius + bubbleRadius + 18} y={cy - outerRadius - bubbleRadius - 4} textAnchor="start" fill={COLOR_TEXT_DIM} fontSize={FONT_SIZE_SM}>
         Major
       </text>
       {showDom7Ring && (
-        <text x={cx + midRadius + bubbleRadius * 0.78 + 14} y={cy - midRadius - bubbleRadius * 0.78 - 2} textAnchor="start" fill="rgba(255,255,255,0.25)" fontSize={9}>
+        <text x={cx + midRadius + bubbleRadius * 0.78 + 14} y={cy - midRadius - bubbleRadius * 0.78 - 2} textAnchor="start" fill={COLOR_TEXT_DIMMER} fontSize={FONT_SIZE_XS}>
           Dom 7th
         </text>
       )}
-      <text x={cx + innerRadius + bubbleRadius * 0.85 + 14} y={cy - innerRadius - bubbleRadius * 0.85 - 2} textAnchor="start" fill="rgba(255,255,255,0.3)" fontSize={10}>
+      <text x={cx + innerRadius + bubbleRadius * 0.85 + 14} y={cy - innerRadius - bubbleRadius * 0.85 - 2} textAnchor="start" fill={COLOR_TEXT_DIM} fontSize={FONT_SIZE_SM}>
         Minor
       </text>
 
@@ -271,7 +294,7 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
         <line
           key={`rel-${i}`}
           x1={maj.x} y1={maj.y} x2={minorPositions[i].x} y2={minorPositions[i].y}
-          stroke="rgba(255,255,255,0.06)" strokeWidth={1}
+          stroke={COLOR_RING_STROKE} strokeWidth={1}
         />
       ))}
 
@@ -280,7 +303,7 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
         const k = chordKey(pos.chord);
         const count = sharedHighlights.get(k);
         if (count === undefined || count === 0) return null;
-        const colors = ['', '#f59e0b', '#3b82f6', '#22c55e'];
+        const colors = ['', SHARED_NOTE_COLORS[1], SHARED_NOTE_COLORS[2], SHARED_NOTE_COLORS[3]];
         return (
           <circle
             key={`shared-${k}`}
@@ -314,7 +337,7 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
               y1={fromPos.y + ny * (bubbleRadius * 0.78 + 4)}
               x2={toPos.x - nx * (bubbleRadius + 10)}
               y2={toPos.y - ny * (bubbleRadius + 10)}
-              stroke="#ec4899"
+              stroke={BRIDGE_TYPE_COLORS['tritone-sub']}
               strokeWidth={1.5}
               opacity={0.35}
               strokeDasharray="4 3"
@@ -324,8 +347,8 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
               x={labelX}
               y={labelY}
               textAnchor="middle"
-              fill="#ec4899"
-              fontSize={8}
+              fill={BRIDGE_TYPE_COLORS['tritone-sub']}
+              fontSize={FONT_SIZE_2XS}
               opacity={0.5}
             >
               {sd.label}
@@ -337,7 +360,7 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
       {/* Dominant arrows */}
       {dominantArrows.map((arrow, i) => (
         <g key={`dom-arrow-${i}`}>
-          {arrowLine(arrow.from, arrow.to, '#8b5cf6', 0.6, 'arrow-dominant')}
+          {arrowLine(arrow.from, arrow.to, QUALITY_COLORS.minor, 0.6, 'arrow-dominant')}
         </g>
       ))}
 
@@ -346,7 +369,7 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
         <g key={`next-arrow-${i}`}>
           {arrowLine(
             arrow.from, arrow.to,
-            arrow.move.strength === 'strong' ? '#fbbf24' : '#a78bfa',
+            arrow.move.strength === 'strong' ? COLOR_MOVE_STRONG : COLOR_MOVE_COMMON,
             arrow.move.strength === 'strong' ? 0.7 : 0.4,
             arrow.move.strength === 'strong' ? 'arrow-next-strong' : 'arrow-next-common',
             arrow.move.strength === 'common'
@@ -383,15 +406,15 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
       {/* Center info */}
       {activeChord && (
         <g>
-          <text x={cx} y={cy - 20} textAnchor="middle" fill="white" fontSize={20} fontWeight={700}>
+          <text x={cx} y={cy - 20} textAnchor="middle" fill="white" fontSize={FONT_SIZE_4XL} fontWeight={700}>
             {chordName(activeChord)}
           </text>
           {activeInfo && (
             <>
-              <text x={cx} y={cy + 2} textAnchor="middle" fill="rgba(255,255,255,0.7)" fontSize={13}>
+              <text x={cx} y={cy + 2} textAnchor="middle" fill={COLOR_TEXT_SECONDARY} fontSize={FONT_SIZE_LG}>
                 {activeInfo.roman} — {activeInfo.function}
               </text>
-              <text x={cx} y={cy + 22} textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize={11}>
+              <text x={cx} y={cy + 22} textAnchor="middle" fill={COLOR_TEXT_FAINT} fontSize={FONT_SIZE_BASE}>
                 {nextMoves.filter(m => m.strength === 'strong').length} strong moves
                 {' \u00B7 '}
                 {nextMoves.filter(m => m.strength === 'common').length} common
@@ -399,7 +422,7 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
             </>
           )}
           {!activeInfo && (
-            <text x={cx} y={cy + 2} textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize={12}>
+            <text x={cx} y={cy + 2} textAnchor="middle" fill={COLOR_TEXT_MUTED} fontSize={FONT_SIZE_MD}>
               Not in key — click to hear
             </text>
           )}
@@ -407,10 +430,10 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
       )}
       {!activeChord && (
         <g>
-          <text x={cx} y={cy - 8} textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize={13}>
+          <text x={cx} y={cy - 8} textAnchor="middle" fill={COLOR_TEXT_FAINT} fontSize={FONT_SIZE_LG}>
             Key of {chordName(chord(referenceRoot, 'major'))}
           </text>
-          <text x={cx} y={cy + 10} textAnchor="middle" fill="rgba(255,255,255,0.25)" fontSize={11}>
+          <text x={cx} y={cy + 10} textAnchor="middle" fill={COLOR_TEXT_DIMMER} fontSize={FONT_SIZE_BASE}>
             Hover a chord to explore
           </text>
         </g>
@@ -418,13 +441,13 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
 
       {/* Legend */}
       <g transform={`translate(${width - 140}, ${height - 80})`}>
-        <text x={0} y={0} fill="rgba(255,255,255,0.3)" fontSize={9} fontWeight={600}>FUNCTION</text>
-        <circle cx={8} cy={14} r={5} fill="#22c55e" opacity={0.8} />
-        <text x={18} y={18} fill="rgba(255,255,255,0.5)" fontSize={9}>Tonic (T)</text>
-        <circle cx={8} cy={30} r={5} fill="#3b82f6" opacity={0.8} />
-        <text x={18} y={34} fill="rgba(255,255,255,0.5)" fontSize={9}>Subdominant (S)</text>
-        <circle cx={8} cy={46} r={5} fill="#ef4444" opacity={0.8} />
-        <text x={18} y={50} fill="rgba(255,255,255,0.5)" fontSize={9}>Dominant (D)</text>
+        <text x={0} y={0} fill={COLOR_TEXT_DIM} fontSize={FONT_SIZE_XS} fontWeight={600}>FUNCTION</text>
+        <circle cx={8} cy={14} r={5} fill={COLOR_FN_TONIC} opacity={0.8} />
+        <text x={18} y={18} fill={COLOR_TEXT_MUTED} fontSize={FONT_SIZE_XS}>Tonic (T)</text>
+        <circle cx={8} cy={30} r={5} fill={COLOR_FN_SUBDOMINANT} opacity={0.8} />
+        <text x={18} y={34} fill={COLOR_TEXT_MUTED} fontSize={FONT_SIZE_XS}>Subdominant (S)</text>
+        <circle cx={8} cy={46} r={5} fill={COLOR_FN_DOMINANT} opacity={0.8} />
+        <text x={18} y={50} fill={COLOR_TEXT_MUTED} fontSize={FONT_SIZE_XS}>Dominant (D)</text>
       </g>
     </svg>
   );

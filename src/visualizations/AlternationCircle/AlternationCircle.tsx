@@ -8,12 +8,19 @@ import { qualityColor } from '../shared/colors';
 import { useStore } from '../../state/store';
 import { initAudio, playChord, stopAll } from '../../audio/audioEngine';
 import { getVoicing } from '../../audio/voicingEngine';
-
-const TRANSFORM_COLORS: Record<string, string> = {
-  P: '#f59e0b', // Amber - Parallel
-  L: '#8b5cf6', // Purple - Leading-tone
-  R: '#06b6d4', // Cyan - Relative
-};
+import {
+  TRANSFORM_COLORS,
+  COLOR_RING_STROKE,
+  COLOR_LINE_DIM,
+  COLOR_TEXT_MUTED,
+  COLOR_TEXT_DIM,
+  FONT_SIZE_2XS,
+  FONT_SIZE_XS,
+  FONT_SIZE_SM,
+  FONT_SIZE_BASE,
+  FONT_SIZE_LG,
+  FONT_SIZE_2XL,
+} from '../../styles/theme';
 
 export const AlternationCircle: React.FC<VisualizationProps> = ({
   referenceRoot,
@@ -97,7 +104,7 @@ export const AlternationCircle: React.FC<VisualizationProps> = ({
       <title>Neo-Riemannian Alternation Circle</title>
       <desc>Circular diagram showing the Parallel-Leading-tone hexatonic cycle connecting major and minor triads through single-semitone voice-leading transformations</desc>
       {/* Background circle */}
-      <circle cx={cx} cy={cy} r={circleRadius + bubbleRadius + 10} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
+      <circle cx={cx} cy={cy} r={circleRadius + bubbleRadius + 10} fill="none" stroke={COLOR_RING_STROKE} strokeWidth={1} />
 
       {/* Transform labels on arcs between adjacent chords */}
       {positions.map((pos, i) => {
@@ -117,8 +124,8 @@ export const AlternationCircle: React.FC<VisualizationProps> = ({
             y={ly}
             textAnchor="middle"
             dominantBaseline="central"
-            fill={TRANSFORM_COLORS[t] ?? 'rgba(255,255,255,0.3)'}
-            fontSize={8}
+            fill={TRANSFORM_COLORS[t] ?? COLOR_TEXT_DIM}
+            fontSize={FONT_SIZE_2XS}
             fontWeight={600}
           >
             {t}
@@ -138,7 +145,7 @@ export const AlternationCircle: React.FC<VisualizationProps> = ({
             y1={prev.y}
             x2={pos.x}
             y2={pos.y}
-            stroke={t ? TRANSFORM_COLORS[t] : 'rgba(255,255,255,0.1)'}
+            stroke={t ? TRANSFORM_COLORS[t] : COLOR_LINE_DIM}
             strokeWidth={1}
             opacity={0.2}
           />
@@ -151,7 +158,7 @@ export const AlternationCircle: React.FC<VisualizationProps> = ({
           y1={positions[23].y}
           x2={positions[0].x}
           y2={positions[0].y}
-          stroke="rgba(255,255,255,0.1)"
+          stroke={COLOR_LINE_DIM}
           strokeWidth={1}
           opacity={0.2}
         />
@@ -186,14 +193,14 @@ export const AlternationCircle: React.FC<VisualizationProps> = ({
 
       {/* Center info */}
       <g>
-        <text x={cx} y={cy - 25} textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize={13} fontWeight={600}>
+        <text x={cx} y={cy - 25} textAnchor="middle" fill={COLOR_TEXT_MUTED} fontSize={FONT_SIZE_LG} fontWeight={600}>
           P/L Alternation Cycle
         </text>
-        <text x={cx} y={cy - 6} textAnchor="middle" fill="rgba(255,255,255,0.3)" fontSize={11}>
+        <text x={cx} y={cy - 6} textAnchor="middle" fill={COLOR_TEXT_DIM} fontSize={FONT_SIZE_BASE}>
           24 major/minor triads
         </text>
         {activeChord && (
-          <text x={cx} y={cy + 14} textAnchor="middle" fill="white" fontSize={16} fontWeight={700}>
+          <text x={cx} y={cy + 14} textAnchor="middle" fill="white" fontSize={FONT_SIZE_2XL} fontWeight={700}>
             {chordName(activeChord)}
           </text>
         )}
@@ -217,8 +224,8 @@ export const AlternationCircle: React.FC<VisualizationProps> = ({
             x={cx}
             y={cy + 41}
             textAnchor="middle"
-            fill="rgba(255,255,255,0.5)"
-            fontSize={10}
+            fill={COLOR_TEXT_MUTED}
+            fontSize={FONT_SIZE_SM}
             fontWeight={500}
           >
             Play Cycle
@@ -228,11 +235,11 @@ export const AlternationCircle: React.FC<VisualizationProps> = ({
 
       {/* Legend */}
       <g transform={`translate(12, ${height - 50})`}>
-        <text x={0} y={0} fill="rgba(255,255,255,0.3)" fontSize={9} fontWeight={600}>TRANSFORMS</text>
+        <text x={0} y={0} fill={COLOR_TEXT_DIM} fontSize={FONT_SIZE_XS} fontWeight={600}>TRANSFORMS</text>
         {Object.entries(TRANSFORM_COLORS).map(([label, color], i) => (
           <g key={label}>
             <circle cx={8 + i * 70} cy={16} r={5} fill={color} opacity={0.8} />
-            <text x={18 + i * 70} y={20} fill="rgba(255,255,255,0.5)" fontSize={9}>
+            <text x={18 + i * 70} y={20} fill={COLOR_TEXT_MUTED} fontSize={FONT_SIZE_XS}>
               {label === 'P' ? 'Parallel' : label === 'L' ? 'Leading' : 'Relative'}
             </text>
           </g>

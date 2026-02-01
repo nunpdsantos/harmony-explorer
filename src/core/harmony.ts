@@ -2,6 +2,7 @@ import { chordKey, type Chord } from './chords';
 import { diatonicTriads } from './scales';
 import { type TonalFunction } from './constants';
 import { sharedNoteCount, isDominantOf } from './relationships';
+import { COLOR_FN_TONIC, COLOR_FN_SUBDOMINANT, COLOR_FN_DOMINANT, COLOR_FN_TONIC_BG, COLOR_FN_SUBDOMINANT_BG, COLOR_FN_DOMINANT_BG } from '../styles/theme';
 
 /**
  * Full harmonic context for a key — diatonic chords, their functions,
@@ -156,17 +157,17 @@ export function getNextMoves(c: Chord, keyRoot: number): NextMove[] {
 /** Color for tonal function */
 export function functionColor(fn: TonalFunction): string {
   switch (fn) {
-    case 'tonic':       return '#22c55e'; // green
-    case 'subdominant': return '#3b82f6'; // blue
-    case 'dominant':    return '#ef4444'; // red
+    case 'tonic':       return COLOR_FN_TONIC;
+    case 'subdominant': return COLOR_FN_SUBDOMINANT;
+    case 'dominant':    return COLOR_FN_DOMINANT;
   }
 }
 
 /** Background color for tonal function (dim) */
 export function functionBgColor(fn: TonalFunction): string {
   switch (fn) {
-    case 'tonic':       return 'rgba(34,197,94,0.15)';
-    case 'subdominant': return 'rgba(59,130,246,0.15)';
-    case 'dominant':    return 'rgba(239,68,68,0.15)';
+    case 'tonic':       return COLOR_FN_TONIC_BG;
+    case 'subdominant': return COLOR_FN_SUBDOMINANT_BG;
+    case 'dominant':    return COLOR_FN_DOMINANT_BG;
   }
 }

@@ -5,6 +5,7 @@ interface VizOption {
   value: VisualizationMode;
   label: string;
   shortLabel: string;
+  icon: string;
 }
 
 interface VizCategory {
@@ -16,29 +17,64 @@ const VIZ_CATEGORIES: VizCategory[] = [
   {
     name: 'Circle-based',
     options: [
-      { value: 'circleOfFifths', label: 'Circle of Fifths', shortLabel: 'Circle' },
-      { value: 'alternationCircle', label: 'Alternation Circle', shortLabel: 'Neo-R' },
+      { value: 'circleOfFifths', label: 'Circle of Fifths', shortLabel: 'Circle', icon: '◎' },
+      { value: 'alternationCircle', label: 'Alternation Circle', shortLabel: 'Neo-R', icon: '⟳' },
     ],
   },
   {
     name: 'Function-based',
     options: [
-      { value: 'proximityPyramid', label: 'Proximity Pyramid', shortLabel: 'Pyramid' },
-      { value: 'tonalFunctionChart', label: 'Tonal Function', shortLabel: 'T/S/D' },
+      { value: 'proximityPyramid', label: 'Proximity Pyramid', shortLabel: 'Pyramid', icon: '△' },
+      { value: 'tonalFunctionChart', label: 'Tonal Function', shortLabel: 'T/S/D', icon: '▦' },
     ],
   },
   {
     name: 'Symmetry',
     options: [
-      { value: 'diminishedSymmetry', label: 'Diminished Symmetry', shortLabel: 'Dim' },
-      { value: 'augmentedStar', label: 'Augmented Star', shortLabel: 'Aug' },
-      { value: 'tritoneSubDiagram', label: 'Tritone Substitution', shortLabel: 'Tri' },
+      { value: 'diminishedSymmetry', label: 'Diminished Symmetry', shortLabel: 'Dim', icon: '◇' },
+      { value: 'augmentedStar', label: 'Augmented Star', shortLabel: 'Aug', icon: '✦' },
+      { value: 'tritoneSubDiagram', label: 'Tritone Substitution', shortLabel: 'Tri', icon: '⬡' },
+    ],
+  },
+  {
+    name: 'Keys',
+    options: [
+      { value: 'modulationMap', label: 'Modulation Map', shortLabel: 'Mod', icon: '⊞' },
     ],
   },
 ];
 
-export const VizSelector: React.FC = () => {
+interface VizSelectorProps {
+  compact?: boolean;
+}
+
+export const VizSelector: React.FC<VizSelectorProps> = ({ compact = false }) => {
   const { activeViz, setActiveViz } = useStore();
+
+  if (compact) {
+    // Compact mode: single column of icon buttons for the collapsed rail
+    const allOptions = VIZ_CATEGORIES.flatMap(c => c.options);
+    return (
+      <div className="flex flex-col gap-1 items-center">
+        {allOptions.map(opt => (
+          <button
+            key={opt.value}
+            onClick={() => setActiveViz(opt.value)}
+            title={opt.label}
+            aria-label={opt.label}
+            aria-pressed={activeViz === opt.value}
+            className={`w-8 h-8 flex items-center justify-center rounded text-sm transition-colors ${
+              activeViz === opt.value
+                ? 'bg-white/15 text-white border border-white/20'
+                : 'text-white/50 hover:text-white/60 hover:bg-white/8 border border-transparent'
+            }`}
+          >
+            {opt.icon}
+          </button>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-2">

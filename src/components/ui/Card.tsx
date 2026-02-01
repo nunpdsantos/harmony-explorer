@@ -16,7 +16,7 @@ export const Card: React.FC<CardProps> = ({ title, action, children, className =
       {(title || action) && (
         <div className="flex items-center justify-between mb-2">
           {title && (
-            <div className="text-[10px] text-white/50 uppercase tracking-wider">{title}</div>
+            <div className="text-[10px] text-white/50 uppercase tracking-wider" style={{ fontFamily: 'var(--font-display)' }}>{title}</div>
           )}
           {action}
         </div>

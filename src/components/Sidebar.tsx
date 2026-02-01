@@ -1,15 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useStore } from '../state/store';
 import { noteName } from '../core/constants';
 import { chord, chordName, chordPitchClasses } from '../core/chords';
 import { initAudio, playChord } from '../audio/audioEngine';
 import { getVoicing, resetVoicing } from '../audio/voicingEngine';
-import { getDiatonicChords, getDiatonicInfo, getNextMoves, functionColor } from '../core/harmony';
+import { voiceProgression } from '../audio/voicingEngine';
+import { getDiatonicChords, getDiatonicInfo, functionColor } from '../core/harmony';
+import { TEMPLATES, transposeTemplate } from '../core/progressionTemplates';
 import { VizSelector } from './VizSelector';
 import { LessonNav } from '../learn/LessonNav';
 import { Card } from './ui/Card';
 import { Button } from './ui/Button';
 import { Badge } from './ui/Badge';
+import { NextMovesPanel } from './NextMovesPanel';
+import { VoiceLeadingQualityDisplay } from './VoiceLeadingQuality';
+
+/** Icon components for the collapsed rail */
+const ExploreIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    <circle cx="12" cy="12" r="10" />
+    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+  </svg>
+);
+
+const LearnIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+  </svg>
+);
+
+const CollapseIcon: React.FC<{ collapsed: boolean; className?: string }> = ({ collapsed, className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
+    {collapsed ? (
+      <polyline points="9 18 15 12 9 6" />
+    ) : (
+      <polyline points="15 18 9 12 15 6" />
+    )}
+  </svg>
+);
 
 export const Sidebar: React.FC = () => {
   const {
@@ -17,17 +46,19 @@ export const Sidebar: React.FC = () => {
     activeViz,
     referenceRoot, setReferenceRoot,
     selectedChord, setSelectedChord,
-    addToProgression,
+    addToProgression, setProgression,
     progression,
     audioReady, setAudioReady,
     savedProgressions, loadSavedProgressions,
     saveCurrentProgression, deleteSavedProgression, loadProgressionById,
     sidebarOpen, setSidebarOpen,
+    sidebarCollapsed, toggleSidebarCollapsed,
     setHoveredChord,
     showDom7Ring, setShowDom7Ring,
     showSecondaryDominants, setShowSecondaryDominants,
     showDominantChains, setShowDominantChains,
     showIIVI, setShowIIVI,
+    modulationTarget, setModulationTarget,
   } = useStore();
 
   const [saveName, setSaveName] = useState('');
@@ -47,6 +78,14 @@ export const Sidebar: React.FC = () => {
     setSelectedChord(c);
   };
 
+  const handleChordAppend = async (c: ReturnType<typeof chord>) => {
+    if (!audioReady) await handleInitAudio();
+    const voicing = getVoicing(c);
+    playChord(voicing);
+    setSelectedChord(c);
+    addToProgression(c);
+  };
+
   const handleRootChange = (root: number) => {
     setReferenceRoot(root);
     resetVoicing();
@@ -58,24 +97,120 @@ export const Sidebar: React.FC = () => {
     setSaveName('');
   };
 
+  const handleInsertTemplate = (templateIndex: number) => {
+    const template = TEMPLATES[templateIndex];
+    const chords = transposeTemplate(template, referenceRoot);
+    setProgression(chords);
+  };
+
   const diatonic = getDiatonicChords(referenceRoot);
   const selectedInfo = selectedChord ? getDiatonicInfo(selectedChord, referenceRoot) : null;
-  const nextMoves = selectedChord ? getNextMoves(selectedChord, referenceRoot) : [];
 
+  // Source chord for next moves: selected chord, or last chord in progression
+  const nextMovesSource = selectedChord ?? (progression.length > 0 ? progression[progression.length - 1] : null);
+
+  // Voicings for quality indicator
+  const voicings = useMemo(
+    () => progression.length >= 2 ? voiceProgression(progression) : [],
+    [progression],
+  );
+
+  // ─── Collapsed Rail Mode (desktop only) ───
+  if (sidebarCollapsed) {
+    return (
+      <aside
+        role="complementary"
+        aria-label="Harmony Explorer controls (collapsed)"
+        className="hidden lg:flex flex-col items-center py-3 gap-3 border-r border-white/10 overflow-y-auto scrollbar-thin"
+        style={{
+          width: 'var(--sidebar-rail-width)',
+          backgroundColor: 'var(--color-bg-surface)',
+          backdropFilter: 'blur(12px)',
+        }}
+      >
+        {/* Expand button */}
+        <button
+          onClick={toggleSidebarCollapsed}
+          aria-label="Expand sidebar"
+          title="Expand sidebar (\\)"
+          className="w-8 h-8 flex items-center justify-center rounded text-white/50 hover:text-white/80 hover:bg-white/10 transition-colors"
+        >
+          <CollapseIcon collapsed={true} />
+        </button>
+
+        {/* Mode toggle icons */}
+        <div className="flex flex-col gap-1 items-center">
+          <button
+            onClick={() => setMode('explore')}
+            aria-pressed={mode === 'explore'}
+            aria-label="Explore mode"
+            title="Explore"
+            className={`w-8 h-8 flex items-center justify-center rounded transition-colors ${
+              mode === 'explore' ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/60'
+            }`}
+          >
+            <ExploreIcon />
+          </button>
+          <button
+            onClick={() => setMode('learn')}
+            aria-pressed={mode === 'learn'}
+            aria-label="Learn mode"
+            title="Learn"
+            className={`w-8 h-8 flex items-center justify-center rounded transition-colors ${
+              mode === 'learn' ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/60'
+            }`}
+          >
+            <LearnIcon />
+          </button>
+        </div>
+
+        {/* Divider */}
+        <div className="w-6 h-px bg-white/10" />
+
+        {/* Viz selector icons (explore mode) */}
+        {mode === 'explore' && <VizSelector compact />}
+
+        {/* Divider */}
+        <div className="w-6 h-px bg-white/10" />
+
+        {/* Key indicator */}
+        <div
+          className="w-8 h-8 flex items-center justify-center rounded text-xs font-bold text-white bg-white/10"
+          title={`Key: ${noteName(referenceRoot)} major`}
+        >
+          {noteName(referenceRoot)}
+        </div>
+      </aside>
+    );
+  }
+
+  // ─── Expanded Sidebar ───
   return (
     <aside
       role="complementary"
       aria-label="Harmony Explorer controls"
       className={`
       fixed lg:static inset-y-0 left-0 z-40
-      w-72 bg-gray-900/95 backdrop-blur border-r border-white/10
+      w-72 border-r border-white/10
       flex flex-col overflow-y-auto scrollbar-thin
       transition-transform duration-200
       ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-    `}>
+    `}
+      style={{ backgroundColor: 'var(--color-bg-surface)', backdropFilter: 'blur(12px)' }}>
       {/* Header */}
       <div className="px-4 pt-4 pb-3 border-b border-white/10">
-        <h1 className="text-lg font-bold text-white tracking-tight">Harmony Explorer</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-lg font-bold text-white tracking-tight" style={{ fontFamily: 'var(--font-display)' }}>Harmony Explorer</h1>
+          {/* Collapse button — desktop only */}
+          <button
+            onClick={toggleSidebarCollapsed}
+            aria-label="Collapse sidebar"
+            title="Collapse sidebar (\\)"
+            className="hidden lg:flex w-6 h-6 items-center justify-center rounded text-white/40 hover:text-white/60 hover:bg-white/10 transition-colors"
+          >
+            <CollapseIcon collapsed={false} />
+          </button>
+        </div>
 
         {/* Explore / Learn mode toggle */}
         <div className="mt-3 flex rounded-lg overflow-hidden border border-white/10">
@@ -128,6 +263,45 @@ export const Sidebar: React.FC = () => {
                 </span>
               </label>
             ))}
+          </div>
+        </Card>
+      )}
+
+      {/* Modulation Map target key selector */}
+      {mode === 'explore' && activeViz === 'modulationMap' && (
+        <Card title="Target Key">
+          <div className="flex gap-0.5">
+            {Array.from({ length: 12 }, (_, i) => {
+              const isBlack = [1, 3, 6, 8, 10].includes(i);
+              const isSource = i === referenceRoot;
+              const isTarget = i === modulationTarget;
+              return (
+                <button
+                  key={i}
+                  onClick={() => setModulationTarget(i)}
+                  className={`flex-1 text-xs py-2 rounded transition-all ${
+                    isTarget
+                      ? 'bg-amber-500 text-black font-bold shadow-lg shadow-amber-500/30'
+                      : isSource
+                      ? 'bg-green-600/40 text-green-300 font-medium'
+                      : isBlack
+                      ? 'bg-gray-800 text-white/50 hover:bg-gray-700'
+                      : 'bg-gray-700/50 text-white/70 hover:bg-gray-600/50'
+                  }`}
+                  title={isSource ? `${noteName(i)} (source key)` : noteName(i)}
+                >
+                  {noteName(i)}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex gap-2 mt-2 text-[10px] text-white/40">
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-sm bg-green-600/60" /> Source
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-sm bg-amber-500" /> Target
+            </span>
           </div>
         </Card>
       )}
@@ -221,33 +395,44 @@ export const Sidebar: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </Card>
+          )}
 
-              {/* Next moves */}
-              {nextMoves.length > 0 && (
-                <div className="mt-3">
-                  <div className="text-[10px] text-white/50 uppercase tracking-wider mb-1.5">Where to go next</div>
-                  <div className="flex flex-col gap-1">
-                    {nextMoves.map((m, i) => (
-                      <button
-                        key={i}
-                        onClick={() => { handleChordPlay(m.chord); addToProgression(m.chord); }}
-                        onMouseEnter={() => setHoveredChord(m.chord)}
-                        onMouseLeave={() => setHoveredChord(null)}
-                        className="flex items-center gap-2 text-left rounded px-2 py-1.5 hover:bg-white/5 transition-colors group"
-                      >
-                        <span className={`w-1.5 h-1.5 rounded-full ${
-                          m.strength === 'strong' ? 'bg-amber-400' : m.strength === 'common' ? 'bg-purple-400' : 'bg-gray-500'
-                        }`} />
-                        <span className="text-xs font-medium text-white/80 group-hover:text-white">
-                          {chordName(m.chord)}
-                        </span>
-                        <span className="text-[10px] text-white/50">{m.info.roman}</span>
-                        <span className="text-[10px] text-white/50 ml-auto">{m.reason}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+          {/* Next Moves — from selected chord or last in progression */}
+          {nextMovesSource && (
+            <Card title="Builder">
+              <NextMovesPanel
+                sourceChord={nextMovesSource}
+                keyRoot={referenceRoot}
+                onChordClick={handleChordAppend}
+                onChordHover={setHoveredChord}
+              />
+            </Card>
+          )}
+
+          {/* Progression Templates */}
+          <Card title="Templates">
+            <div className="flex flex-col gap-1">
+              {TEMPLATES.map((t, i) => (
+                <button
+                  key={t.shortName}
+                  onClick={() => handleInsertTemplate(i)}
+                  className="flex items-center justify-between text-left rounded px-2 py-1.5 hover:bg-white/5 transition-colors group"
+                  title={t.description}
+                >
+                  <span className="text-xs font-medium text-white/70 group-hover:text-white">
+                    {t.shortName}
+                  </span>
+                  <span className="text-[10px] text-white/40">{t.description}</span>
+                </button>
+              ))}
+            </div>
+          </Card>
+
+          {/* Voice Leading Quality */}
+          {voicings.length >= 2 && (
+            <Card>
+              <VoiceLeadingQualityDisplay voicings={voicings} />
             </Card>
           )}
 

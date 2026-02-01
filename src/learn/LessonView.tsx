@@ -8,6 +8,7 @@ import { TonalFunctionChart } from '../visualizations/TonalFunctionChart/TonalFu
 import { DiminishedSymmetry } from '../visualizations/DiminishedSymmetry/DiminishedSymmetry';
 import { TritoneSubDiagram } from '../visualizations/TritoneSubDiagram/TritoneSubDiagram';
 import { AlternationCircle } from '../visualizations/AlternationCircle/AlternationCircle';
+import { ModulationMap } from '../visualizations/ModulationMap/ModulationMap';
 
 interface LessonViewProps {
   width: number;
@@ -48,6 +49,7 @@ export const LessonView: React.FC<LessonViewProps> = ({ width, height }) => {
       case 'diminishedSymmetry': return <DiminishedSymmetry {...vizProps} />;
       case 'tritoneSubDiagram': return <TritoneSubDiagram {...vizProps} />;
       case 'alternationCircle': return <AlternationCircle {...vizProps} />;
+      case 'modulationMap': return <ModulationMap {...vizProps} />;
       default: return <CircleOfFifths {...vizProps} />;
     }
   };
@@ -65,7 +67,7 @@ export const LessonView: React.FC<LessonViewProps> = ({ width, height }) => {
           <div className="text-[10px] text-white/50 uppercase tracking-wider mb-1">
             Lesson {currentLessonIndex + 1}
           </div>
-          <h2 className="text-base font-bold text-white">{lesson.title}</h2>
+          <h2 className="text-base font-bold text-white" style={{ fontFamily: 'var(--font-display)' }}>{lesson.title}</h2>
           <p className="text-xs text-white/50 mt-0.5">{lesson.subtitle}</p>
         </div>
 

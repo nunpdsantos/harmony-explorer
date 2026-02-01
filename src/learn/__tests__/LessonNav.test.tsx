@@ -9,7 +9,7 @@ describe('LessonNav', () => {
   beforeEach(() => {
     useStore.setState({
       currentLessonIndex: 0,
-      lessonProgress: Array(12).fill(false),
+      lessonProgress: Array(LESSONS.length).fill(false),
     });
   });
 
@@ -18,7 +18,7 @@ describe('LessonNav', () => {
     expect(screen.getByRole('navigation', { name: 'Lesson navigation' })).toBeInTheDocument();
   });
 
-  it('renders all 12 lesson buttons', () => {
+  it('renders all lesson buttons', () => {
     render(<LessonNav />);
     const buttons = screen.getAllByRole('button');
     expect(buttons).toHaveLength(LESSONS.length);
@@ -62,7 +62,7 @@ describe('LessonNav', () => {
   });
 
   it('shows completed lessons with (completed) in aria-label', () => {
-    const progress = Array(12).fill(false);
+    const progress = Array(LESSONS.length).fill(false);
     progress[0] = true;
     progress[2] = true;
     useStore.setState({ lessonProgress: progress });
@@ -75,7 +75,7 @@ describe('LessonNav', () => {
   });
 
   it('shows progress summary with correct count', () => {
-    const progress = Array(12).fill(false);
+    const progress = Array(LESSONS.length).fill(false);
     progress[0] = true;
     progress[1] = true;
     progress[4] = true;

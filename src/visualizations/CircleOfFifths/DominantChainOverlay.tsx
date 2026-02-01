@@ -1,6 +1,10 @@
 import React, { useMemo } from 'react';
 import { chordsEqual, type Chord } from '../../core/chords';
 import { buildDominantChain, findIIVIs } from '../../core/dominantChains';
+import {
+  QUALITY_COLORS,
+  FONT_SIZE_SM,
+} from '../../styles/theme';
 
 interface ChordPosition {
   chord: Chord;
@@ -111,10 +115,10 @@ export const DominantChainOverlay: React.FC<DominantChainOverlayProps> = ({
     <g>
       <defs>
         <marker id="chain-arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" fill="#06b6d4" />
+          <polygon points="0 0, 8 3, 0 6" fill={QUALITY_COLORS.dom7} />
         </marker>
         <marker id="iivi-arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" fill="#f59e0b" />
+          <polygon points="0 0, 8 3, 0 6" fill={QUALITY_COLORS.augmented} />
         </marker>
       </defs>
 
@@ -134,7 +138,7 @@ export const DominantChainOverlay: React.FC<DominantChainOverlayProps> = ({
             y1={arrow.from.y + ny * (bubbleRadius + 4)}
             x2={arrow.to.x - nx * (bubbleRadius + 10)}
             y2={arrow.to.y - ny * (bubbleRadius + 10)}
-            stroke="#06b6d4"
+            stroke={QUALITY_COLORS.dom7}
             strokeWidth={2}
             opacity={arrow.opacity}
             markerEnd="url(#chain-arrow)"
@@ -161,7 +165,7 @@ export const DominantChainOverlay: React.FC<DominantChainOverlayProps> = ({
                 y1={from.y + ny * (bubbleRadius + 4)}
                 x2={to.x - nx * (bubbleRadius + 10)}
                 y2={to.y - ny * (bubbleRadius + 10)}
-                stroke="#f59e0b"
+                stroke={QUALITY_COLORS.augmented}
                 strokeWidth={2.5}
                 opacity={0.7}
                 markerEnd="url(#iivi-arrow)"
@@ -184,7 +188,7 @@ export const DominantChainOverlay: React.FC<DominantChainOverlayProps> = ({
                 y1={from.y + ny * (bubbleRadius + 4)}
                 x2={to.x - nx * (bubbleRadius + 10)}
                 y2={to.y - ny * (bubbleRadius + 10)}
-                stroke="#f59e0b"
+                stroke={QUALITY_COLORS.augmented}
                 strokeWidth={2.5}
                 opacity={0.7}
                 markerEnd="url(#iivi-arrow)"
@@ -196,8 +200,8 @@ export const DominantChainOverlay: React.FC<DominantChainOverlayProps> = ({
             x={cx}
             y={cy + (Math.min(activeIIVI.iiPos!.y, activeIIVI.vPos!.y, activeIIVI.iPos!.y) - cy) * 0.3 + cy * 0.2}
             textAnchor="middle"
-            fill="#f59e0b"
-            fontSize={10}
+            fill={QUALITY_COLORS.augmented}
+            fontSize={FONT_SIZE_SM}
             fontWeight={600}
             opacity={0.8}
           >
