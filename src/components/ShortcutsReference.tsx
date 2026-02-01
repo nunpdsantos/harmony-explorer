@@ -15,6 +15,8 @@ const SHORTCUT_GROUPS: ShortcutGroup[] = [
       { keys: 'L', description: 'Toggle loop' },
       { keys: 'V', description: 'Toggle voice leading overlay' },
       { keys: 'B', description: 'Toggle bridge chord suggestions' },
+      { keys: 'M', description: 'Toggle modal interchange overlay' },
+      { keys: 'J', description: 'Toggle Coltrane changes overlay' },
       { keys: '[', description: 'Decrease BPM by 5' },
       { keys: ']', description: 'Increase BPM by 5' },
     ],

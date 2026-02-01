@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { LESSONS } from '../lessonData';
 
 describe('lessonData', () => {
-  it('has 16 lessons', () => {
-    expect(LESSONS).toHaveLength(16);
+  it('has 22 lessons', () => {
+    expect(LESSONS).toHaveLength(22);
   });
 
   it('every lesson has required fields', () => {
@@ -121,21 +121,77 @@ describe('lessonData', () => {
     const validModes = [
       'circleOfFifths', 'tonalFunctionChart', 'tritoneSubDiagram',
       'diminishedSymmetry', 'alternationCircle', 'modulationMap',
-      'proximityPyramid', 'augmentedStar',
+      'proximityPyramid', 'augmentedStar', 'chordScaleMap', 'negativeHarmonyMirror',
     ];
     for (const lesson of LESSONS) {
       expect(validModes).toContain(lesson.visualization);
     }
   });
 
-  it('unique titles for all 16 lessons', () => {
+  it('unique titles for all 22 lessons', () => {
     const titles = LESSONS.map(l => l.title);
-    expect(new Set(titles).size).toBe(16);
+    expect(new Set(titles).size).toBe(22);
   });
 
   it('total exercises across all lessons is at least 36', () => {
     const total = LESSONS.reduce((sum, l) => sum + l.exercises.length, 0);
     // Original 12 lessons had ~29 exercises, 4 new lessons add 12 more = 41
     expect(total).toBeGreaterThanOrEqual(36);
+  });
+
+  // ── Extended Harmony lessons (17–22) ──────────────────────────────────
+
+  it('Lesson 17 is Chord Extensions with chordScaleMap viz', () => {
+    const lesson = LESSONS[16];
+    expect(lesson.title).toBe('Chord Extensions');
+    expect(lesson.visualization).toBe('chordScaleMap');
+    expect(lesson.exercises).toHaveLength(3);
+  });
+
+  it('Lesson 18 is Modes & Scales with chordScaleMap viz', () => {
+    const lesson = LESSONS[17];
+    expect(lesson.title).toBe('Modes & Scales');
+    expect(lesson.visualization).toBe('chordScaleMap');
+    expect(lesson.exercises).toHaveLength(3);
+  });
+
+  it('Lesson 19 is Chord-Scale Theory with chordScaleMap viz', () => {
+    const lesson = LESSONS[18];
+    expect(lesson.title).toBe('Chord-Scale Theory');
+    expect(lesson.visualization).toBe('chordScaleMap');
+    expect(lesson.exercises).toHaveLength(3);
+  });
+
+  it('Lesson 20 is Modal Interchange with circleOfFifths viz', () => {
+    const lesson = LESSONS[19];
+    expect(lesson.title).toBe('Modal Interchange');
+    expect(lesson.visualization).toBe('circleOfFifths');
+    expect(lesson.exercises).toHaveLength(3);
+  });
+
+  it('Lesson 21 is Altered Dominants & Reharmonization with circleOfFifths viz', () => {
+    const lesson = LESSONS[20];
+    expect(lesson.title).toBe('Altered Dominants & Reharmonization');
+    expect(lesson.visualization).toBe('circleOfFifths');
+    expect(lesson.exercises).toHaveLength(3);
+  });
+
+  it('Lesson 22 is Coltrane Changes & Negative Harmony with circleOfFifths viz', () => {
+    const lesson = LESSONS[21];
+    expect(lesson.title).toBe('Coltrane Changes & Negative Harmony');
+    expect(lesson.visualization).toBe('circleOfFifths');
+    expect(lesson.exercises).toHaveLength(3);
+  });
+
+  it('lessons 17-22 each have 3 sections', () => {
+    for (let i = 16; i < 22; i++) {
+      expect(LESSONS[i].sections).toHaveLength(3);
+    }
+  });
+
+  it('total exercises across all 22 lessons is at least 59', () => {
+    const total = LESSONS.reduce((sum, l) => sum + l.exercises.length, 0);
+    // 16 original lessons had varying exercise counts + 6 new lessons × 3 = 59
+    expect(total).toBeGreaterThanOrEqual(59);
   });
 });

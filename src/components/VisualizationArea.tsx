@@ -28,6 +28,12 @@ const AlternationCircle = React.lazy(() =>
 const ModulationMap = React.lazy(() =>
   import('../visualizations/ModulationMap/ModulationMap').then(m => ({ default: m.ModulationMap }))
 );
+const ChordScaleMap = React.lazy(() =>
+  import('../visualizations/ChordScaleMap/ChordScaleMap').then(m => ({ default: m.ChordScaleMap }))
+);
+const NegativeHarmonyMirror = React.lazy(() =>
+  import('../visualizations/NegativeHarmonyMirror/NegativeHarmonyMirror').then(m => ({ default: m.NegativeHarmonyMirror }))
+);
 const LessonView = React.lazy(() =>
   import('../learn/LessonView').then(m => ({ default: m.LessonView }))
 );
@@ -69,6 +75,8 @@ export const VisualizationArea: React.FC = () => {
             {activeViz === 'tritoneSubDiagram' && <TritoneSubDiagram {...vizProps} />}
             {activeViz === 'alternationCircle' && <AlternationCircle {...vizProps} />}
             {activeViz === 'modulationMap' && <ModulationMap {...vizProps} />}
+            {activeViz === 'chordScaleMap' && <ChordScaleMap {...vizProps} />}
+            {activeViz === 'negativeHarmonyMirror' && <NegativeHarmonyMirror {...vizProps} />}
           </>
         )}
       </Suspense>

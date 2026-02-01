@@ -8,6 +8,8 @@ import { isDominantOf, sharedNoteCount } from '../../core/relationships';
 import { getDiatonicInfo, getNextMoves, functionColor, type NextMove } from '../../core/harmony';
 import { getSecondaryDominants } from '../../core/secondaryDominants';
 import { DominantChainOverlay } from './DominantChainOverlay';
+import { getAllBorrowedChords } from '../../core/modalInterchange';
+import { getColtraneTriangle } from '../../core/coltraneChanges';
 import { useStore } from '../../state/store';
 import {
   COLOR_FN_TONIC,
@@ -57,6 +59,8 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
   const showSecondaryDominants = useStore(s => s.showSecondaryDominants);
   const showDominantChains = useStore(s => s.showDominantChains);
   const showIIVI = useStore(s => s.showIIVI);
+  const showModalInterchange = useStore(s => s.showModalInterchange);
+  const showColtraneOverlay = useStore(s => s.showColtraneOverlay);
 
   const progressionKeys = useMemo(
     () => new Set(progression.map(chordKey)),
@@ -179,6 +183,22 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
   const secondaryDoms = useMemo(
     () => getSecondaryDominants(referenceRoot),
     [referenceRoot]
+  );
+
+  // Borrowed chords for modal interchange overlay
+  const borrowedChords = useMemo(
+    () => showModalInterchange ? getAllBorrowedChords(referenceRoot) : [],
+    [showModalInterchange, referenceRoot],
+  );
+  const borrowedKeys = useMemo(
+    () => new Set(borrowedChords.map(bc => chordKey(bc.chord))),
+    [borrowedChords],
+  );
+
+  // Coltrane triangle
+  const coltraneTriangle = useMemo(
+    () => showColtraneOverlay ? getColtraneTriangle(referenceRoot) : null,
+    [showColtraneOverlay, referenceRoot],
   );
 
   // Active chord info
@@ -394,6 +414,88 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
           cy={cy}
         />
       )}
+
+      {/* Modal Interchange ghost bubbles */}
+      {showModalInterchange && majorPositions.map(pos => {
+        if (borrowedKeys.has(chordKey(pos.chord))) {
+          return (
+            <circle
+              key={`borrowed-${chordKey(pos.chord)}`}
+              cx={pos.x}
+              cy={pos.y}
+              r={bubbleRadius + 6}
+              fill="none"
+              stroke="#a855f7"
+              strokeWidth={1.5}
+              strokeDasharray="4 3"
+              opacity={0.5}
+            />
+          );
+        }
+        return null;
+      })}
+      {showModalInterchange && minorPositions.map(pos => {
+        if (borrowedKeys.has(chordKey(pos.chord))) {
+          return (
+            <circle
+              key={`borrowed-${chordKey(pos.chord)}`}
+              cx={pos.x}
+              cy={pos.y}
+              r={bubbleRadius * 0.85 + 5}
+              fill="none"
+              stroke="#a855f7"
+              strokeWidth={1.5}
+              strokeDasharray="4 3"
+              opacity={0.5}
+            />
+          );
+        }
+        return null;
+      })}
+
+      {/* Coltrane triangle overlay */}
+      {coltraneTriangle && (() => {
+        const positions = coltraneTriangle.map(pc => {
+          const idx = CIRCLE_OF_FIFTHS_ORDER.indexOf(pc);
+          return majorPositions[idx];
+        }).filter(Boolean);
+        if (positions.length < 3) return null;
+
+        const points = positions.map(p => `${p.x},${p.y}`).join(' ');
+        return (
+          <g>
+            <polygon
+              points={points}
+              fill="rgba(251,191,36,0.06)"
+              stroke="#fbbf24"
+              strokeWidth={2}
+              strokeDasharray="8 4"
+              opacity={0.7}
+            />
+            {/* V7 arrows between triangle points */}
+            {positions.map((from, i) => {
+              const to = positions[(i + 1) % 3];
+              const midX = (from.x + to.x) / 2;
+              const midY = (from.y + to.y) / 2;
+              return (
+                <text
+                  key={`coltrane-v7-${i}`}
+                  x={midX}
+                  y={midY}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fill="#fbbf24"
+                  fontSize={FONT_SIZE_XS}
+                  fontWeight={600}
+                  opacity={0.7}
+                >
+                  V7
+                </text>
+              );
+            })}
+          </g>
+        );
+      })()}
 
       {/* Major chord bubbles */}
       {majorPositions.map(pos => renderBubble(pos, 'major'))}

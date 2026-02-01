@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { chordName, type Chord } from '../core/chords';
 import { getNextMoves, type NextMove } from '../core/harmony';
+import { isDominantFamily, suggestResolutions } from '../core/alteredDominants';
 
 interface NextMovesPanelProps {
   /** The chord to get next moves from (last in progression or selected) */
@@ -29,7 +30,14 @@ export const NextMovesPanel: React.FC<NextMovesPanelProps> = ({
   onChordHover,
 }) => {
   const moves = getNextMoves(sourceChord, keyRoot);
-  if (moves.length === 0) return null;
+
+  // If source is a dominant chord, add altered resolution suggestions
+  const alteredResolutions = useMemo(
+    () => isDominantFamily(sourceChord.quality) ? suggestResolutions(sourceChord) : [],
+    [sourceChord],
+  );
+
+  if (moves.length === 0 && alteredResolutions.length === 0) return null;
 
   // Group by strength
   const grouped = STRENGTH_ORDER
@@ -67,6 +75,31 @@ export const NextMovesPanel: React.FC<NextMovesPanelProps> = ({
           </div>
         </div>
       ))}
+
+      {/* Altered dominant resolutions */}
+      {alteredResolutions.length > 0 && (
+        <div>
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+            <span className="text-[10px] text-white/50">Resolutions</span>
+          </div>
+          <div className="flex flex-wrap gap-1">
+            {alteredResolutions.map((r, i) => (
+              <button
+                key={i}
+                onClick={() => onChordClick(r.chord)}
+                onMouseEnter={() => onChordHover(r.chord)}
+                onMouseLeave={() => onChordHover(null)}
+                title={r.label}
+                className="text-xs px-2 py-1 rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 hover:text-rose-200 transition-colors border border-rose-500/20"
+              >
+                {chordName(r.chord)}
+                <span className="text-[10px] text-rose-400/60 ml-1">{r.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

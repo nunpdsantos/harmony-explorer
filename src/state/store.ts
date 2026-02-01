@@ -13,7 +13,9 @@ export type VisualizationMode =
   | 'augmentedStar'
   | 'tritoneSubDiagram'
   | 'alternationCircle'
-  | 'modulationMap';
+  | 'modulationMap'
+  | 'chordScaleMap'
+  | 'negativeHarmonyMirror';
 export type AppMode = 'explore' | 'learn';
 export type RelationshipFilter = 'sharedNotes' | 'dominant' | 'tritone' | 'neoRiemannian';
 
@@ -119,6 +121,14 @@ interface AppState {
   modulationTarget: number;
   setModulationTarget: (target: number) => void;
 
+  // Modal interchange overlay
+  showModalInterchange: boolean;
+  setShowModalInterchange: (show: boolean) => void;
+
+  // Coltrane changes overlay
+  showColtraneOverlay: boolean;
+  setShowColtraneOverlay: (show: boolean) => void;
+
   // Sidebar visibility (for mobile)
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
@@ -213,7 +223,7 @@ export const useStore = create<AppState & UndoSlice>()(undoable<AppState>((set, 
   // Learn mode
   currentLessonIndex: 0,
   setCurrentLessonIndex: (currentLessonIndex) => set({ currentLessonIndex }),
-  lessonProgress: Array(16).fill(false),
+  lessonProgress: Array(22).fill(false),
   completeLessonAt: (index) => set(state => {
     const next = [...state.lessonProgress];
     next[index] = true;
@@ -242,6 +252,14 @@ export const useStore = create<AppState & UndoSlice>()(undoable<AppState>((set, 
   // Modulation explorer
   modulationTarget: 7, // G (one fifth from C)
   setModulationTarget: (modulationTarget) => set({ modulationTarget }),
+
+  // Modal interchange
+  showModalInterchange: false,
+  setShowModalInterchange: (showModalInterchange) => set({ showModalInterchange }),
+
+  // Coltrane changes
+  showColtraneOverlay: false,
+  setShowColtraneOverlay: (showColtraneOverlay) => set({ showColtraneOverlay }),
 
   // Sidebar
   sidebarOpen: false,

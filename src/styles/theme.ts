@@ -17,10 +17,15 @@ export const COLOR_ACCENT = '#fbbf24';
 
 /* ─── Chord quality colors ─── */
 export const QUALITY_COLORS: Record<string, string> = {
+  // Triads
   major:      '#3b82f6',
   minor:      '#8b5cf6',
   diminished: '#ef4444',
   augmented:  '#f59e0b',
+  sus4:       '#059669',
+  sus2:       '#0d9488',
+
+  // 7th chords
   dom7:       '#06b6d4',
   maj7:       '#2563eb',
   min7:       '#7c3aed',
@@ -28,8 +33,45 @@ export const QUALITY_COLORS: Record<string, string> = {
   halfDim7:   '#ea580c',
   minMaj7:    '#9333ea',
   aug7:       '#d97706',
-  sus4:       '#059669',
-  sus2:       '#0d9488',
+  dom7sus4:   '#0891b2',
+
+  // 6th chords
+  sixth:      '#3b82f6',
+  min6:       '#7c3aed',
+  sixNine:    '#2563eb',
+
+  // Add chords
+  add9:       '#60a5fa',
+  minAdd9:    '#a78bfa',
+
+  // 9th chords
+  dom9:       '#0ea5e9',
+  maj9:       '#3b82f6',
+  min9:       '#8b5cf6',
+  dom9sus4:   '#0891b2',
+
+  // 11th chords
+  dom11:      '#14b8a6',
+  min11:      '#a78bfa',
+
+  // 13th chords
+  dom13:      '#06b6d4',
+  min13:      '#7c3aed',
+  maj13:      '#2563eb',
+
+  // Altered dominants
+  alt7:            '#e11d48',
+  dom7sharp11:     '#ec4899',
+  dom7flat9:       '#f43f5e',
+  dom7sharp9:      '#db2777',
+  dom7flat13:      '#be185d',
+  dom7flat5:       '#e11d48',
+  dom7sharp5flat9: '#f43f5e',
+  dom7sharp5sharp9:'#db2777',
+
+  // Special diatonic extensions
+  min7flat9:       '#c026d3',
+  halfDim7flat9:   '#ea580c',
 };
 
 export const COLOR_QUALITY_FALLBACK = '#6b7280';

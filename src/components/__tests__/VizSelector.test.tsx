@@ -9,16 +9,16 @@ describe('VizSelector', () => {
     useStore.setState({ activeViz: 'circleOfFifths' });
   });
 
-  it('renders all 8 visualization options', () => {
+  it('renders all 10 visualization options', () => {
     render(<VizSelector />);
     const radios = screen.getAllByRole('radio');
-    expect(radios).toHaveLength(8);
+    expect(radios).toHaveLength(10);
   });
 
   it('renders category groups with radiogroup role', () => {
     render(<VizSelector />);
     const groups = screen.getAllByRole('radiogroup');
-    expect(groups).toHaveLength(4);
+    expect(groups).toHaveLength(5);
   });
 
   it('shows Circle of Fifths as checked by default', () => {

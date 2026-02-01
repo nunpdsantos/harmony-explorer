@@ -8,6 +8,8 @@ import { TritoneSubDiagram } from '../TritoneSubDiagram/TritoneSubDiagram';
 import { AugmentedStar } from '../AugmentedStar/AugmentedStar';
 import { AlternationCircle } from '../AlternationCircle/AlternationCircle';
 import { ModulationMap } from '../ModulationMap/ModulationMap';
+import { ChordScaleMap } from '../ChordScaleMap/ChordScaleMap';
+import { NegativeHarmonyMirror } from '../NegativeHarmonyMirror/NegativeHarmonyMirror';
 import type { VisualizationProps } from '../shared/types';
 
 const baseProps: VisualizationProps = {
@@ -139,6 +141,69 @@ describe('Visualization smoke tests', () => {
       const buttons = screen.getAllByRole('button');
       // Source diatonic (7) + target diatonic (7) + some target key selectors
       expect(buttons.length).toBeGreaterThanOrEqual(14);
+    });
+  });
+
+  describe('ChordScaleMap', () => {
+    it('renders an SVG element', () => {
+      const { container } = render(<ChordScaleMap {...baseProps} />);
+      expect(container.querySelector('svg')).not.toBeNull();
+    });
+
+    it('renders without crashing when no chord is selected', () => {
+      expect(() => render(<ChordScaleMap {...baseProps} />)).not.toThrow();
+    });
+
+    it('renders with a selected chord', () => {
+      const selected = { root: 0, quality: 'major' as const, notes: [0, 4, 7] };
+      const { container } = render(<ChordScaleMap {...baseProps} selectedChord={selected} />);
+      expect(container.querySelector('svg')).not.toBeNull();
+    });
+
+    it('renders with a hovered chord', () => {
+      const hovered = { root: 7, quality: 'dom7' as const, notes: [7, 11, 2, 5] };
+      const { container } = render(<ChordScaleMap {...baseProps} hoveredChord={hovered} />);
+      expect(container.querySelector('svg')).not.toBeNull();
+    });
+
+    it('handles different reference roots', () => {
+      for (const root of [0, 3, 7, 11]) {
+        expect(() => render(<ChordScaleMap {...baseProps} referenceRoot={root} />)).not.toThrow();
+      }
+    });
+  });
+
+  describe('NegativeHarmonyMirror', () => {
+    it('renders an SVG element', () => {
+      const { container } = render(<NegativeHarmonyMirror {...baseProps} />);
+      expect(container.querySelector('svg')).not.toBeNull();
+    });
+
+    it('renders without crashing when no chord is selected', () => {
+      expect(() => render(<NegativeHarmonyMirror {...baseProps} />)).not.toThrow();
+    });
+
+    it('renders with a selected chord', () => {
+      const selected = { root: 0, quality: 'major' as const, notes: [0, 4, 7] };
+      const { container } = render(<NegativeHarmonyMirror {...baseProps} selectedChord={selected} />);
+      expect(container.querySelector('svg')).not.toBeNull();
+    });
+
+    it('renders with a hovered chord', () => {
+      const hovered = { root: 7, quality: 'dom7' as const, notes: [7, 11, 2, 5] };
+      const { container } = render(<NegativeHarmonyMirror {...baseProps} hoveredChord={hovered} />);
+      expect(container.querySelector('svg')).not.toBeNull();
+    });
+
+    it('handles different reference roots', () => {
+      for (const root of [0, 3, 7, 11]) {
+        expect(() => render(<NegativeHarmonyMirror {...baseProps} referenceRoot={root} />)).not.toThrow();
+      }
+    });
+
+    it('handles small dimensions', () => {
+      const props = { ...baseProps, width: 200, height: 200 };
+      expect(() => render(<NegativeHarmonyMirror {...props} />)).not.toThrow();
     });
   });
 

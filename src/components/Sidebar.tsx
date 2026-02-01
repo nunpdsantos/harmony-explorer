@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useStore } from '../state/store';
 import { noteName } from '../core/constants';
-import { chord, chordName, chordPitchClasses } from '../core/chords';
+import { chord, chordName, chordKey, chordPitchClasses } from '../core/chords';
 import { initAudio, playChord } from '../audio/audioEngine';
 import { getVoicing, resetVoicing } from '../audio/voicingEngine';
 import { voiceProgression } from '../audio/voicingEngine';
 import { getDiatonicChords, getDiatonicInfo, functionColor } from '../core/harmony';
 import { TEMPLATES, transposeTemplate } from '../core/progressionTemplates';
+import { getAllBorrowedChords } from '../core/modalInterchange';
+import { getAlteredDominantInfo, getAlteredVariants } from '../core/alteredDominants';
 import { VizSelector } from './VizSelector';
 import { LessonNav } from '../learn/LessonNav';
 import { Card } from './ui/Card';
@@ -58,6 +60,8 @@ export const Sidebar: React.FC = () => {
     showSecondaryDominants, setShowSecondaryDominants,
     showDominantChains, setShowDominantChains,
     showIIVI, setShowIIVI,
+    showModalInterchange, setShowModalInterchange,
+    showColtraneOverlay, setShowColtraneOverlay,
     modulationTarget, setModulationTarget,
   } = useStore();
 
@@ -250,6 +254,8 @@ export const Sidebar: React.FC = () => {
               { label: 'Secondary Dominants', value: showSecondaryDominants, set: setShowSecondaryDominants },
               { label: 'Dominant Chains', value: showDominantChains, set: setShowDominantChains },
               { label: 'ii-V-I Patterns', value: showIIVI, set: setShowIIVI },
+              { label: 'Modal Interchange', value: showModalInterchange, set: setShowModalInterchange },
+              { label: 'Coltrane Changes', value: showColtraneOverlay, set: setShowColtraneOverlay },
             ]).map(toggle => (
               <label key={toggle.label} className="flex items-center gap-2 cursor-pointer group">
                 <input
@@ -398,6 +404,27 @@ export const Sidebar: React.FC = () => {
             </Card>
           )}
 
+          {/* Borrowed Chords — when modal interchange is active */}
+          {showModalInterchange && (
+            <Card title="Borrowed Chords">
+              <BorrowedChordsPanel
+                keyRoot={referenceRoot}
+                onChordClick={handleChordAppend}
+                onChordHover={setHoveredChord}
+              />
+            </Card>
+          )}
+
+          {/* Altered Dominant Info */}
+          {selectedChord && isDominantQuality(selectedChord.quality) && (
+            <Card title="Alterations">
+              <AlteredDominantPanel
+                chord={selectedChord}
+                onChordClick={handleChordPlay}
+              />
+            </Card>
+          )}
+
           {/* Next Moves — from selected chord or last in progression */}
           {nextMovesSource && (
             <Card title="Builder">
@@ -501,5 +528,92 @@ export const Sidebar: React.FC = () => {
         </svg>
       </button>
     </aside>
+  );
+};
+
+/** Check if a chord quality belongs to the dominant family */
+function isDominantQuality(quality: string): boolean {
+  return [
+    'dom7', 'dom9', 'dom11', 'dom13', 'dom7sus4', 'dom9sus4',
+    'alt7', 'dom7sharp11', 'dom7flat9', 'dom7sharp9', 'dom7flat13',
+    'dom7flat5', 'dom7sharp5flat9', 'dom7sharp5sharp9',
+  ].includes(quality);
+}
+
+/** Borrowed chords panel */
+const BorrowedChordsPanel: React.FC<{
+  keyRoot: number;
+  onChordClick: (c: ReturnType<typeof chord>) => void;
+  onChordHover: (c: ReturnType<typeof chord> | null) => void;
+}> = ({ keyRoot, onChordClick, onChordHover }) => {
+  const borrowed = React.useMemo(() => getAllBorrowedChords(keyRoot), [keyRoot]);
+
+  if (borrowed.length === 0) return <div className="text-xs text-white/40">No borrowed chords</div>;
+
+  // Group by source mode
+  const groups = new Map<string, typeof borrowed>();
+  for (const bc of borrowed) {
+    const key = bc.sourceModeName;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(bc);
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      {[...groups.entries()].map(([modeName, chords]) => (
+        <div key={modeName}>
+          <div className="text-[10px] text-white/40 mb-1">{modeName}</div>
+          <div className="flex flex-wrap gap-1">
+            {chords.map(bc => (
+              <button
+                key={chordKey(bc.chord)}
+                onClick={() => onChordClick(bc.chord)}
+                onMouseEnter={() => onChordHover(bc.chord)}
+                onMouseLeave={() => onChordHover(null)}
+                title={bc.description}
+                className="text-xs px-2 py-1 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 hover:text-purple-200 transition-colors border border-purple-500/20"
+              >
+                {chordName(bc.chord)}
+                <span className="text-[10px] text-purple-400/60 ml-1">{bc.roman}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/** Altered dominant info panel */
+const AlteredDominantPanel: React.FC<{
+  chord: ReturnType<typeof chord>;
+  onChordClick: (c: ReturnType<typeof chord>) => void;
+}> = ({ chord: selectedDom, onChordClick }) => {
+  const info = getAlteredDominantInfo(selectedDom.quality);
+  const variants = React.useMemo(
+    () => getAlteredVariants(selectedDom.root),
+    [selectedDom.root],
+  );
+
+  return (
+    <div className="flex flex-col gap-2">
+      {info && (
+        <div className="text-xs text-white/50">
+          Scale: {info.associatedScale} · Tension: {'●'.repeat(info.tensionLevel)}{'○'.repeat(4 - info.tensionLevel)}
+        </div>
+      )}
+      <div className="flex flex-wrap gap-1">
+        {variants.slice(0, 8).map((v) => (
+          <button
+            key={chordKey(v.chord)}
+            onClick={() => onChordClick(v.chord)}
+            title={`${v.info.alterations.join(', ')} — ${v.info.associatedScale}`}
+            className="text-xs px-2 py-1 rounded bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 hover:text-rose-200 transition-colors border border-rose-500/20"
+          >
+            {chordName(v.chord)}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 };

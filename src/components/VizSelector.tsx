@@ -37,9 +37,16 @@ const VIZ_CATEGORIES: VizCategory[] = [
     ],
   },
   {
+    name: 'Scales',
+    options: [
+      { value: 'chordScaleMap', label: 'Chord-Scale Map', shortLabel: 'C-S', icon: '⊙' },
+    ],
+  },
+  {
     name: 'Keys',
     options: [
       { value: 'modulationMap', label: 'Modulation Map', shortLabel: 'Mod', icon: '⊞' },
+      { value: 'negativeHarmonyMirror', label: 'Negative Harmony', shortLabel: 'Neg', icon: '⇅' },
     ],
   },
 ];

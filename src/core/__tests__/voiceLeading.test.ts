@@ -90,3 +90,66 @@ describe('smoothVoiceLeading', () => {
     expect(next).toHaveLength(4);
   });
 });
+
+describe('large chord handling (greedy fallback)', () => {
+  it('handles 5-note chord (dom9)', () => {
+    const C_DOM9: Chord = { root: 0, quality: 'dom9' };
+    const voicing = initialVoicing(C_DOM9);
+    expect(voicing).toHaveLength(5);
+    const pcs = voicing.map(n => ((n % 12) + 12) % 12).sort((a, b) => a - b);
+    expect(pcs).toEqual([0, 2, 4, 7, 10]);
+  });
+
+  it('smooth voice leading works for 5-note chords', () => {
+    const C_DOM9: Chord = { root: 0, quality: 'dom9' };
+    const G_DOM9: Chord = { root: 7, quality: 'dom9' };
+    const prev = initialVoicing(C_DOM9);
+    const next = smoothVoiceLeading(prev, G_DOM9);
+    expect(next).toHaveLength(5);
+    // All notes should be valid MIDI
+    for (const note of next) {
+      expect(note).toBeGreaterThanOrEqual(24);
+      expect(note).toBeLessThanOrEqual(96);
+    }
+  });
+
+  it('handles 6-note chord (dom13)', () => {
+    const C_DOM13: Chord = { root: 0, quality: 'dom13' };
+    const voicing = initialVoicing(C_DOM13);
+    expect(voicing).toHaveLength(6);
+  });
+
+  it('smooth voice leading for 6-note chords does not crash', () => {
+    const C_DOM13: Chord = { root: 0, quality: 'dom13' };
+    const G_DOM13: Chord = { root: 7, quality: 'dom13' };
+    const prev = initialVoicing(C_DOM13);
+    const next = smoothVoiceLeading(prev, G_DOM13);
+    expect(next).toHaveLength(6);
+  });
+
+  it('pitch classes are correct after voice leading large chords', () => {
+    const C_DOM9: Chord = { root: 0, quality: 'dom9' };
+    const F_MAJ9: Chord = { root: 5, quality: 'maj9' };
+    const prev = initialVoicing(C_DOM9);
+    const next = smoothVoiceLeading(prev, F_MAJ9);
+    const pcs = new Set(next.map(n => ((n % 12) + 12) % 12));
+    // F maj9 = F, A, C, E, G = [5, 9, 0, 4, 7]
+    expect(pcs.has(5)).toBe(true);  // F
+    expect(pcs.has(9)).toBe(true);  // A
+    expect(pcs.has(0)).toBe(true);  // C
+  });
+
+  it('transitioning from small to large chord works', () => {
+    const prev = initialVoicing(C_MAJOR); // 3 notes
+    const C_DOM13: Chord = { root: 0, quality: 'dom13' };
+    const next = smoothVoiceLeading(prev, C_DOM13); // 6 notes
+    expect(next).toHaveLength(6);
+  });
+
+  it('transitioning from large to small chord works', () => {
+    const C_DOM13: Chord = { root: 0, quality: 'dom13' };
+    const prev = initialVoicing(C_DOM13); // 6 notes
+    const next = smoothVoiceLeading(prev, C_MAJOR); // 3 notes
+    expect(next).toHaveLength(3);
+  });
+});

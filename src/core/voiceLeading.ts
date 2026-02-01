@@ -69,10 +69,17 @@ export function smoothVoiceLeading(
 
 /**
  * Find the optimal assignment of prev notes to target pitch classes
- * that minimizes total movement. Uses brute force (fine for 3-4 notes).
+ * that minimizes total movement. Uses brute force for ≤4 notes,
+ * greedy nearest-neighbor for 5+ notes (avoids O(n!) blowup).
  */
 function optimalAssignment(prevNotes: number[], targetPCs: number[]): VoicedChord {
   const n = Math.min(prevNotes.length, targetPCs.length);
+
+  // For 5+ notes, use greedy nearest-neighbor to avoid factorial blowup
+  if (n >= 5) {
+    return greedyAssignment(prevNotes.slice(0, n), targetPCs.slice(0, n));
+  }
+
   const perms = permutations(targetPCs.slice(0, n));
   let bestCost = Infinity;
   let bestVoicing: VoicedChord = [];
@@ -92,6 +99,49 @@ function optimalAssignment(prevNotes: number[], targetPCs: number[]): VoicedChor
   }
 
   return bestVoicing.sort((a, b) => a - b);
+}
+
+/**
+ * Greedy nearest-neighbor assignment for larger chords (5+ notes).
+ * For each previous voice, find the closest unused target pitch class.
+ */
+function greedyAssignment(prevNotes: number[], targetPCs: number[]): VoicedChord {
+  const remaining = new Set(targetPCs.map((_, i) => i));
+
+  // Sort voices by how constrained they are (process inner voices first)
+  const voiceOrder = prevNotes
+    .map((note, i) => ({ note, i }))
+    .sort((a, b) => {
+      // Process extreme voices last so inner voices get priority
+      const aMid = Math.abs(a.note - (prevNotes[0] + prevNotes[prevNotes.length - 1]) / 2);
+      const bMid = Math.abs(b.note - (prevNotes[0] + prevNotes[prevNotes.length - 1]) / 2);
+      return aMid - bMid;
+    });
+
+  const assigned = new Array<number>(prevNotes.length);
+
+  for (const { note, i } of voiceOrder) {
+    let bestIdx = -1;
+    let bestCost = Infinity;
+    let bestNote = note;
+
+    for (const idx of remaining) {
+      const nearest = nearestRealization(note, targetPCs[idx]);
+      const cost = Math.abs(nearest - note);
+      if (cost < bestCost) {
+        bestCost = cost;
+        bestIdx = idx;
+        bestNote = nearest;
+      }
+    }
+
+    if (bestIdx >= 0) {
+      remaining.delete(bestIdx);
+      assigned[i] = bestNote;
+    }
+  }
+
+  return assigned.sort((a, b) => a - b);
 }
 
 /**

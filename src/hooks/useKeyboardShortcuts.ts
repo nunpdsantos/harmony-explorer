@@ -156,7 +156,7 @@ export function useKeyboardShortcuts() {
         if (state.mode === 'learn') {
           e.preventDefault();
           useStore.setState({
-            currentLessonIndex: Math.min(11, state.currentLessonIndex + 1),
+            currentLessonIndex: Math.min(21, state.currentLessonIndex + 1),
           });
         }
         break;
@@ -180,6 +180,22 @@ export function useKeyboardShortcuts() {
         // \: Toggle sidebar collapsed (desktop rail mode)
         e.preventDefault();
         useStore.getState().toggleSidebarCollapsed();
+        break;
+      }
+
+      case 'm':
+      case 'M': {
+        // M: Toggle modal interchange overlay
+        if (state.mode !== 'explore') break;
+        useStore.setState({ showModalInterchange: !state.showModalInterchange });
+        break;
+      }
+
+      case 'j':
+      case 'J': {
+        // J: Toggle Coltrane changes overlay
+        if (state.mode !== 'explore') break;
+        useStore.setState({ showColtraneOverlay: !state.showColtraneOverlay });
         break;
       }
     }

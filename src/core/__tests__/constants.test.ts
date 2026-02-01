@@ -54,8 +54,8 @@ describe('noteName', () => {
 });
 
 describe('CHORD_TEMPLATES', () => {
-  it('has 13 chord qualities', () => {
-    expect(Object.keys(CHORD_TEMPLATES)).toHaveLength(13);
+  it('has at least 30 chord qualities', () => {
+    expect(Object.keys(CHORD_TEMPLATES).length).toBeGreaterThanOrEqual(30);
   });
 
   it('major triad has intervals [0, 4, 7]', () => {
@@ -81,11 +81,11 @@ describe('CHORD_TEMPLATES', () => {
     }
   });
 
-  it('all intervals are in range 0-11', () => {
+  it('all intervals are in range 0-21 (extensions up to 13th)', () => {
     for (const [, tmpl] of Object.entries(CHORD_TEMPLATES)) {
       for (const interval of tmpl.intervals) {
         expect(interval).toBeGreaterThanOrEqual(0);
-        expect(interval).toBeLessThanOrEqual(11);
+        expect(interval).toBeLessThanOrEqual(21);
       }
     }
   });

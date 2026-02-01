@@ -692,4 +692,277 @@ export const LESSONS: LessonDefinition[] = [
       },
     ],
   },
+
+  // ── Phase 7 Lessons 17–22 ─────────────────────────────────────────
+
+  {
+    title: 'Chord Extensions',
+    subtitle: '9ths, 11ths, and 13ths — beyond the 7th',
+    visualization: 'chordScaleMap',
+    sections: [
+      {
+        heading: 'What are Extensions?',
+        text: 'Chord extensions are notes stacked in thirds beyond the 7th: the 9th, 11th, and 13th. They add color and complexity to 7th chords without changing the fundamental quality. A Cmaj9 is a Cmaj7 with an added 9th (D).',
+      },
+      {
+        heading: 'Diatonic Extensions',
+        text: 'Each diatonic 7th chord has natural extensions from the scale. In C major: Cmaj9 (I), Dm9 (ii), Em7\u266d9 (iii — the \u266d9 is an "avoid note"), Fmaj9 (IV), G9 (V), Am9 (vi), Bø7\u266d9 (vii). Extensions give each chord a richer, more distinct sound.',
+      },
+      {
+        heading: 'Avoid Notes',
+        text: 'An "avoid note" is a scale tone that clashes with a chord tone by forming a minor 9th (semitone in the upper register). For example, F is an avoid note over Cmaj7 because F is a minor 9th above E (the 3rd). Avoid notes can still be used as passing tones.',
+      },
+    ],
+    exercises: [
+      {
+        type: 'identify-function',
+        question: 'What note is the 9th of a C chord?',
+        correctFunction: 'D',
+        options: ['B', 'D', 'E', 'F'],
+        optionKeys: ['B', 'D', 'E', 'F'],
+        explanation: 'The 9th of C is D. The 9th is the same pitch class as the 2nd, but voiced an octave higher. It sits a whole step above the root (or a major 9th = 14 semitones).',
+      },
+      {
+        type: 'identify-function',
+        question: 'Why is F an "avoid note" over Cmaj7?',
+        correctFunction: 'minor9th',
+        options: ['Forms a minor 9th with E', 'Creates parallel fifths', 'Too dissonant with G', 'Outside the scale'],
+        optionKeys: ['minor9th', 'parallels', 'dissonant', 'outside'],
+        explanation: 'F forms a minor 9th interval with E (the 3rd of Cmaj7). A minor 9th (13 semitones) is the harshest interval, clashing strongly with the chord tone. It can be used in passing but shouldn\u2019t be sustained.',
+      },
+      {
+        type: 'identify-function',
+        question: 'What is the diatonic 9th chord on the ii degree of C major?',
+        correctFunction: 'Dm9',
+        options: ['Dm9', 'Dm7\u266d9', 'D9', 'Dmaj9'],
+        optionKeys: ['Dm9', 'Dm7b9', 'D9', 'Dmaj9'],
+        explanation: 'The ii chord in C major is Dm, and its diatonic 9th is E (a natural 9th from D). So the full chord is Dm9 (D-F-A-C-E). The 9th is diatonic because E is in the C major scale.',
+      },
+    ],
+  },
+  {
+    title: 'Modes & Scales',
+    subtitle: '7 major modes and their characteristic tones',
+    visualization: 'chordScaleMap',
+    sections: [
+      {
+        heading: 'The 7 Modes',
+        text: 'Each degree of the major scale generates a mode: Ionian (I), Dorian (ii), Phrygian (iii), Lydian (IV), Mixolydian (V), Aeolian (vi), Locrian (vii). Each mode has the same notes as its parent major scale but starts on a different degree, giving it a unique character.',
+      },
+      {
+        heading: 'Characteristic Tones',
+        text: 'Each mode has one or two "characteristic tones" — the notes that distinguish it from parallel major or minor. Dorian\u2019s characteristic tone is the natural 6th (bright minor). Lydian\u2019s is the \u266f4 (dreamy major). Mixolydian\u2019s is the \u266d7 (bluesy major). Phrygian\u2019s is the \u266d2 (dark, Spanish).',
+      },
+      {
+        heading: 'Identifying Modes',
+        text: 'To identify a mode: (1) find the key signature, (2) determine which note acts as the tonal center, (3) compare to parallel major/minor to find the characteristic tone. If a piece in "A minor" keeps emphasizing F\u266f, it\u2019s A Dorian, not A Aeolian.',
+      },
+    ],
+    exercises: [
+      {
+        type: 'identify-function',
+        question: 'What is the characteristic tone of the Dorian mode?',
+        correctFunction: 'natural6',
+        options: ['Natural 6th', '\u266d2nd', '\u266f4th', '\u266d7th'],
+        optionKeys: ['natural6', 'flat2', 'sharp4', 'flat7'],
+        explanation: 'Dorian\u2019s characteristic tone is the natural 6th. Compared to Aeolian (natural minor), which has a \u266d6, Dorian raises the 6th by a semitone. This gives Dorian its distinctive bittersweet quality — minor but with a brighter color.',
+      },
+      {
+        type: 'identify-function',
+        question: 'Which mode has a raised 4th degree (\u266f4)?',
+        correctFunction: 'lydian',
+        options: ['Dorian', 'Lydian', 'Mixolydian', 'Phrygian'],
+        optionKeys: ['dorian', 'lydian', 'mixolydian', 'phrygian'],
+        explanation: 'Lydian mode has the \u266f4 (raised 4th) as its characteristic tone. This gives it a dreamy, floating quality — like major but more ethereal. Lydian is the brightest of all modes.',
+      },
+      {
+        type: 'identify-function',
+        question: 'D Dorian uses the same notes as which major scale?',
+        correctFunction: 'Cmajor',
+        options: ['C major', 'D major', 'G major', 'F major'],
+        optionKeys: ['Cmajor', 'Dmajor', 'Gmajor', 'Fmajor'],
+        explanation: 'D Dorian uses the same notes as C major (all white keys on the piano). Dorian is the mode built on the 2nd degree of the major scale, so D Dorian = C major starting on D. The notes are D-E-F-G-A-B-C.',
+      },
+    ],
+  },
+  {
+    title: 'Chord-Scale Theory',
+    subtitle: 'Matching scales to chords in context',
+    visualization: 'chordScaleMap',
+    sections: [
+      {
+        heading: 'The Chord-Scale Approach',
+        text: 'Chord-scale theory assigns a specific scale to each chord in a progression. Rather than thinking of one key for the whole song, each chord gets its own scale. This is essential for improvisation and arranging in jazz.',
+      },
+      {
+        heading: 'Context Matters',
+        text: 'The same chord quality gets different scales depending on its function. A min7 chord as ii gets Dorian, as vi gets Aeolian, and as iii gets Phrygian. The "right" scale depends on which key the chord is functioning in and what degree it represents.',
+      },
+      {
+        heading: 'Avoid Notes in Practice',
+        text: 'When improvising, treat avoid notes as brief passing tones — don\u2019t sustain or emphasize them. Characteristic tones of each scale are the notes to emphasize. For example, over Dm7 as ii in C, emphasize B (the natural 6th, Dorian\u2019s characteristic tone).',
+      },
+    ],
+    exercises: [
+      {
+        type: 'identify-function',
+        question: 'What scale fits a min7 chord functioning as ii?',
+        correctFunction: 'dorian',
+        options: ['Aeolian', 'Dorian', 'Phrygian', 'Mixolydian'],
+        optionKeys: ['aeolian', 'dorian', 'phrygian', 'mixolydian'],
+        explanation: 'A min7 chord as ii gets Dorian. In C major, Dm7 is the ii chord. The scale built from D using C major notes is D Dorian. Its natural 6th (B) is the characteristic tone to emphasize in improvisation.',
+      },
+      {
+        type: 'identify-function',
+        question: 'What scale fits a dom7 chord functioning as V?',
+        correctFunction: 'mixolydian',
+        options: ['Lydian', 'Dorian', 'Mixolydian', 'Altered'],
+        optionKeys: ['lydian', 'dorian', 'mixolydian', 'altered'],
+        explanation: 'A dom7 as V gets Mixolydian. In C major, G7 is the V chord. The scale from G using C major notes gives G Mixolydian. The \u266d7 (F) is already the 7th of G7, making Mixolydian a natural fit.',
+      },
+      {
+        type: 'identify-function',
+        question: 'What scale fits a min7 chord functioning as vi?',
+        correctFunction: 'aeolian',
+        options: ['Dorian', 'Aeolian', 'Phrygian', 'Locrian'],
+        optionKeys: ['dorian', 'aeolian', 'phrygian', 'locrian'],
+        explanation: 'A min7 as vi gets Aeolian (natural minor). In C major, Am7 is the vi chord. The scale from A using C major notes gives A Aeolian. Its \u266d6 (F) and \u266d7 (G) give it a more melancholic quality than Dorian.',
+      },
+    ],
+  },
+  {
+    title: 'Modal Interchange',
+    subtitle: 'Borrowing chords from parallel modes',
+    visualization: 'circleOfFifths',
+    sections: [
+      {
+        heading: 'What is Modal Interchange?',
+        text: 'Modal interchange (also called modal mixture or borrowed chords) is the technique of using chords from a parallel mode. For example, in C major, borrowing the iv chord (Fm) from C minor. This adds color without fully modulating to a new key.',
+      },
+      {
+        heading: 'Common Borrowed Chords',
+        text: 'The most commonly borrowed chords come from the parallel Aeolian (natural minor): \u266dVII (B\u266d in C), iv (Fm), \u266dVI (A\u266d), and \u266dIII (E\u266d). These chords add a darker, more emotional quality. The \u266dVII\u2192I cadence is iconic in rock music.',
+      },
+      {
+        heading: 'Function of Borrowed Chords',
+        text: 'Most borrowed chords function as subdominant: iv, \u266dVI, and \u266dII all create departure from tonic. The \u266dVII can function as either subdominant or dominant substitute. Borrowed chords typically resolve back to diatonic chords, especially I or V.',
+      },
+    ],
+    exercises: [
+      {
+        type: 'identify-function',
+        question: 'In C major, \u266dVII (B\u266d) is borrowed from which parallel mode?',
+        correctFunction: 'aeolian',
+        options: ['Dorian', 'Aeolian', 'Lydian', 'Mixolydian'],
+        optionKeys: ['dorian', 'aeolian', 'lydian', 'mixolydian'],
+        explanation: '\u266dVII is borrowed from C Aeolian (natural minor). In C Aeolian the 7th degree is B\u266d, giving us a B\u266d major triad. It\u2019s one of the most common borrowed chords, used extensively in rock (think "Hey Jude").',
+      },
+      {
+        type: 'identify-function',
+        question: 'What function do most borrowed chords serve?',
+        correctFunction: 'subdominant',
+        options: ['Tonic', 'Subdominant', 'Dominant'],
+        optionKeys: ['tonic', 'subdominant', 'dominant'],
+        explanation: 'Most borrowed chords serve a subdominant function. Chords like iv, \u266dVI, and \u266dII all create a sense of departure from tonic, similar to the diatonic IV and ii. They typically resolve to V or I.',
+      },
+      {
+        type: 'select-chord',
+        question: 'Which chord is the borrowed iv in C major?',
+        correctAnswer: '5-minor',
+        options: ['Fm', 'Dm', 'Gm', 'Am'],
+        optionKeys: ['5-minor', '2-minor', '7-minor', '9-minor'],
+        explanation: 'The borrowed iv in C major is Fm. In C minor (Aeolian), the 4th degree is F, and the triad built on it is Fm (F-A\u266d-C). Borrowing Fm into C major adds a plaintive, emotional quality.',
+      },
+    ],
+  },
+  {
+    title: 'Altered Dominants & Reharmonization',
+    subtitle: 'Altered tensions, tritone subs, and upper structures',
+    visualization: 'circleOfFifths',
+    sections: [
+      {
+        heading: 'Altered Dominant Chords',
+        text: 'Altered dominants modify the 5th, 9th, or 13th of a dominant 7th chord. Common alterations: \u266d9, \u266f9, \u266d5/\u266f11, \u266f5/\u266d13. Each alteration increases tension and creates stronger resolution to the target chord. The "altered scale" (7th mode of melodic minor) provides all alterations simultaneously.',
+      },
+      {
+        heading: 'Choosing Alterations',
+        text: 'Choose alterations based on voice leading to the target: \u266d9 resolves down to the 5th of the target, \u266f9 resolves up to the 3rd, \u266f11 resolves to the 5th, \u266d13 resolves down to the 3rd. More alterations = more tension = stronger resolution.',
+      },
+      {
+        heading: 'Upper Structure Triads',
+        text: 'An upper structure triad (UST) is a triad played in the upper register over a dominant 7th bass. For example, D/G7 produces G7(9,\u266f11,13). USTs provide a practical voicing method for complex altered dominants and create lush, sophisticated sounds.',
+      },
+    ],
+    exercises: [
+      {
+        type: 'identify-function',
+        question: 'What scale provides all possible alterations over a dominant 7th chord?',
+        correctFunction: 'altered',
+        options: ['Mixolydian', 'Lydian Dominant', 'Altered', 'Whole Tone'],
+        optionKeys: ['mixolydian', 'lydianDom', 'altered', 'wholeTone'],
+        explanation: 'The Altered scale (7th mode of melodic minor) provides all alterations: \u266d9, \u266f9, \u266d5/\u266f11, and \u266f5/\u266d13. It\u2019s the maximum-tension scale for dominant chords and resolves powerfully to the tonic.',
+      },
+      {
+        type: 'identify-function',
+        question: 'What is an upper structure triad?',
+        correctFunction: 'triadOverDom',
+        options: ['A triad played over a dominant bass', 'A triad in root position', 'A triad above the staff', 'A three-note voicing'],
+        optionKeys: ['triadOverDom', 'rootPos', 'aboveStaff', 'threeNote'],
+        explanation: 'An upper structure triad is a major or minor triad voiced in the upper register over a dominant 7th bass (root, 3rd, 7th). The combination produces rich extensions. For example, D major over G7 gives G7(9,\u266f11,13) — a single triad voicing that sounds complex and lush.',
+      },
+      {
+        type: 'identify-function',
+        question: 'Which alteration creates the strongest pull to resolve down to the 5th of the target?',
+        correctFunction: 'flat9',
+        options: ['\u266d9', '\u266f9', '\u266f11', '\u266d13'],
+        optionKeys: ['flat9', 'sharp9', 'sharp11', 'flat13'],
+        explanation: 'The \u266d9 resolves down by half step to the 5th of the target chord. For G7\u266d9 resolving to C: the A\u266d (\u266d9) moves down to G (5th of C). This half-step resolution creates extremely strong voice leading.',
+      },
+    ],
+  },
+  {
+    title: 'Coltrane Changes & Negative Harmony',
+    subtitle: 'Major thirds cycle and harmonic mirroring',
+    visualization: 'circleOfFifths',
+    sections: [
+      {
+        heading: 'Coltrane Changes',
+        text: 'John Coltrane\u2019s "Giant Steps" divides the octave into three major-third-related tonal centers, connected by V7 chords. From any tonic, the three centers are a major third apart (e.g., B, G, E\u266d). Each center is approached by its V7, creating a rapid, kaleidoscopic modulation pattern.',
+      },
+      {
+        heading: 'The Giant Steps Pattern',
+        text: 'The basic pattern: Imaj7 \u2192 V7/center2 \u2192 Imaj7(center2) \u2192 V7/center3 \u2192 Imaj7(center3) \u2192 V7/center1 \u2192 Imaj7. Any ii\u2013V\u2013I can be expanded into Coltrane changes by splitting the harmonic motion through the major-third triangle. Toggle the Coltrane overlay to see the triangle on the Circle of Fifths.',
+      },
+      {
+        heading: 'Negative Harmony',
+        text: 'Negative harmony reflects chords around an axis between the tonic and its fifth. In C, the axis is between E and E\u266d (3.5 semitones from C). Under this reflection: C major becomes C minor, G7 becomes Fm6, Dm becomes B\u266d. Negative harmony preserves functional relationships while transforming chord quality \u2014 a fresh compositional tool.',
+      },
+    ],
+    exercises: [
+      {
+        type: 'identify-function',
+        question: 'In Coltrane changes starting from B, what are the three tonal centers?',
+        correctFunction: 'BG#Eb',
+        options: ['B, G, E\u266d', 'B, F, D\u266d', 'B, E, A', 'B, G\u266d, D'],
+        optionKeys: ['BG#Eb', 'BFDb', 'BEA', 'BGbD'],
+        explanation: 'Starting from B, the three centers are B, G (=A\u266d enharmonically, +4 semitones), and E\u266d (+8 semitones). These divide the octave into three equal major thirds. Each center is approached by its V7 chord, creating the rapid key-center movement that defines Coltrane changes.',
+      },
+      {
+        type: 'identify-function',
+        question: 'In negative harmony (key of C), what does G7 become?',
+        correctFunction: 'Fm',
+        options: ['Fm6', 'Dm7', 'B\u266d7', 'A\u266dm'],
+        optionKeys: ['Fm', 'Dm7', 'Bb7', 'Abm'],
+        explanation: 'In C\u2019s negative harmony, G7 (G-B-D-F) reflects to Fm6 or similar. The axis at 3.5 semitones maps: G\u2192F, B\u2192E\u266d, D\u2192C, F\u2192A\u266d, giving notes F-A\u266d-C-E\u266d which is Fm. The dominant function mirrors to subdominant, preserving the functional gravity.',
+      },
+      {
+        type: 'identify-function',
+        question: 'How many tonal centers does a Coltrane substitution use?',
+        correctFunction: '3',
+        options: ['2', '3', '4', '6'],
+        optionKeys: ['2', '3', '4', '6'],
+        explanation: 'Coltrane substitutions use 3 tonal centers, evenly spaced by major thirds (4 semitones). This divides the octave into 3 equal parts, just as an augmented triad divides it. The rapid movement through these three keys gives Giant Steps its distinctive kaleidoscopic sound.',
+      },
+    ],
+  },
 ];

@@ -35,10 +35,11 @@ describe('chordPitchClasses', () => {
     expect(pcs).toEqual([0, 4, 7, 10]);
   });
 
-  it('returns correct pitch classes for all 13 qualities from C', () => {
+  it('returns correct pitch classes for all qualities from C', () => {
     for (const quality of Object.keys(CHORD_TEMPLATES) as Array<keyof typeof CHORD_TEMPLATES>) {
       const pcs = chordPitchClasses({ root: 0, quality });
-      expect(pcs).toEqual([...CHORD_TEMPLATES[quality].intervals]);
+      const expected = CHORD_TEMPLATES[quality].intervals.map(i => ((i % 12) + 12) % 12);
+      expect(pcs).toEqual([...expected]);
     }
   });
 });

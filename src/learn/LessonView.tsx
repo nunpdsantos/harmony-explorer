@@ -9,6 +9,8 @@ import { DiminishedSymmetry } from '../visualizations/DiminishedSymmetry/Diminis
 import { TritoneSubDiagram } from '../visualizations/TritoneSubDiagram/TritoneSubDiagram';
 import { AlternationCircle } from '../visualizations/AlternationCircle/AlternationCircle';
 import { ModulationMap } from '../visualizations/ModulationMap/ModulationMap';
+import { ChordScaleMap } from '../visualizations/ChordScaleMap/ChordScaleMap';
+import { NegativeHarmonyMirror } from '../visualizations/NegativeHarmonyMirror/NegativeHarmonyMirror';
 
 interface LessonViewProps {
   width: number;
@@ -50,6 +52,8 @@ export const LessonView: React.FC<LessonViewProps> = ({ width, height }) => {
       case 'tritoneSubDiagram': return <TritoneSubDiagram {...vizProps} />;
       case 'alternationCircle': return <AlternationCircle {...vizProps} />;
       case 'modulationMap': return <ModulationMap {...vizProps} />;
+      case 'chordScaleMap': return <ChordScaleMap {...vizProps} />;
+      case 'negativeHarmonyMirror': return <NegativeHarmonyMirror {...vizProps} />;
       default: return <CircleOfFifths {...vizProps} />;
     }
   };

@@ -13,10 +13,15 @@ export function noteName(pc: number, preferFlat?: boolean): string {
 
 // Chord quality templates: intervals from root
 export const CHORD_TEMPLATES = {
+  // ── Triads ──
   major:      { intervals: [0, 4, 7],     symbol: '',    name: 'Major' },
   minor:      { intervals: [0, 3, 7],     symbol: 'm',   name: 'Minor' },
   diminished: { intervals: [0, 3, 6],     symbol: '°',   name: 'Diminished' },
   augmented:  { intervals: [0, 4, 8],     symbol: '+',   name: 'Augmented' },
+  sus4:       { intervals: [0, 5, 7],     symbol: 'sus4', name: 'Suspended 4th' },
+  sus2:       { intervals: [0, 2, 7],     symbol: 'sus2', name: 'Suspended 2nd' },
+
+  // ── 7th chords ──
   dom7:       { intervals: [0, 4, 7, 10], symbol: '7',   name: 'Dominant 7th' },
   maj7:       { intervals: [0, 4, 7, 11], symbol: 'maj7', name: 'Major 7th' },
   min7:       { intervals: [0, 3, 7, 10], symbol: 'm7',  name: 'Minor 7th' },
@@ -24,8 +29,45 @@ export const CHORD_TEMPLATES = {
   halfDim7:   { intervals: [0, 3, 6, 10], symbol: 'ø7',  name: 'Half-diminished 7th' },
   minMaj7:    { intervals: [0, 3, 7, 11], symbol: 'mM7', name: 'Minor-major 7th' },
   aug7:       { intervals: [0, 4, 8, 10], symbol: '+7',  name: 'Augmented 7th' },
-  sus4:       { intervals: [0, 5, 7],     symbol: 'sus4', name: 'Suspended 4th' },
-  sus2:       { intervals: [0, 2, 7],     symbol: 'sus2', name: 'Suspended 2nd' },
+  dom7sus4:   { intervals: [0, 5, 7, 10], symbol: '7sus4', name: 'Dominant 7th sus4' },
+
+  // ── 6th chords ──
+  sixth:      { intervals: [0, 4, 7, 9],  symbol: '6',   name: 'Major 6th' },
+  min6:       { intervals: [0, 3, 7, 9],  symbol: 'm6',  name: 'Minor 6th' },
+  sixNine:    { intervals: [0, 4, 7, 9, 14], symbol: '6/9', name: 'Six-Nine' },
+
+  // ── Add chords ──
+  add9:       { intervals: [0, 4, 7, 14], symbol: 'add9', name: 'Add 9' },
+  minAdd9:    { intervals: [0, 3, 7, 14], symbol: 'm(add9)', name: 'Minor Add 9' },
+
+  // ── 9th chords ──
+  dom9:       { intervals: [0, 4, 7, 10, 14], symbol: '9',    name: 'Dominant 9th' },
+  maj9:       { intervals: [0, 4, 7, 11, 14], symbol: 'maj9', name: 'Major 9th' },
+  min9:       { intervals: [0, 3, 7, 10, 14], symbol: 'm9',   name: 'Minor 9th' },
+  dom9sus4:   { intervals: [0, 5, 7, 10, 14], symbol: '9sus4', name: 'Dominant 9th sus4' },
+
+  // ── 11th chords ──
+  dom11:      { intervals: [0, 4, 7, 10, 14, 17], symbol: '11',  name: 'Dominant 11th' },
+  min11:      { intervals: [0, 3, 7, 10, 14, 17], symbol: 'm11', name: 'Minor 11th' },
+
+  // ── 13th chords ──
+  dom13:      { intervals: [0, 4, 7, 10, 14, 21], symbol: '13',    name: 'Dominant 13th' },
+  min13:      { intervals: [0, 3, 7, 10, 14, 21], symbol: 'm13',   name: 'Minor 13th' },
+  maj13:      { intervals: [0, 4, 7, 11, 14, 21], symbol: 'maj13', name: 'Major 13th' },
+
+  // ── Altered dominants ──
+  alt7:            { intervals: [0, 4, 6, 10],     symbol: 'alt',     name: 'Altered Dominant' },
+  dom7sharp11:     { intervals: [0, 4, 7, 10, 18], symbol: '7♯11',    name: 'Dominant 7th ♯11' },
+  dom7flat9:       { intervals: [0, 4, 7, 10, 13], symbol: '7♭9',     name: 'Dominant 7th ♭9' },
+  dom7sharp9:      { intervals: [0, 4, 7, 10, 15], symbol: '7♯9',     name: 'Dominant 7th ♯9' },
+  dom7flat13:      { intervals: [0, 4, 7, 10, 20], symbol: '7♭13',    name: 'Dominant 7th ♭13' },
+  dom7flat5:       { intervals: [0, 4, 6, 10],     symbol: '7♭5',     name: 'Dominant 7th ♭5' },
+  dom7sharp5flat9: { intervals: [0, 4, 8, 10, 13], symbol: '7♯5♭9',   name: 'Dominant 7th ♯5♭9' },
+  dom7sharp5sharp9:{ intervals: [0, 4, 8, 10, 15], symbol: '7♯5♯9',   name: 'Dominant 7th ♯5♯9' },
+
+  // ── Special diatonic extensions ──
+  min7flat9:       { intervals: [0, 3, 7, 10, 13], symbol: 'm7♭9',    name: 'Minor 7th ♭9' },
+  halfDim7flat9:   { intervals: [0, 3, 6, 10, 13], symbol: 'ø7♭9',    name: 'Half-dim 7th ♭9' },
 } as const;
 
 export type ChordQuality = keyof typeof CHORD_TEMPLATES;
