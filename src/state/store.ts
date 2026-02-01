@@ -1,0 +1,167 @@
+import { create } from 'zustand';
+import type { Chord } from '../core/chords';
+import type { ChordQuality } from '../core/constants';
+import { generateId, saveProgression, listProgressions, deleteProgression as deleteProg, type SavedProgression } from '../utils/persistence';
+
+export type VisualizationMode = 'circleOfFifths' | 'proximityPyramid';
+export type AppMode = 'explore' | 'learn';
+export type RelationshipFilter = 'sharedNotes' | 'dominant' | 'tritone' | 'neoRiemannian';
+
+interface AppState {
+  // Mode
+  mode: AppMode;
+  setMode: (mode: AppMode) => void;
+
+  // Active visualization
+  activeViz: VisualizationMode;
+  setActiveViz: (viz: VisualizationMode) => void;
+
+  // Reference key (root pitch class 0-11)
+  referenceRoot: number;
+  setReferenceRoot: (root: number) => void;
+
+  // Selected chord (currently highlighted)
+  selectedChord: Chord | null;
+  setSelectedChord: (chord: Chord | null) => void;
+
+  // Hovered chord
+  hoveredChord: Chord | null;
+  setHoveredChord: (chord: Chord | null) => void;
+
+  // Chord palette qualities to show
+  activeQualities: ChordQuality[];
+  setActiveQualities: (qualities: ChordQuality[]) => void;
+
+  // Relationship filters
+  activeFilters: Set<RelationshipFilter>;
+  toggleFilter: (filter: RelationshipFilter) => void;
+
+  // Progression builder
+  progression: Chord[];
+  addToProgression: (chord: Chord) => void;
+  removeFromProgression: (index: number) => void;
+  clearProgression: () => void;
+  setProgression: (chords: Chord[]) => void;
+
+  // Playback state
+  isPlaying: boolean;
+  setIsPlaying: (playing: boolean) => void;
+  playingIndex: number;
+  setPlayingIndex: (index: number) => void;
+  bpm: number;
+  setBpm: (bpm: number) => void;
+  isLooping: boolean;
+  setIsLooping: (loop: boolean) => void;
+
+  // Audio initialized
+  audioReady: boolean;
+  setAudioReady: (ready: boolean) => void;
+
+  // Saved progressions
+  savedProgressions: SavedProgression[];
+  loadSavedProgressions: () => Promise<void>;
+  saveCurrentProgression: (name: string) => Promise<void>;
+  deleteSavedProgression: (id: string) => Promise<void>;
+  loadProgressionById: (id: string) => void;
+
+  // Sidebar visibility (for mobile)
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
+}
+
+export const useStore = create<AppState>((set, get) => ({
+  // Mode
+  mode: 'explore',
+  setMode: (mode) => set({ mode }),
+
+  // Active visualization
+  activeViz: 'circleOfFifths',
+  setActiveViz: (activeViz) => set({ activeViz }),
+
+  // Reference key
+  referenceRoot: 0, // C
+  setReferenceRoot: (referenceRoot) => set({ referenceRoot, selectedChord: null }),
+
+  // Selected chord
+  selectedChord: null,
+  setSelectedChord: (selectedChord) => set({ selectedChord }),
+
+  // Hovered chord
+  hoveredChord: null,
+  setHoveredChord: (hoveredChord) => set({ hoveredChord }),
+
+  // Qualities
+  activeQualities: ['major', 'minor'],
+  setActiveQualities: (activeQualities) => set({ activeQualities }),
+
+  // Filters
+  activeFilters: new Set<RelationshipFilter>(['sharedNotes', 'dominant']),
+  toggleFilter: (filter) => set(state => {
+    const next = new Set(state.activeFilters);
+    if (next.has(filter)) next.delete(filter);
+    else next.add(filter);
+    return { activeFilters: next };
+  }),
+
+  // Progression
+  progression: [],
+  addToProgression: (c) => set(state => ({
+    progression: [...state.progression, c],
+  })),
+  removeFromProgression: (index) => set(state => ({
+    progression: state.progression.filter((_, i) => i !== index),
+  })),
+  clearProgression: () => set({ progression: [] }),
+  setProgression: (chords) => set({ progression: chords }),
+
+  // Playback
+  isPlaying: false,
+  setIsPlaying: (isPlaying) => set({ isPlaying }),
+  playingIndex: -1,
+  setPlayingIndex: (playingIndex) => set({ playingIndex }),
+  bpm: 80,
+  setBpm: (bpm) => set({ bpm }),
+  isLooping: false,
+  setIsLooping: (isLooping) => set({ isLooping }),
+
+  // Audio
+  audioReady: false,
+  setAudioReady: (audioReady) => set({ audioReady }),
+
+  // Sidebar
+  sidebarOpen: false,
+  setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
+
+  // Saved progressions
+  savedProgressions: [],
+  loadSavedProgressions: async () => {
+    const progs = await listProgressions();
+    set({ savedProgressions: progs });
+  },
+  saveCurrentProgression: async (name) => {
+    const state = get();
+    const prog: SavedProgression = {
+      id: generateId(),
+      name,
+      chords: state.progression,
+      key: state.referenceRoot,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+    await saveProgression(prog);
+    await state.loadSavedProgressions();
+  },
+  deleteSavedProgression: async (id) => {
+    await deleteProg(id);
+    await get().loadSavedProgressions();
+  },
+  loadProgressionById: (id) => {
+    const prog = get().savedProgressions.find(p => p.id === id);
+    if (prog) {
+      set({
+        progression: prog.chords,
+        referenceRoot: prog.key,
+      });
+    }
+  },
+}));
