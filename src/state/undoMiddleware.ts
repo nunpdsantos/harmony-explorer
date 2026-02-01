@@ -29,6 +29,9 @@ type UndoImpl = <
   config: StateCreator<T, Mps, Mcs>,
 ) => StateCreator<T & UndoSlice, Mps, Mcs>;
 
+// Zustand middleware internals require broad casts due to complex
+// generic constraints. The public API (UndoSlice) is fully typed.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const undoable: UndoImpl = (config) => (set, get, api) => {
   const past: HistoryEntry[] = [];
   const future: HistoryEntry[] = [];
@@ -36,15 +39,21 @@ export const undoable: UndoImpl = (config) => (set, get, api) => {
   // Track the last-known progression to detect changes
   let lastProgression: unknown[] = [];
 
-  const wrappedSet: typeof set = (...args) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rawSet = set as (...args: any[]) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rawGet = get as () => any;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const wrappedSet = ((...args: any[]) => {
     // Capture state before mutation
-    const prev = (get() as { progression: unknown[] }).progression;
+    const prev = rawGet().progression;
 
     // Apply the actual mutation
-    (set as (...a: unknown[]) => void)(...args);
+    rawSet(...args);
 
     // Check if progression changed
-    const next = (get() as { progression: unknown[] }).progression;
+    const next = rawGet().progression;
     if (next !== prev && next !== lastProgression) {
       past.push({ progression: prev });
       if (past.length > MAX_HISTORY) past.shift();
@@ -52,14 +61,16 @@ export const undoable: UndoImpl = (config) => (set, get, api) => {
       lastProgression = next;
 
       // Update canUndo/canRedo flags
-      (set as (...a: unknown[]) => void)({
+      rawSet({
         canUndo: past.length > 0,
         canRedo: false,
-      } as Partial<typeof get extends () => infer R ? R : never>);
+      });
     }
-  };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }) as any;
 
-  const initialState = config(wrappedSet, get, api);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const initialState = config(wrappedSet, get as any, api);
 
   return {
     ...initialState,
@@ -68,26 +79,27 @@ export const undoable: UndoImpl = (config) => (set, get, api) => {
     undo: () => {
       const entry = past.pop();
       if (!entry) return;
-      const current = (get() as { progression: unknown[] }).progression;
+      const current = rawGet().progression;
       future.push({ progression: current });
       lastProgression = entry.progression;
-      (set as (...a: unknown[]) => void)({
+      rawSet({
         progression: entry.progression,
         canUndo: past.length > 0,
         canRedo: true,
-      } as Partial<typeof get extends () => infer R ? R : never>);
+      });
     },
     redo: () => {
       const entry = future.pop();
       if (!entry) return;
-      const current = (get() as { progression: unknown[] }).progression;
+      const current = rawGet().progression;
       past.push({ progression: current });
       lastProgression = entry.progression;
-      (set as (...a: unknown[]) => void)({
+      rawSet({
         progression: entry.progression,
         canUndo: true,
         canRedo: future.length > 0,
-      } as Partial<typeof get extends () => infer R ? R : never>);
+      });
     },
-  } as ReturnType<typeof config> & UndoSlice;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any;
 };
