@@ -616,44 +616,159 @@ eslint.config.js — no-restricted-syntax rule for hex literals
 
 ---
 
-## Current State — End of Phase 6 (2026-02-01)
+## Phase 7: Extended Harmony — COMPLETE ✅
+
+Phase 7 was a full jazz theory extension: chord extensions (9ths–13ths), all modes, modal interchange, chord-scale theory, altered dominants, Coltrane changes, upper structure triads, negative harmony. Two new visualizations, Circle of Fifths overlays, 6 new lessons, and 184 new tests.
+
+### 7.1 — Chord Extensions & Voice Leading Foundation ✅
+- **constants.ts**: ~25 new chord qualities — extensions (dom9, maj9, min9, dom11, min11, dom13, min13, maj13), altered (alt7, dom7sharp11, dom7flat9, dom7sharp9, dom7flat13, dom7flat5, dom7sharp5flat9, dom7sharp5sharp9), 6th chords (sixth, min6, sixNine), add chords (add9, minAdd9), suspended (dom7sus4, dom9sus4), special (min7flat9, halfDim7flat9)
+- **theme.ts**: QUALITY_COLORS entries for all new qualities (rose/pink for altered, blue/cyan for extensions)
+- **voiceLeading.ts**: Greedy nearest-neighbor fallback (`greedyAssignment()`) for chords with 5+ notes — prevents O(n!) blowup on extended chords
+- **scales.ts**: `DIATONIC_9TH_QUALITIES` and `DIATONIC_13TH_QUALITIES` tables, `diatonic9ths()` and `diatonic13ths()` functions
+
+### 7.2 — Modes & Chord-Scale Theory + Viz ✅
+- **New `modes.ts`**: 7 modes of major, 7 of melodic minor, 7 of harmonic minor, 4 symmetric scales (wholeHalfDim, halfWholeDim, wholeTone, augmentedScale), 3 bebop scales, pentatonic/blues. `ModeType` union, `MODE_TEMPLATES`, `deriveMode()`, `modePitchClasses()`, `getModesByParent()`
+- **New `chordScaleTheory.ts`**: `getScalesForChord(quality)` static mapping, `getScalesForChordInContext(quality, keyRoot, degree)` context-aware (min7 as ii→dorian, vi→aeolian, iii→phrygian), `computeAvoidNotes()`, `getTensionLabels()`
+- **New `ChordScaleMap` visualization**: circular pitch-class display (12 clock positions), chord tones solid blue, scale tones lighter, avoid notes red X, scale name + characteristic tones + tension labels. Category "Scales" in VizSelector
+
+### 7.3 — Modal Interchange ✅
+- **New `modalInterchange.ts`**: `BorrowedChord` interface, `getModalInterchangeChords(keyRoot, mode)` — chords from parallel mode not in home major, `getAllBorrowedChords(keyRoot)` — aggregates from 7 modes, deduplicates, sorts
+- **Sidebar**: borrowed chords panel grouped by source mode (purple styling), modal interchange + Coltrane toggle buttons
+- **CircleOfFifths**: modal interchange overlay — ghost bubbles (purple dashed circles) at borrowed chord positions
+- **Store**: `showModalInterchange` flag, `M` keyboard shortcut
+
+### 7.4 — Altered Dominants & Reharmonization ✅
+- **New `alteredDominants.ts`**: `AlteredDominantInfo` interface with quality/alterations/associatedScale/tensionLevel (1-4), `isDominantFamily()`, `getAlteredDominantInfo()`, `suggestResolutions()` (standard/tritone sub/deceptive), `suggestAlterations()`, `getAlteredVariants()`
+- **Sidebar**: AlteredDominantPanel showing variants with tension level (rose styling)
+- **NextMovesPanel**: "Resolutions" section for dominant chords with rose styling
+
+### 7.5 — Coltrane Changes & Upper Structure Triads ✅
+- **New `coltraneChanges.ts`**: `getColtraneTriangle(tonic)` (3 major-third-apart centers), `generateColtraneSubstitution()` (Giant Steps sequence), `expandIIV_Coltrane()`, `analyzeColtraneProgression()` (pattern detection with confidence)
+- **New `upperStructureTriads.ts`**: 7 standard UST definitions (II, ♭iii, ♭III, ♯IV, ♭VI, ♭VII, VI), `getUpperStructureTriads(dom7Root)`, `formatUST()`
+- **CircleOfFifths**: Coltrane triangle overlay (amber dashed equilateral triangle with V7 labels)
+- **Store**: `showColtraneOverlay` flag, `J` keyboard shortcut
+
+### 7.6 — Negative Harmony + Viz ✅
+- **New `negativeHarmony.ts`**: `getNegativeMapping(keyRoot)` — 12-note reflection map around axis at root + 3.5 semitones, `computeNegative(chord, keyRoot)`, `computeNegativeProgression()`, `identifyChordFromPitchClasses()` (general-purpose chord ID from pitch class set)
+- **New `NegativeHarmonyMirror` visualization**: vertical axis, original chord (blue) on left, negative chord (pink) on right, crossing connection lines, chord names. Under "Keys" category in VizSelector
+
+### 7.7 — Lessons 17–22 ✅
+- **Lesson 17**: Chord Extensions — 9ths, 11ths, 13ths. Viz: chordScaleMap. 3 exercises
+- **Lesson 18**: Modes & Scales — major modes, characteristic tones. Viz: chordScaleMap. 3 exercises
+- **Lesson 19**: Chord-Scale Theory — matching scales to chords, avoid notes. Viz: chordScaleMap. 3 exercises
+- **Lesson 20**: Modal Interchange — borrowing from parallel modes. Viz: circleOfFifths. 3 exercises
+- **Lesson 21**: Altered Dominants & Reharmonization — altered variants, tritone sub. Viz: circleOfFifths. 3 exercises
+- **Lesson 22**: Coltrane Changes & Negative Harmony — major thirds cycle, reflection. Viz: circleOfFifths. 3 exercises
+- Store `lessonProgress` expanded from `Array(16)` to `Array(22)`
+
+### 7.8 — Tests & Polish ✅
+- 7 new test files: `modes.test.ts` (25), `chordScaleTheory.test.ts` (21), `modalInterchange.test.ts` (17), `alteredDominants.test.ts` (33), `coltraneChanges.test.ts` (21), `upperStructureTriads.test.ts` (14), `negativeHarmony.test.ts` (27)
+- Updated: `voiceLeading.test.ts` (+7 greedy fallback tests), `visualizations.test.tsx` (+11 ChordScaleMap/NegativeHarmonyMirror smoke tests), `lessonData.test.ts` (+8 lesson 17-22 tests)
+- Updated: `constants.test.ts`, `chords.test.ts`, `VizSelector.test.tsx` (adjusted counts for new qualities/vizs/lessons)
+- Fixed 5 lint errors (unused imports in test files)
+- **804 tests** total (48 files), zero TS errors, zero lint errors (25 warnings — pre-existing hex color warnings)
+
+#### New Files Created in Phase 7
+```
+src/core/modes.ts
+src/core/chordScaleTheory.ts
+src/core/modalInterchange.ts
+src/core/alteredDominants.ts
+src/core/coltraneChanges.ts
+src/core/upperStructureTriads.ts
+src/core/negativeHarmony.ts
+src/visualizations/ChordScaleMap/ChordScaleMap.tsx
+src/visualizations/NegativeHarmonyMirror/NegativeHarmonyMirror.tsx
+src/core/__tests__/modes.test.ts
+src/core/__tests__/chordScaleTheory.test.ts
+src/core/__tests__/modalInterchange.test.ts
+src/core/__tests__/alteredDominants.test.ts
+src/core/__tests__/coltraneChanges.test.ts
+src/core/__tests__/upperStructureTriads.test.ts
+src/core/__tests__/negativeHarmony.test.ts
+```
+
+#### Files Modified in Phase 7 (20 files)
+```
+src/core/constants.ts — ~25 new chord qualities
+src/core/scales.ts — diatonic 9th/13th tables
+src/core/voiceLeading.ts — greedy fallback for 5+ notes
+src/styles/theme.ts — QUALITY_COLORS for new qualities
+src/state/store.ts — new viz modes, toggles, lesson expansion
+src/components/VizSelector.tsx — 2 new viz options (ChordScaleMap, NegativeHarmonyMirror)
+src/components/VisualizationArea.tsx — lazy imports for new vizs
+src/components/Sidebar.tsx — borrowed chords panel, altered dominant panel, overlay toggles
+src/components/NextMovesPanel.tsx — resolution suggestions for dominants
+src/components/ShortcutsReference.tsx — M and J shortcuts documented
+src/hooks/useKeyboardShortcuts.ts — M (modal), J (Coltrane) toggles
+src/visualizations/CircleOfFifths/CircleOfFifths.tsx — modal interchange + Coltrane overlays
+src/learn/lessonData.ts — 6 new lessons (17–22)
+src/learn/LessonView.tsx — chordScaleMap + negativeHarmonyMirror cases
+src/core/__tests__/constants.test.ts — updated quality count
+src/core/__tests__/chords.test.ts — mod 12 for extended intervals
+src/core/__tests__/voiceLeading.test.ts — greedy fallback tests
+src/components/__tests__/VizSelector.test.tsx — 10 options, 5 categories
+src/visualizations/__tests__/visualizations.test.tsx — ChordScaleMap + NegativeHarmonyMirror smoke tests
+src/learn/__tests__/lessonData.test.ts — lessons 17–22 tests
+```
+
+### Git Commit
+- `4476722` — Phase 7: Extended Harmony — jazz theory extension (36 files, +3437/-25)
+
+### Final Metrics (End of Phase 7)
+- **804 tests**, all passing (48 test files)
+- **~84 source files**, 48 test files
+- **TypeScript**: zero errors (`tsc -b` clean)
+- **ESLint**: zero errors, 25 warnings (hex color literals in new viz/overlay components — cosmetic)
+- **Build**: succeeds in ~1s, ChordScaleMap 8.13KB + NegativeHarmonyMirror 2.98KB lazy-loaded
+- **11 interactive visualizations**: Circle of Fifths, Tonal Function Chart, Proximity Pyramid, Timeline, Augmented Star, Diminished Symmetry, Alternation Circle, Tritone Substitution Diagram, Modulation Map, Chord-Scale Map, Negative Harmony Mirror
+- **22 lessons** with **59 exercises**
+- **~40 chord qualities** (from ~13)
+- **Audio**: 5 instrument presets, humanization, MIDI input (Tone.js handles arbitrary polyphony for extended chords)
+- **CI**: GitHub Actions (lint, typecheck, test, build)
+
+---
+
+## Current State — End of Phase 7 (2026-02-01)
 
 ### What's Done
-Phases 1–6 are complete. The app is a fully functional, polished music theory education tool:
+Phases 1–7 are complete. The app covers both tonal and extended jazz harmony:
 - All tonal harmony fundamentals from the "Illustrated Harmony" book
-- Interactive chord exploration across 9 linked visualizations
-- Voice leading analysis and animation
+- Full jazz theory: chord extensions, all modes (major/melodic minor/harmonic minor/symmetric), chord-scale theory, modal interchange, altered dominants, Coltrane changes, upper structure triads, negative harmony
+- Interactive chord exploration across 11 linked visualizations
+- Voice leading analysis and animation (greedy fallback for extended chords)
 - Modulation pathways between keys
 - Bridge chord suggestions (tritone sub, passing diminished, secondary dominants)
-- 16-lesson curriculum with progressive exercises
+- 22-lesson curriculum with 59 progressive exercises
 - Full design token system with enforcement
 - Custom visual identity (Bricolage Grotesque + Plus Jakarta Sans fonts, radial gradient bg)
 - Collapsible sidebar (desktop rail mode)
 - Undo/redo for progression changes
 - Comprehensive accessibility: reduced-motion, high-contrast, keyboard navigation, screen reader announcements, ARIA roles, focus management
 - Responsive at all breakpoints (320px–1280px+)
-- 620 tests, Lighthouse 100/100/100, CI/CD pipeline
+- 804 tests, Lighthouse 100/100/100, CI/CD pipeline
 
 ### Repository
 - **GitHub**: github.com/nunpdsantos/harmony-explorer
 - **Live**: harmony-explorer.vercel.app
-- **Branch**: `main` at commit `7b80f39`
+- **Branch**: `main` at commit `4476722`
 
-### Possible Phase 7 Directions (To Be Decided)
+### Possible Phase 8 Directions (To Be Decided)
 The user should choose the next direction. Options:
 
 1. **Notation & Export** — render progressions as sheet music (VexFlow), MIDI file export with voice leading, PDF export of lesson progress/analysis reports
 2. **Piano Keyboard View** — new visualization showing chord voicings on a piano keyboard, voice movement animation, integrate with audio playback
 3. **Advanced Audio** — arpeggiation patterns, chord rhythm/strumming patterns, custom voicing editor, audio recording/export
-4. **Extended Harmony** — jazz extensions (9ths, 11ths, 13ths), chord-scale theory, modal interchange, Coltrane changes
-5. **PWA & Offline** — service worker for offline access, installable app, sync progress across devices
-6. **Performance & Analytics** — track student progress over time, spaced repetition for exercises, difficulty adaptation
-7. **Progression Save/Share** — save named progressions to IndexedDB, export as shareable URL or JSON, import shared progressions
-8. **Further UX Polish** — animations/transitions, micro-interactions, onboarding for new Phase 5-6 features, better mobile touch
+4. **PWA & Offline** — service worker for offline access, installable app, sync progress across devices
+5. **Performance & Analytics** — track student progress over time, spaced repetition for exercises, difficulty adaptation
+6. **Progression Save/Share** — save named progressions to IndexedDB, export as shareable URL or JSON, import shared progressions
+7. **Further UX Polish** — animations/transitions, micro-interactions, onboarding for Phase 5-7 features, better mobile touch, hex color token migration for remaining warnings
+8. **Guitar Fretboard View** — chord shapes on a fretboard, voicing comparison, fingering suggestions
+9. **Ear Training** — audio-based exercises: identify intervals, chord qualities, progressions by ear
 
 ### How to Start Next Session
 1. Read this file (`SESSION_LOG.md`) for full project history and current state
-2. Run `npx vitest run` to confirm 620 tests pass
+2. Run `npx vitest run` to confirm 804 tests pass
 3. Run `npx tsc -b && npx vite build` to confirm clean build
-4. Decide Phase 7 direction with the user
-5. Write the Phase 7 plan and begin implementation
+4. Decide Phase 8 direction with the user
+5. Write the Phase 8 plan and begin implementation
