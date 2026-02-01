@@ -1,9 +1,17 @@
 import { create } from 'zustand';
 import type { Chord } from '../core/chords';
 import type { ChordQuality } from '../core/constants';
+import type { PresetName } from '../audio/presets';
 import { generateId, saveProgression, listProgressions, deleteProgression as deleteProg, type SavedProgression } from '../utils/persistence';
 
-export type VisualizationMode = 'circleOfFifths' | 'proximityPyramid';
+export type VisualizationMode =
+  | 'circleOfFifths'
+  | 'proximityPyramid'
+  | 'tonalFunctionChart'
+  | 'diminishedSymmetry'
+  | 'augmentedStar'
+  | 'tritoneSubDiagram'
+  | 'alternationCircle';
 export type AppMode = 'explore' | 'learn';
 export type RelationshipFilter = 'sharedNotes' | 'dominant' | 'tritone' | 'neoRiemannian';
 
@@ -57,12 +65,45 @@ interface AppState {
   audioReady: boolean;
   setAudioReady: (ready: boolean) => void;
 
+  // Audio settings
+  activePreset: PresetName;
+  setActivePreset: (preset: PresetName) => void;
+  humanize: number;
+  setHumanize: (amount: number) => void;
+  volume: number;
+  setVolume: (vol: number) => void;
+
   // Saved progressions
   savedProgressions: SavedProgression[];
   loadSavedProgressions: () => Promise<void>;
   saveCurrentProgression: (name: string) => Promise<void>;
   deleteSavedProgression: (id: string) => Promise<void>;
   loadProgressionById: (id: string) => void;
+
+  // Circle of Fifths overlays
+  showDom7Ring: boolean;
+  setShowDom7Ring: (show: boolean) => void;
+  showSecondaryDominants: boolean;
+  setShowSecondaryDominants: (show: boolean) => void;
+  showDominantChains: boolean;
+  setShowDominantChains: (show: boolean) => void;
+  showIIVI: boolean;
+  setShowIIVI: (show: boolean) => void;
+
+  // Learn mode
+  currentLessonIndex: number;
+  setCurrentLessonIndex: (index: number) => void;
+  lessonProgress: boolean[];
+  completeLessonAt: (index: number) => void;
+
+  // Exercise build-progression state
+  exerciseBuildProgression: string[];
+  addToExerciseProgression: (chordKey: string) => void;
+  resetExerciseProgression: () => void;
+
+  // Modals
+  showShortcutsModal: boolean;
+  setShowShortcutsModal: (show: boolean) => void;
 
   // Sidebar visibility (for mobile)
   sidebarOpen: boolean;
@@ -127,6 +168,45 @@ export const useStore = create<AppState>((set, get) => ({
   // Audio
   audioReady: false,
   setAudioReady: (audioReady) => set({ audioReady }),
+
+  // Audio settings
+  activePreset: 'piano',
+  setActivePreset: (activePreset) => set({ activePreset }),
+  humanize: 0,
+  setHumanize: (humanize) => set({ humanize }),
+  volume: -8,
+  setVolume: (volume) => set({ volume }),
+
+  // Circle overlays
+  showDom7Ring: false,
+  setShowDom7Ring: (showDom7Ring) => set({ showDom7Ring }),
+  showSecondaryDominants: false,
+  setShowSecondaryDominants: (showSecondaryDominants) => set({ showSecondaryDominants }),
+  showDominantChains: false,
+  setShowDominantChains: (showDominantChains) => set({ showDominantChains }),
+  showIIVI: false,
+  setShowIIVI: (showIIVI) => set({ showIIVI }),
+
+  // Learn mode
+  currentLessonIndex: 0,
+  setCurrentLessonIndex: (currentLessonIndex) => set({ currentLessonIndex }),
+  lessonProgress: Array(12).fill(false),
+  completeLessonAt: (index) => set(state => {
+    const next = [...state.lessonProgress];
+    next[index] = true;
+    return { lessonProgress: next };
+  }),
+
+  // Exercise build-progression
+  exerciseBuildProgression: [],
+  addToExerciseProgression: (chordKey) => set(state => ({
+    exerciseBuildProgression: [...state.exerciseBuildProgression, chordKey],
+  })),
+  resetExerciseProgression: () => set({ exerciseBuildProgression: [] }),
+
+  // Modals
+  showShortcutsModal: false,
+  setShowShortcutsModal: (showShortcutsModal) => set({ showShortcutsModal }),
 
   // Sidebar
   sidebarOpen: false,

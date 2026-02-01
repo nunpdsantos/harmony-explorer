@@ -6,6 +6,8 @@ import { chord, chordsEqual, chordKey, chordName, type Chord } from '../../core/
 import { CIRCLE_OF_FIFTHS_ORDER } from '../../core/constants';
 import { isDominantOf, sharedNoteCount } from '../../core/relationships';
 import { getDiatonicInfo, getNextMoves, functionColor, type NextMove } from '../../core/harmony';
+import { getSecondaryDominants } from '../../core/secondaryDominants';
+import { DominantChainOverlay } from './DominantChainOverlay';
 import { useStore } from '../../state/store';
 
 interface ChordPosition {
@@ -27,6 +29,11 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
   height,
 }) => {
   const progression = useStore(s => s.progression);
+  const showDom7Ring = useStore(s => s.showDom7Ring);
+  const showSecondaryDominants = useStore(s => s.showSecondaryDominants);
+  const showDominantChains = useStore(s => s.showDominantChains);
+  const showIIVI = useStore(s => s.showIIVI);
+
   const progressionKeys = useMemo(
     () => new Set(progression.map(chordKey)),
     [progression]
@@ -36,8 +43,9 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
   const cy = height / 2;
   const size = Math.min(width, height);
   const outerRadius = size * 0.38;
-  const innerRadius = size * 0.26;
-  const bubbleRadius = size * 0.045;
+  const midRadius = size * 0.32; // Dom7 ring between outer and inner
+  const innerRadius = size * 0.24;
+  const bubbleRadius = size * 0.04;
 
   // Position chords around the circle
   const majorPositions: ChordPosition[] = useMemo(() => {
@@ -51,6 +59,18 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
       };
     });
   }, [cx, cy, outerRadius]);
+
+  const dom7Positions: ChordPosition[] = useMemo(() => {
+    return CIRCLE_OF_FIFTHS_ORDER.map((pc, i) => {
+      const angle = (i * Math.PI * 2) / 12 - Math.PI / 2;
+      return {
+        chord: chord(pc, 'dom7'),
+        x: cx + Math.cos(angle) * midRadius,
+        y: cy + Math.sin(angle) * midRadius,
+        angle,
+      };
+    });
+  }, [cx, cy, midRadius]);
 
   const minorPositions: ChordPosition[] = useMemo(() => {
     return CIRCLE_OF_FIFTHS_ORDER.map((pc, i) => {
@@ -66,8 +86,8 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
   }, [cx, cy, innerRadius]);
 
   const allPositions = useMemo(
-    () => [...majorPositions, ...minorPositions],
-    [majorPositions, minorPositions]
+    () => [...majorPositions, ...(showDom7Ring ? dom7Positions : []), ...minorPositions],
+    [majorPositions, dom7Positions, minorPositions, showDom7Ring]
   );
 
   // Active chord for highlighting
@@ -131,27 +151,32 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
     return map;
   }, [activeChord, allPositions]);
 
+  // Secondary dominants
+  const secondaryDoms = useMemo(
+    () => getSecondaryDominants(referenceRoot),
+    [referenceRoot]
+  );
+
   // Active chord info
   const activeInfo = activeChord ? getDiatonicInfo(activeChord, referenceRoot) : null;
 
-  function renderBubble(pos: ChordPosition, isMajorRing: boolean) {
+  function renderBubble(pos: ChordPosition, ring: 'major' | 'dom7' | 'minor') {
     const info = getDiatonicInfo(pos.chord, referenceRoot);
     const isDiatonic = info !== null;
     const isRef = chordsEqual(pos.chord, chord(referenceRoot, 'major'));
     const isActive = activeChord !== null && chordsEqual(pos.chord, activeChord);
     const nextMove = nextMoveKeys.get(chordKey(pos.chord));
     const hasActiveChord = activeChord !== null;
-    // Dim non-diatonic chords when nothing is selected, or dim chords that aren't next moves when something is active
     const isDimmed = hasActiveChord
       ? !isActive && !nextMove && !isDiatonic
       : !isDiatonic;
 
     let fillColor = qualityColor(pos.chord.quality);
     if (info) {
-      // Tint by tonal function
-      const fc = functionColor(info.function);
-      fillColor = fc;
+      fillColor = functionColor(info.function);
     }
+
+    const radiusScale = ring === 'major' ? 1 : ring === 'dom7' ? 0.78 : 0.85;
 
     return (
       <ChordBubble
@@ -159,13 +184,13 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
         chord={pos.chord}
         x={pos.x}
         y={pos.y}
-        radius={isMajorRing ? bubbleRadius : bubbleRadius * 0.85}
+        radius={bubbleRadius * radiusScale}
         isSelected={selectedChord !== null && chordsEqual(pos.chord, selectedChord)}
         isHovered={hoveredChord !== null && chordsEqual(pos.chord, hoveredChord)}
         isInProgression={progressionKeys.has(chordKey(pos.chord))}
         isReference={isRef}
-        isDiatonic={isDiatonic}
-        isDimmed={isDimmed}
+        isDiatonic={ring === 'dom7' ? true : isDiatonic}
+        isDimmed={ring === 'dom7' ? false : isDimmed}
         isNextMove={!!nextMove}
         nextMoveStrength={nextMove?.strength}
         fillColor={fillColor}
@@ -203,7 +228,9 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
   }
 
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Circle of Fifths in ${chordName(chord(referenceRoot, 'major'))} major`}>
+      <title>Circle of Fifths - {chordName(chord(referenceRoot, 'major'))} major</title>
+      <desc>Interactive circle of fifths diagram showing major and minor chords arranged by fifth relationships</desc>
       <defs>
         <marker id="arrow-dominant" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
           <polygon points="0 0, 8 3, 0 6" fill="#8b5cf6" />
@@ -214,17 +241,28 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
         <marker id="arrow-next-common" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
           <polygon points="0 0, 8 3, 0 6" fill="#a78bfa" />
         </marker>
+        <marker id="arrow-secondary-dom" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#ec4899" />
+        </marker>
       </defs>
 
       {/* Background circles */}
       <circle cx={cx} cy={cy} r={outerRadius + bubbleRadius + 8} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
-      <circle cx={cx} cy={cy} r={innerRadius + bubbleRadius + 8} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
+      {showDom7Ring && (
+        <circle cx={cx} cy={cy} r={midRadius + bubbleRadius * 0.78 + 6} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth={1} />
+      )}
+      <circle cx={cx} cy={cy} r={innerRadius + bubbleRadius * 0.85 + 6} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
 
       {/* Ring labels */}
       <text x={cx + outerRadius + bubbleRadius + 18} y={cy - outerRadius - bubbleRadius - 4} textAnchor="start" fill="rgba(255,255,255,0.3)" fontSize={10}>
         Major
       </text>
-      <text x={cx + innerRadius + bubbleRadius + 18} y={cy - innerRadius - bubbleRadius - 4} textAnchor="start" fill="rgba(255,255,255,0.3)" fontSize={10}>
+      {showDom7Ring && (
+        <text x={cx + midRadius + bubbleRadius * 0.78 + 14} y={cy - midRadius - bubbleRadius * 0.78 - 2} textAnchor="start" fill="rgba(255,255,255,0.25)" fontSize={9}>
+          Dom 7th
+        </text>
+      )}
+      <text x={cx + innerRadius + bubbleRadius * 0.85 + 14} y={cy - innerRadius - bubbleRadius * 0.85 - 2} textAnchor="start" fill="rgba(255,255,255,0.3)" fontSize={10}>
         Minor
       </text>
 
@@ -252,6 +290,50 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
         );
       })}
 
+      {/* Secondary dominant arrows */}
+      {showSecondaryDominants && showDom7Ring && secondaryDoms.map((sd, i) => {
+        const fromPos = dom7Positions.find(p => p.chord.root === sd.dom7.root);
+        const toPos = majorPositions.find(p => p.chord.root === sd.target.root)
+          ?? minorPositions.find(p => p.chord.root === sd.target.root);
+        if (!fromPos || !toPos) return null;
+        const dx = toPos.x - fromPos.x;
+        const dy = toPos.y - fromPos.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist === 0) return null;
+        const nx = dx / dist;
+        const ny = dy / dist;
+
+        // Label position
+        const labelX = fromPos.x + dx * 0.4;
+        const labelY = fromPos.y + dy * 0.4 - 6;
+
+        return (
+          <g key={`secdom-${i}`}>
+            <line
+              x1={fromPos.x + nx * (bubbleRadius * 0.78 + 4)}
+              y1={fromPos.y + ny * (bubbleRadius * 0.78 + 4)}
+              x2={toPos.x - nx * (bubbleRadius + 10)}
+              y2={toPos.y - ny * (bubbleRadius + 10)}
+              stroke="#ec4899"
+              strokeWidth={1.5}
+              opacity={0.35}
+              strokeDasharray="4 3"
+              markerEnd="url(#arrow-secondary-dom)"
+            />
+            <text
+              x={labelX}
+              y={labelY}
+              textAnchor="middle"
+              fill="#ec4899"
+              fontSize={8}
+              opacity={0.5}
+            >
+              {sd.label}
+            </text>
+          </g>
+        );
+      })}
+
       {/* Dominant arrows */}
       {dominantArrows.map((arrow, i) => (
         <g key={`dom-arrow-${i}`}>
@@ -272,11 +354,31 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
         </g>
       ))}
 
+      {/* Dominant Chain / ii-V-I overlay */}
+      {(showDominantChains || showIIVI) && showDom7Ring && (
+        <DominantChainOverlay
+          referenceRoot={referenceRoot}
+          showChains={showDominantChains}
+          showIIVI={showIIVI}
+          hoveredChord={hoveredChord}
+          selectedChord={selectedChord}
+          dom7Positions={dom7Positions}
+          majorPositions={majorPositions}
+          minorPositions={minorPositions}
+          bubbleRadius={bubbleRadius}
+          cx={cx}
+          cy={cy}
+        />
+      )}
+
       {/* Major chord bubbles */}
-      {majorPositions.map(pos => renderBubble(pos, true))}
+      {majorPositions.map(pos => renderBubble(pos, 'major'))}
+
+      {/* Dom7 chord bubbles */}
+      {showDom7Ring && dom7Positions.map(pos => renderBubble(pos, 'dom7'))}
 
       {/* Minor chord bubbles */}
-      {minorPositions.map(pos => renderBubble(pos, false))}
+      {minorPositions.map(pos => renderBubble(pos, 'minor'))}
 
       {/* Center info */}
       {activeChord && (

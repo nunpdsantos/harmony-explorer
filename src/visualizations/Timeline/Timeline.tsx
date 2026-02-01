@@ -26,7 +26,7 @@ export const Timeline: React.FC<TimelineProps> = ({
   if (progression.length === 0) {
     return (
       <div
-        className="flex items-center justify-center h-full text-white/30 text-sm"
+        className="flex items-center justify-center h-full text-white/50 text-sm"
         style={{ width, height }}
       >
         Click chords in the diagram to build a progression
@@ -93,7 +93,7 @@ export const Timeline: React.FC<TimelineProps> = ({
             </button>
 
             {/* Pitch classes */}
-            <div className="text-[9px] text-white/30 mt-1 tracking-wide">
+            <div className="text-[10px] text-white/50 mt-1 tracking-wide">
               {chordPitchClasses(c).map(pc => noteName(pc)).join(' ')}
             </div>
           </div>

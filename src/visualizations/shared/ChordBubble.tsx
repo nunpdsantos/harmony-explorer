@@ -1,5 +1,5 @@
-import React from 'react';
-import { chordName, type Chord } from '../../core/chords';
+import React, { useCallback } from 'react';
+import { chordName, chordFullName, type Chord } from '../../core/chords';
 
 interface ChordBubbleProps {
   chord: Chord;
@@ -62,15 +62,47 @@ export const ChordBubble: React.FC<ChordBubbleProps> = ({
   const opacity = isDimmed ? 0.25 : isNextMove ? 1 : isDiatonic ? 0.9 : 0.45;
   const name = chordName(chord);
 
+  // Build accessible description
+  const fullName = chordFullName(chord);
+  const parts = [fullName];
+  if (label) parts.push(label);
+  if (isReference) parts.push('reference chord');
+  if (isSelected) parts.push('selected');
+  if (isInProgression) parts.push('in progression');
+  if (isNextMove) parts.push(`suggested ${nextMoveStrength ?? ''} move`);
+  const ariaLabel = parts.join(', ');
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onClick(chord);
+      }
+    },
+    [onClick, chord],
+  );
+
   return (
     <g
+      tabIndex={0}
+      role="button"
+      aria-label={ariaLabel}
+      aria-pressed={isSelected}
       transform={`translate(${x},${y}) scale(${scale})`}
       style={{ cursor: 'pointer', transition: 'transform 0.15s ease, opacity 0.15s ease' }}
       onClick={() => onClick(chord)}
+      onKeyDown={handleKeyDown}
       onMouseEnter={() => onHover(chord)}
       onMouseLeave={() => onHover(null)}
+      onFocus={() => onHover(chord)}
+      onBlur={() => onHover(null)}
       opacity={opacity}
     >
+      {/* Invisible touch target — ensures 44px minimum hit area */}
+      {radius < 22 && (
+        <circle r={22} fill="transparent" />
+      )}
+
       {/* Next move glow */}
       {isNextMove && (
         <circle
@@ -114,6 +146,7 @@ export const ChordBubble: React.FC<ChordBubbleProps> = ({
         fontWeight={isSelected ? 700 : 500}
         style={{ pointerEvents: 'none', userSelect: 'none' }}
         dy={label ? -3 : 0}
+        aria-hidden="true"
       >
         {name}
       </text>
@@ -127,6 +160,7 @@ export const ChordBubble: React.FC<ChordBubbleProps> = ({
           fontWeight={400}
           style={{ pointerEvents: 'none', userSelect: 'none' }}
           dy={radius + 14}
+          aria-hidden="true"
         >
           {label}
         </text>
@@ -141,6 +175,7 @@ export const ChordBubble: React.FC<ChordBubbleProps> = ({
           fontWeight={600}
           style={{ pointerEvents: 'none', userSelect: 'none' }}
           dy={radius + 24}
+          aria-hidden="true"
         >
           {sublabel}
         </text>

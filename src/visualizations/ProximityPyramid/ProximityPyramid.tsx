@@ -41,7 +41,9 @@ export const ProximityPyramid: React.FC<VisualizationProps> = ({
   const levelSpacing = usableHeight / Math.max(levelCount, 1);
 
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Proximity Pyramid from ${chordName(referenceChord)}`}>
+      <title>Proximity Pyramid from {chordName(referenceChord)}</title>
+      <desc>Pyramid showing chords organized by proximity to {chordName(referenceChord)}, with closest chords at the top</desc>
       {/* Title */}
       <text x={width / 2} y={28} textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize={12}>
         Proximity Pyramid from {chordName(referenceChord)}

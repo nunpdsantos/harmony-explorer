@@ -1,34 +1,75 @@
-import * as Tone from 'tone';
+import { PRESETS, type PresetName, type AudioPreset } from './presets';
+import { humanizeVelocity, humanizeTiming } from './humanize';
 
 /**
  * Singleton audio engine wrapping Tone.js.
  * Handles synth creation, chord playback, and progression sequencing.
+ * Supports switchable presets and humanization.
+ *
+ * Tone.js is loaded lazily on first initAudio() call to reduce initial bundle size.
  */
 
-let synth: Tone.PolySynth | null = null;
-let reverb: Tone.Reverb | null = null;
+// Tone.js types — resolved after dynamic import
+type ToneModule = typeof import('tone');
+let Tone: ToneModule | null = null;
+
+let synth: import('tone').PolySynth | null = null;
+let reverb: import('tone').Reverb | null = null;
 let isInitialized = false;
+let currentPreset: PresetName = 'piano';
+
+/** Apply a preset to the existing synth */
+function applySynthSettings(preset: AudioPreset): void {
+  if (!synth) return;
+  synth.set({
+    oscillator: { type: preset.oscillator },
+    envelope: preset.envelope,
+    volume: preset.volume,
+  });
+}
 
 /** Ensure Tone.js audio context is started (must be called from user gesture) */
 export async function initAudio(): Promise<void> {
   if (isInitialized) return;
 
+  // Lazy-load Tone.js on first use
+  if (!Tone) {
+    Tone = await import('tone');
+  }
+
   await Tone.start();
 
-  reverb = new Tone.Reverb({ decay: 2, wet: 0.25 }).toDestination();
+  const preset = PRESETS[currentPreset];
+
+  reverb = new Tone.Reverb({ decay: preset.reverb.decay, wet: preset.reverb.wet }).toDestination();
 
   synth = new Tone.PolySynth(Tone.Synth, {
-    oscillator: { type: 'triangle' },
-    envelope: {
-      attack: 0.02,
-      decay: 0.3,
-      sustain: 0.4,
-      release: 1.0,
-    },
-    volume: -8,
+    oscillator: { type: preset.oscillator },
+    envelope: preset.envelope,
+    volume: preset.volume,
   }).connect(reverb);
 
   isInitialized = true;
+}
+
+/** Switch to a different audio preset */
+export function setPreset(name: PresetName): void {
+  currentPreset = name;
+  const preset = PRESETS[name];
+
+  if (synth) {
+    applySynthSettings(preset);
+  }
+
+  if (reverb) {
+    reverb.decay = preset.reverb.decay;
+    reverb.wet.value = preset.reverb.wet;
+  }
+}
+
+/** Get the current preset name */
+export function getPreset(): PresetName {
+  return currentPreset;
 }
 
 /** Convert MIDI note number to frequency name (e.g., 60 → "C4") */
@@ -40,19 +81,21 @@ function midiToNoteName(midi: number): string {
 }
 
 /** Play a single chord (array of MIDI note numbers) */
-export function playChord(midiNotes: number[], duration: string = '2n'): void {
+export function playChord(midiNotes: number[], duration: string = '2n', velocity?: number): void {
   if (!synth || !isInitialized) return;
 
   const noteNames = midiNotes.map(midiToNoteName);
-  synth.triggerAttackRelease(noteNames, duration);
+  const vel = velocity ?? 0.7;
+  synth.triggerAttackRelease(noteNames, duration, undefined, vel);
 }
 
 /** Play a chord and release after a specific time in seconds */
-export function playChordForDuration(midiNotes: number[], durationSec: number): void {
+export function playChordForDuration(midiNotes: number[], durationSec: number, velocity?: number): void {
   if (!synth || !isInitialized) return;
 
   const noteNames = midiNotes.map(midiToNoteName);
-  synth.triggerAttackRelease(noteNames, durationSec);
+  const vel = velocity ?? 0.7;
+  synth.triggerAttackRelease(noteNames, durationSec, undefined, vel);
 }
 
 /**
@@ -65,6 +108,7 @@ export function playProgression(
   onStep: (index: number) => void,
   onComplete: () => void,
   loop: boolean = false,
+  humanize: number = 0,
 ): () => void {
   if (!synth || !isInitialized) {
     onComplete();
@@ -90,10 +134,19 @@ export function playProgression(
     }
 
     onStep(currentIndex);
-    playChordForDuration(voicedChords[currentIndex], chordDuration * 0.9);
+
+    const velocity = humanize > 0
+      ? humanizeVelocity(0.7, humanize)
+      : 0.7;
+
+    playChordForDuration(voicedChords[currentIndex], chordDuration * 0.9, velocity);
     currentIndex++;
 
-    timeoutId = setTimeout(playNext, chordDuration * 1000);
+    const nextTime = humanize > 0
+      ? humanizeTiming(chordDuration * 1000, humanize)
+      : chordDuration * 1000;
+
+    timeoutId = setTimeout(playNext, nextTime);
   }
 
   playNext();

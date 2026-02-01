@@ -1,73 +1,58 @@
-# React + TypeScript + Vite
+# Harmony Explorer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![CI](https://github.com/nunpdsantos/harmony-explorer/actions/workflows/ci.yml/badge.svg)](https://github.com/nunpdsantos/harmony-explorer/actions/workflows/ci.yml)
 
-Currently, two official plugins are available:
+An interactive music theory tool for exploring harmonic relationships through visualizations, audio playback, and guided lessons. Based on the concepts from *Illustrated Harmony*.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- **7 visualizations** — Circle of Fifths, Proximity Pyramid, Tonal Function Chart, Diminished Symmetry, Augmented Star, Tritone Substitution Diagram, Alternation Circle
+- **Chord progression builder** — click chords to build progressions, play back with adjustable tempo and looping
+- **Audio engine** — 5 instrument presets (Piano, Rhodes, Organ, Pad, Strings) with humanization
+- **Learn mode** — 12 guided lessons with interactive exercises covering scales, chords, secondary dominants, and more
+- **MIDI export** — export progressions as standard MIDI files
+- **Keyboard shortcuts** — 15+ shortcuts for fast workflow
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+| Layer | Technology |
+|-------|-----------|
+| UI | React 19, TypeScript 5.9, Tailwind CSS 4 |
+| Build | Vite 7 |
+| State | Zustand 5 |
+| Visualizations | D3.js 7 (SVG) |
+| Audio | Tone.js 15 (Web Audio API) |
+| Persistence | idb-keyval (IndexedDB) |
+| Testing | Vitest 4, @testing-library/react |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting Started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Scripts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server |
+| `npm run build` | Type-check and production build |
+| `npm run lint` | Run ESLint |
+| `npm test` | Run tests |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run test:coverage` | Run tests with coverage report |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Architecture
+
+```
+src/
+  core/          Pure music theory functions (scales, chords, harmony)
+  audio/         Tone.js engine, presets, voicing, MIDI input
+  visualizations/ 7 SVG visualizations + shared ChordBubble
+  learn/         Lesson content, exercises, lesson navigation
+  components/    React UI (Sidebar, TransportBar, VizSelector)
+  hooks/         Custom hooks (shortcuts, onboarding, container size)
+  state/         Zustand store
+  utils/         MIDI export, persistence
 ```

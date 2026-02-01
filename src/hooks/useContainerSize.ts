@@ -17,7 +17,7 @@ export function useContainerSize(ref: RefObject<HTMLElement | null>): { width: n
     if (ref.current) observer.observe(ref.current);
 
     return () => observer.disconnect();
-  }, [updateSize]);
+  }, [ref, updateSize]);
 
   return size;
 }
