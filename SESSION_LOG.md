@@ -768,7 +768,8 @@ The user should choose the next direction. Options:
 
 ### How to Start Next Session
 1. Read this file (`SESSION_LOG.md`) for full project history and current state
-2. Run `npx vitest run` to confirm 804 tests pass
-3. Run `npx tsc -b && npx vite build` to confirm clean build
-4. Decide Phase 8 direction with the user
-5. Write the Phase 8 plan and begin implementation
+2. Read `ROADMAP.md` for the full Phases 8–16 plan with checkable sub-tasks
+3. Run `npx vitest run` to confirm 804 tests pass
+4. Run `npx tsc -b && npx vite build` to confirm clean build
+5. **Start with Phase 14 (UX Polish)** — quick wins, cleans up 25 lint warnings, low risk
+6. Then follow the suggested order in `ROADMAP.md` for subsequent phases
