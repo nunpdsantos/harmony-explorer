@@ -13,6 +13,7 @@ import {
   listAttemptsForExercise,
   listAttemptsForLesson,
   type ExerciseAttempt,
+  type LessonMetrics,
 } from '../progressTracker';
 
 // Mock idb-keyval
@@ -198,18 +199,24 @@ describe('progressTracker', () => {
 
   describe('weakestLessons', () => {
     it('returns lessons sorted by accuracy ascending', () => {
-      const metrics = [
-        { lessonIndex: 0, accuracy: 0.9, totalAttempts: 5 } as any,
-        { lessonIndex: 1, accuracy: 0.4, totalAttempts: 5 } as any,
-        { lessonIndex: 2, accuracy: 0.7, totalAttempts: 5 } as any,
+      const base: Omit<LessonMetrics, 'lessonIndex' | 'accuracy' | 'totalAttempts'> = {
+        completedAt: null, correctAttempts: 0, totalTimeMs: 0, streak: 0,
+      };
+      const metrics: LessonMetrics[] = [
+        { ...base, lessonIndex: 0, accuracy: 0.9, totalAttempts: 5 },
+        { ...base, lessonIndex: 1, accuracy: 0.4, totalAttempts: 5 },
+        { ...base, lessonIndex: 2, accuracy: 0.7, totalAttempts: 5 },
       ];
       expect(weakestLessons(metrics)).toEqual([1, 2, 0]);
     });
 
     it('filters by minimum attempts', () => {
-      const metrics = [
-        { lessonIndex: 0, accuracy: 0.3, totalAttempts: 2 } as any,
-        { lessonIndex: 1, accuracy: 0.5, totalAttempts: 5 } as any,
+      const base: Omit<LessonMetrics, 'lessonIndex' | 'accuracy' | 'totalAttempts'> = {
+        completedAt: null, correctAttempts: 0, totalTimeMs: 0, streak: 0,
+      };
+      const metrics: LessonMetrics[] = [
+        { ...base, lessonIndex: 0, accuracy: 0.3, totalAttempts: 2 },
+        { ...base, lessonIndex: 1, accuracy: 0.5, totalAttempts: 5 },
       ];
       expect(weakestLessons(metrics, 3)).toEqual([1]);
     });

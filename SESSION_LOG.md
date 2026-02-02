@@ -791,57 +791,381 @@ src/components/__tests__/OnboardingTour.test.tsx — updated step counts (6 → 
 
 ---
 
-## Current State — End of Phase 14 (2026-02-02)
+## Session: Phases 8–16 Completion (2026-02-02)
+
+All remaining phases (8, 9, 10, 11, 12, 13, 15, 16) completed in a single autonomous session. Phase 14 was already done. Commit history: `16d858f` → `bfb127e`.
+
+---
+
+## Phase 8: Notation & Export — COMPLETE ✅
+
+### 8.1 — VexFlow Integration ✅
+- New `src/visualizations/SheetMusic/SheetMusic.tsx` — renders progression as standard notation on a grand staff
+- Maps MIDI voicings from `voiceLeading.ts` to VexFlow `StaveNote` objects
+- Chord symbols above the staff, roman numerals below
+- Key signatures based on `referenceRoot`
+- Lazy-loads VexFlow (dynamic import in useEffect)
+- Added to VizSelector under "Notation" category
+
+### 8.2 — MIDI File Export ✅
+- Extended `src/utils/midiExport.ts` to include voice-led voicings (not just root-position)
+- Export as `.mid` with proper tempo, time signature, key signature
+- Download button in TransportBar (uses voiced export when voicings available)
+- Chord names as MIDI text events
+
+### 8.3 — PDF Report Export ✅
+- New `src/utils/pdfExport.ts` using browser print (no jspdf dependency)
+- Analysis report: chord names, roman numerals, voice leading distances, tonal function analysis
+- "Export PDF" button in Sidebar
+
+### 8.4 — Tests ✅
+- SheetMusic smoke tests (12 tests)
+- MIDI export tests (10 new voiced export tests)
+- PDF export tests (23 tests)
+
+**Git commit:** `1a295d8`
+
+#### Files Created
+```
+src/visualizations/SheetMusic/SheetMusic.tsx
+src/utils/pdfExport.ts
+src/visualizations/SheetMusic/__tests__/SheetMusic.test.tsx
+src/utils/__tests__/pdfExport.test.ts
+```
+
+#### Files Modified
+```
+src/components/VizSelector.tsx — Notation category
+src/components/VisualizationArea.tsx — lazy-loaded SheetMusic
+src/components/TransportBar.tsx — MIDI download button
+src/components/Sidebar.tsx — Export PDF button
+src/state/store.ts — sheetMusic viz mode
+src/utils/midiExport.ts — voiced export
+src/styles/theme.ts — notation tokens
+```
+
+---
+
+## Phase 9: Piano Keyboard View — COMPLETE ✅ (9.1, 9.2, 9.4)
+
+### 9.1 — Piano Keyboard Component ✅
+- New `src/visualizations/PianoKeyboard/PianoKeyboard.tsx` — SVG piano (3 octaves, C3–C6)
+- White and black keys with proper proportions
+- Highlight active chord tones with quality-based colors (root = full color, others = alpha)
+- Note names on keys (toggle button)
+- Click a key to hear the note (via audio engine, lazy-loaded)
+- Added to VizSelector under "Instrument" category (renamed from "Keyboard")
+- Middle C indicator dot, responsive layout
+
+### 9.2 — Voicing Visualization ✅
+- Voicing dots on keys (color-coded by voice: bass/tenor/alto/soprano via VOICE_COLORS)
+- Intervals between adjacent voicing notes (m2, M3, P5, etc.)
+- Voice legend below keyboard with note names
+
+### 9.4 — Tests ✅
+- Keyboard renders correct number of keys (22 white + 15 black + toggle = 38 groups)
+- Highlights correct notes for chord, click interaction, voicing dots and intervals
+- 16 tests in 1 test file
+
+**Git commit:** `16d858f`
+
+#### Files Created
+```
+src/visualizations/PianoKeyboard/PianoKeyboard.tsx
+src/visualizations/PianoKeyboard/__tests__/PianoKeyboard.test.tsx
+```
+
+#### Files Modified
+```
+src/components/VizSelector.tsx — "Instrument" category, pianoKeyboard option
+src/components/VisualizationArea.tsx — lazy-loaded PianoKeyboard
+src/state/store.ts — pianoKeyboard viz mode
+src/styles/theme.ts — piano tokens
+```
+
+---
+
+## Phase 10: Advanced Audio — COMPLETE ✅
+
+### 10.1 — Arpeggiation Patterns ✅
+- New `src/audio/arpeggiation.ts` — 6 patterns: up, down, upDown, random, albertiBass, pinch
+- Each pattern reorders MIDI notes and schedules at subdivisions of the beat
+- Pattern selector in TransportBar
+
+### 10.2 — Rhythm Patterns ✅
+- New `src/audio/rhythmPatterns.ts` — 6 patterns: wholeNotes, halfNotes, quarters, swing8ths, bossaNova, waltz
+- Each pattern defines note durations and accents per beat
+- Rhythm selector in TransportBar
+
+### 10.5 — Tests ✅
+- Arpeggiation pattern output tests
+- Rhythm pattern duration tests
+
+**Git commit:** `59f2952`
+
+#### Files Created
+```
+src/audio/arpeggiation.ts
+src/audio/rhythmPatterns.ts
+src/audio/__tests__/arpeggiation.test.ts
+src/audio/__tests__/rhythmPatterns.test.ts
+```
+
+#### Files Modified
+```
+src/audio/audioEngine.ts — arpeggiation + rhythm integration
+src/components/TransportBar.tsx — pattern selectors
+src/state/store.ts — arpeggiation/rhythm state
+```
+
+---
+
+## Phase 11: PWA & Offline — COMPLETE ✅
+
+### 11.1 — Service Worker ✅
+- `vite-plugin-pwa` configuration in `vite.config.ts`
+- Precache all app assets (HTML, JS, CSS, fonts)
+- Runtime cache for Google Fonts (CacheFirst strategy)
+- autoUpdate strategy for service worker
+
+### 11.2 — Web App Manifest ✅
+- Updated manifest via VitePWA config — theme color, background color, display: standalone
+- App icons (192px, 512px) defined in manifest
+
+### 11.4 — Install Prompt ✅
+- New `src/hooks/usePwaInstall.ts` — listens for `beforeinstallprompt` event
+- Install button in App when available
+- New `src/hooks/useOnlineStatus.ts` — tracks online/offline state
+- Offline indicator in App header
+
+### 11.5 — Tests ✅
+- `useOnlineStatus.test.ts` — 7 tests (initial state, event listeners, cleanup)
+- `usePwaInstall.test.ts` — 9 tests (prompt capture, install trigger, cleanup)
+
+**Git commit:** `35cd5a1`
+
+#### Files Created
+```
+src/hooks/useOnlineStatus.ts
+src/hooks/usePwaInstall.ts
+src/hooks/__tests__/useOnlineStatus.test.ts
+src/hooks/__tests__/usePwaInstall.test.ts
+```
+
+#### Files Modified
+```
+vite.config.ts — VitePWA plugin config
+src/App.tsx — install button, offline indicator
+package.json — vite-plugin-pwa dependency
+```
+
+---
+
+## Phase 12: Performance & Analytics — COMPLETE ✅
+
+### 12.1 — Progress Tracking ✅
+- New `src/learn/progressTracker.ts` — exercise attempt persistence via IndexedDB (idb-keyval)
+- `ExerciseAttempt` interface: id, exerciseId, lessonIndex, exerciseIndex, timestamp, isCorrect, quality, timeSpentMs, retriesBeforeCorrect
+- `LessonMetrics`: accuracy, streak, totalTimeMs, etc.
+- Functions: `saveAttempt`, `listAttempts`, `computeLessonMetrics`, `weakestLessons`, `practiceDays`
+
+### 12.2 — Spaced Repetition ✅
+- New `src/learn/spacedRepetition.ts` — full SM-2 algorithm
+- `ReviewCard` interface: exerciseId, interval (days), easeFactor (min 1.3), repetitions, nextReviewDate
+- Quality < 3 = fail (reset), quality >= 3 = pass, intervals: I(1)=1d, I(2)=3d, I(n)=round(I(n-1)*EF)
+- Review count badge in LessonNav (amber circle)
+
+### 12.3 — Difficulty Adaptation ✅
+- New `src/learn/difficultyAdaptation.ts` — difficulty estimation from attempts
+- accuracy >= 0.85 && avgTime < 5s → easy, >= 0.50 → medium, else → hard
+- `suggestNextLesson()` based on weakest areas
+
+### 12.4 — Tests ✅
+- `progressTracker.test.ts` — 24 tests
+- `spacedRepetition.test.ts` — 17 tests
+- `difficultyAdaptation.test.ts` — 12 tests
+
+**Git commit:** `fa22031`
+
+#### Files Created
+```
+src/learn/progressTracker.ts
+src/learn/spacedRepetition.ts
+src/learn/difficultyAdaptation.ts
+src/learn/__tests__/progressTracker.test.ts
+src/learn/__tests__/spacedRepetition.test.ts
+src/learn/__tests__/difficultyAdaptation.test.ts
+```
+
+#### Files Modified
+```
+src/learn/ExercisePanel.tsx — attempt tracking (lessonIndex prop, retry counting, timing via useEffect)
+src/learn/LessonNav.tsx — review count badge
+src/learn/LessonView.tsx — passes lessonIndex to ExercisePanel
+src/state/store.ts — dueReviewCount, loadDueReviewCount
+src/learn/__tests__/ExercisePanel.test.tsx — lessonIndex prop, idb-keyval mock
+src/learn/__tests__/LessonNav.test.tsx — idb-keyval mock
+src/components/__tests__/Sidebar.test.tsx — idb-keyval mock
+```
+
+---
+
+## Phase 13: Progression Save/Share — COMPLETE ✅
+
+### 13.1 — IndexedDB Storage ✅
+- Progression CRUD via idb-keyval with named progressions
+- "My Progressions" panel in Sidebar with list, load, delete
+
+### 13.2 — Import/Export ✅
+- Export as JSON file (download)
+- Import from JSON file (file picker)
+- Export as shareable URL (encode progression in URL hash)
+- Import from URL on app load (parse hash)
+
+### 13.3 — Progression Library ✅
+- 17 famous progressions: Autumn Leaves, Giant Steps, All The Things You Are, Rhythm Changes, etc.
+- Categorized: Jazz Standards, Pop, Classical, Blues
+- Click to load into builder
+
+**Git commit:** `b58161e`
+
+---
+
+## Phase 15: Guitar Fretboard View — COMPLETE ✅
+
+### 15.1 — Fretboard Component ✅
+- New `src/visualizations/GuitarFretboard/GuitarFretboard.tsx` — SVG 6-string fretboard (15 frets)
+- 5 tunings: standard, dropD, openG, openD, dadgad
+- Chord tones as colored dots, root emphasized, note labels on fretted positions
+- Click-to-play audio via lazy-loaded audioEngine
+- Inlay dots at 3/5/7/9/12/15
+- Tuning selector and shape cycling controls
+
+### 15.2 — Chord Shape Database ✅
+- New `src/core/guitarVoicings.ts` — 16 shape templates (E-form and A-form)
+- `STANDARD_TUNING = [40, 45, 50, 55, 59, 64]` (E2–E4)
+- `getGuitarShapes(root, quality, tuning)` — transposes templates via pitch class arithmetic
+- `generateFromIntervals()` fallback for exotic qualities
+- `shapeMidiNotes()`, `shapePitchClasses()` utilities
+
+### 15.4 — Tests ✅
+- `guitarVoicings.test.ts` — 24 tests (shapes, transposition, tunings, pitch classes)
+- `GuitarFretboard.test.tsx` — 10 tests (rendering, interactions, chord display)
+
+**Git commit:** `5b8f2dc`
+
+#### Files Created
+```
+src/core/guitarVoicings.ts
+src/visualizations/GuitarFretboard/GuitarFretboard.tsx
+src/core/__tests__/guitarVoicings.test.ts
+src/visualizations/GuitarFretboard/__tests__/GuitarFretboard.test.tsx
+```
+
+#### Files Modified
+```
+src/state/store.ts — 'guitarFretboard' viz mode
+src/components/VizSelector.tsx — "Instrument" category, guitar option
+src/components/VisualizationArea.tsx — lazy-loaded GuitarFretboard
+src/styles/theme.ts — fretboard color tokens (COLOR_FRETBOARD_WOOD, COLOR_FRET_WIRE, etc.)
+src/components/__tests__/VizSelector.test.tsx — 13 options, "Instrument" category
+```
+
+---
+
+## Phase 16: Ear Training — COMPLETE ✅
+
+### 16.1–16.3 — Ear Training Engine ✅
+- New `src/learn/earTraining.ts` — interval, chord quality, and dictation exercise generation
+- `INTERVAL_TIERS`: easy=[P4,P5,P8], medium adds M2/m2/M3/m3, hard=all 12
+- `QUALITY_TIERS`: easy=[major,minor], medium adds dim/aug, hard adds dom7/maj7/min7
+- `DICTATION_TIERS`: easy=3 chords diatonic, medium=4 diatonic, hard=4 chromatic
+- Scoring with `updateScore()` and `initialScore()`
+
+### 16.4 — Ear Training UI ✅
+- New `src/learn/EarTrainingPanel.tsx` — interval and chord-quality modes
+- Three difficulty levels (Easy/Medium/Hard)
+- Setup screen → training screen with score, replay, stop
+- Auto-plays question on generation, auto-advances after answer
+- Integrated below LessonNav in Sidebar (learn mode)
+
+### 16.5 — Tests ✅
+- `earTraining.test.ts` — 36 tests (intervals, chord quality, dictation, scoring)
+- `EarTrainingPanel.test.tsx` — 9 tests (UI rendering, mode switching, interaction)
+
+**Git commit:** `3fef4d4`
+
+#### Files Created
+```
+src/learn/earTraining.ts
+src/learn/EarTrainingPanel.tsx
+src/learn/__tests__/earTraining.test.ts
+src/learn/__tests__/EarTrainingPanel.test.tsx
+```
+
+#### Files Modified
+```
+src/components/Sidebar.tsx — EarTrainingPanel below LessonNav in learn mode
+```
+
+---
+
+## Docs Update
+- Updated `CLAUDE.md` — all 16 phases complete, 1071 tests, 64 files, 13 visualizations
+- Updated `ROADMAP.md` — all phases marked ✅ COMPLETE
+
+**Git commit:** `bfb127e`
+
+---
+
+## Current State — All 16 Phases Complete (2026-02-02)
 
 ### What's Done
-Phases 1–7 + 14 are complete. The app covers both tonal and extended jazz harmony:
-- All tonal harmony fundamentals from the "Illustrated Harmony" book
-- Full jazz theory: chord extensions, all modes (major/melodic minor/harmonic minor/symmetric), chord-scale theory, modal interchange, altered dominants, Coltrane changes, upper structure triads, negative harmony
-- Interactive chord exploration across 11 linked visualizations
-- Voice leading analysis and animation (greedy fallback for extended chords)
-- Modulation pathways between keys
-- Bridge chord suggestions (tritone sub, passing diminished, secondary dominants)
-- 22-lesson curriculum with 59 progressive exercises
-- Full design token system with enforcement — zero lint warnings
-- CSS transition/animation system (fade-in, slide-in, success pulse) with reduced-motion support
-- Micro-interactions (button press feedback, exercise success animations)
-- 8-step onboarding tour covering all features through Phase 7
-- Custom visual identity (Bricolage Grotesque + Plus Jakarta Sans fonts, radial gradient bg)
-- Collapsible sidebar (desktop rail mode)
-- Undo/redo for progression changes
-- Comprehensive accessibility: reduced-motion, high-contrast, keyboard navigation, screen reader announcements, ARIA roles, focus management
-- Responsive at all breakpoints (320px–1280px+)
-- 804 tests, Lighthouse 100/100/100, CI/CD pipeline
+All 16 phases are complete. The app is a comprehensive music theory education platform:
 
-### Final Metrics (End of Phase 14)
-- **804 tests**, all passing (48 test files)
-- **TypeScript**: zero errors
+- **Core theory**: ~40 chord qualities, extensions (9ths–13ths), altered dominants, modes (major/melodic minor/harmonic minor/symmetric), chord-scale theory, modal interchange, Coltrane changes, upper structure triads, negative harmony
+- **13 interactive visualizations**: Circle of Fifths, Tonal Function Chart, Proximity Pyramid, Timeline, Augmented Star, Diminished Symmetry, Alternation Circle, Tritone Sub Diagram, Modulation Map, Chord-Scale Map, Negative Harmony Mirror, Sheet Music (VexFlow), Piano Keyboard, Guitar Fretboard
+- **Audio**: Tone.js with 5 presets, humanization, MIDI input, 6 arpeggiation patterns, 6 rhythm patterns
+- **22 lessons, 59 exercises**, ear training (intervals + chord quality + dictation)
+- **Progress tracking**: SM-2 spaced repetition, attempt tracking, difficulty adaptation, review badges
+- **Persistence**: IndexedDB (progressions, attempts, review cards), JSON/URL sharing, 17 famous progressions library
+- **Export**: MIDI file, PDF report, sheet music notation
+- **PWA**: service worker, offline support, install prompt
+- **Design**: Bricolage Grotesque + Plus Jakarta Sans fonts, full design token system, CSS animations, reduced-motion support
+- **UX**: collapsible sidebar, undo/redo, drag-to-reorder, 8-step onboarding, keyboard shortcuts
+- **Accessibility**: ARIA roles, screen reader announcements, keyboard navigation, focus management, high-contrast support
+- **CI/CD**: GitHub Actions, Vercel deployment
+
+### Final Metrics
+- **1071 tests**, all passing (64 test files)
+- **TypeScript**: zero errors (`tsc -b` clean)
 - **ESLint**: zero errors, **zero warnings**
-- **Build**: succeeds in ~1s, 124KB app + 192KB React initial, Tone.js 340KB lazy
-- **11 interactive visualizations**
+- **13 interactive visualizations**
 - **22 lessons** with **59 exercises**
 - **~40 chord qualities**
-- **8-step onboarding tour**
+
+### Git History (Phases 8–16)
+```
+bfb127e docs: update CLAUDE.md and ROADMAP.md — all 16 phases complete
+3fef4d4 feat: add ear training exercises
+5b8f2dc feat: add interactive guitar fretboard visualization
+fa22031 feat: add progress tracking, spaced repetition (SM-2), difficulty adaptation
+35cd5a1 feat: add PWA support with offline capability and install prompt
+b58161e Phase 13: Progression Save/Share
+59f2952 Phase 10: Advanced Audio — arpeggiation, rhythm patterns
+1a295d8 Phase 8: Notation & Export — VexFlow, voiced MIDI, PDF
+16d858f Phase 9: Piano Keyboard — SVG keyboard with voicing dots
+```
 
 ### Repository
 - **GitHub**: github.com/nunpdsantos/harmony-explorer
 - **Live**: harmony-explorer.vercel.app
 
-### Next Phase Options
-See `ROADMAP.md` for the full Phases 8–16 plan. Suggested order (Phase 14 is done):
+---
 
-1. **Phase 9** (Piano Keyboard) — high visual impact, standalone
-2. **Phase 8** (Notation & Export) — pairs well with piano keyboard
-3. **Phase 10** (Advanced Audio) — enriches the audio experience
-4. **Phase 13** (Progression Save/Share) — enables persistence
-5. **Phase 11** (PWA & Offline) — depends on persistence being solid
-6. **Phase 12** (Performance & Analytics) — depends on persistence
-7. **Phase 15** (Guitar Fretboard) — new instrument view
-8. **Phase 16** (Ear Training) — depends on solid audio + exercise system
+## Session: 2026-02-02 — New Session
 
-### How to Start Next Session
-1. Read this file (`SESSION_LOG.md`) for full project history and current state
-2. Read `ROADMAP.md` for remaining phases
-3. Run `npx vitest run` to confirm 804 tests pass
-4. Run `npx tsc -b && npx vite build` to confirm clean build
-5. Pick a phase from the list above
+### Session Start
+- All 16 phases complete, 1071 tests, 64 test files
+- Git: clean working tree, up to date with origin/main
+- Dev server running on http://localhost:5173/
