@@ -159,6 +159,13 @@ export const COLOR_AVOID_NOTE = '#ef4444';          // red-500
 export const COLOR_KEY_WHITE = '#f8f8f8';
 export const COLOR_KEY_BLACK = '#1a1a2e';
 
+/* ─── Guitar fretboard colors ─── */
+export const COLOR_FRETBOARD_WOOD = '#1c1917';     // stone-900
+export const COLOR_FRET_WIRE = 'rgba(255, 255, 255, 0.20)';
+export const COLOR_STRING = 'rgba(255, 255, 255, 0.35)';
+export const COLOR_NUT = 'rgba(255, 255, 255, 0.50)';
+export const COLOR_FRET_DOT = 'rgba(255, 255, 255, 0.08)';
+
 /* ─── Overlay colors ─── */
 export const COLOR_NEGATIVE_HARMONY = '#ec4899';    // pink-500
 export const COLOR_MODAL_INTERCHANGE = '#a855f7';   // purple-500

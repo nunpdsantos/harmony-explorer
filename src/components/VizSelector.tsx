@@ -56,9 +56,10 @@ const VIZ_CATEGORIES: VizCategory[] = [
     ],
   },
   {
-    name: 'Keyboard',
+    name: 'Instrument',
     options: [
       { value: 'pianoKeyboard', label: 'Piano Keyboard', shortLabel: 'Piano', icon: '🎹' },
+      { value: 'guitarFretboard', label: 'Guitar Fretboard', shortLabel: 'Guitar', icon: '🎸' },
     ],
   },
 ];

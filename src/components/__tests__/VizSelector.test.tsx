@@ -9,10 +9,10 @@ describe('VizSelector', () => {
     useStore.setState({ activeViz: 'circleOfFifths' });
   });
 
-  it('renders all 12 visualization options', () => {
+  it('renders all 13 visualization options', () => {
     render(<VizSelector />);
     const radios = screen.getAllByRole('radio');
-    expect(radios).toHaveLength(12);
+    expect(radios).toHaveLength(13);
   });
 
   it('renders category groups with radiogroup role', () => {
@@ -69,6 +69,6 @@ describe('VizSelector', () => {
     expect(screen.getByText('Symmetry')).toBeInTheDocument();
     expect(screen.getByText('Keys')).toBeInTheDocument();
     expect(screen.getByText('Notation')).toBeInTheDocument();
-    expect(screen.getByText('Keyboard')).toBeInTheDocument();
+    expect(screen.getByText('Instrument')).toBeInTheDocument();
   });
 });

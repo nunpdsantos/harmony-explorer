@@ -20,7 +20,8 @@ export type VisualizationMode =
   | 'chordScaleMap'
   | 'negativeHarmonyMirror'
   | 'pianoKeyboard'
-  | 'sheetMusic';
+  | 'sheetMusic'
+  | 'guitarFretboard';
 export type AppMode = 'explore' | 'learn';
 export type RelationshipFilter = 'sharedNotes' | 'dominant' | 'tritone' | 'neoRiemannian';
 
