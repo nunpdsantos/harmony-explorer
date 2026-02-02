@@ -3,11 +3,11 @@
 ## What This Is
 Interactive music theory education app built with React 19 + TypeScript 5.9 + Vite 7 + Zustand 5. Based on the "Illustrated Harmony" book. Deployed on Vercel at harmony-explorer.vercel.app.
 
-## Current State (2026-02-01)
-- **Phases 1–7 complete** — tonal + extended jazz harmony, all features implemented, tested, deployed
-- **804 tests** (48 files), `tsc -b` clean, ESLint 0 errors, Lighthouse 100/100/100
-- **Latest commit**: `4476722` on `main` branch
-- **Ready for Phase 8** — user needs to choose direction
+## Current State (2026-02-02)
+- **Phases 1–7 + 14 complete** — tonal + jazz harmony, UX polish, all tested + deployed
+- **804 tests** (48 files), `tsc -b` clean, ESLint 0 errors, **0 warnings**, Lighthouse 100/100/100
+- **CSS animations**: fadeIn, fadeSlideIn, successPulse with reduced-motion support
+- **8-step onboarding tour** covering all features through Phase 7
 
 ## Key Architecture
 - **State**: Zustand store (`src/state/store.ts`) with undo middleware (`undoMiddleware.ts`)
@@ -26,4 +26,5 @@ Interactive music theory education app built with React 19 + TypeScript 5.9 + Vi
 - `npm run lint` — ESLint
 
 ## Session Log
-Read `SESSION_LOG.md` for complete project history (Phases 1–7), file inventories, and next-phase options.
+Read `SESSION_LOG.md` for complete project history (Phases 1–7 + 14), file inventories, and next-phase options.
+Read `ROADMAP.md` for remaining phases (8–13, 15–16).

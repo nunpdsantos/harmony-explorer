@@ -21,7 +21,7 @@ describe('OnboardingTour', () => {
 
   it('shows step counter', () => {
     render(<OnboardingTour />);
-    expect(screen.getByText('Step 1 of 6')).toBeInTheDocument();
+    expect(screen.getByText('Step 1 of 8')).toBeInTheDocument();
   });
 
   it('has a dialog with correct aria attributes', () => {
@@ -35,7 +35,7 @@ describe('OnboardingTour', () => {
     render(<OnboardingTour />);
 
     await user.click(screen.getByText('Next'));
-    expect(screen.getByText('Step 2 of 6')).toBeInTheDocument();
+    expect(screen.getByText('Step 2 of 8')).toBeInTheDocument();
     expect(screen.getByText('Choose Your Key')).toBeInTheDocument();
   });
 
@@ -56,10 +56,10 @@ describe('OnboardingTour', () => {
     render(<OnboardingTour />);
 
     await user.click(screen.getByText('Next'));
-    expect(screen.getByText('Step 2 of 6')).toBeInTheDocument();
+    expect(screen.getByText('Step 2 of 8')).toBeInTheDocument();
 
     await user.click(screen.getByText('Back'));
-    expect(screen.getByText('Step 1 of 6')).toBeInTheDocument();
+    expect(screen.getByText('Step 1 of 8')).toBeInTheDocument();
   });
 
   it('Skip closes the tour and sets localStorage', async () => {
@@ -75,9 +75,9 @@ describe('OnboardingTour', () => {
     const user = userEvent.setup();
     render(<OnboardingTour />);
 
-    // Navigate to last step (6 steps total, click Next 5 times)
-    for (let i = 0; i < 5; i++) {
-      await user.click(screen.getByText(i < 4 ? 'Next' : 'Next'));
+    // Navigate to last step (8 steps total, click Next 7 times)
+    for (let i = 0; i < 7; i++) {
+      await user.click(screen.getByText('Next'));
     }
     expect(screen.getByText('Get Started')).toBeInTheDocument();
   });
@@ -86,7 +86,7 @@ describe('OnboardingTour', () => {
     const user = userEvent.setup();
     const { container } = render(<OnboardingTour />);
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 7; i++) {
       await user.click(screen.getByText('Next'));
     }
     await user.click(screen.getByText('Get Started'));

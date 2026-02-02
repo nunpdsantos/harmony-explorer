@@ -9,6 +9,7 @@ import { getDiatonicChords, getDiatonicInfo, functionColor } from '../core/harmo
 import { TEMPLATES, transposeTemplate } from '../core/progressionTemplates';
 import { getAllBorrowedChords } from '../core/modalInterchange';
 import { getAlteredDominantInfo, getAlteredVariants } from '../core/alteredDominants';
+import { COLOR_QUALITY_FALLBACK } from '../styles/theme';
 import { VizSelector } from './VizSelector';
 import { LessonNav } from '../learn/LessonNav';
 import { Card } from './ui/Card';
@@ -388,7 +389,7 @@ export const Sidebar: React.FC = () => {
               <div className="flex items-center gap-3">
                 <div
                   className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-bold text-lg"
-                  style={{ backgroundColor: selectedInfo ? functionColor(selectedInfo.function) : '#6b7280' }}
+                  style={{ backgroundColor: selectedInfo ? functionColor(selectedInfo.function) : COLOR_QUALITY_FALLBACK }}
                 >
                   {chordName(selectedChord)}
                 </div>

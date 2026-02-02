@@ -63,6 +63,35 @@ input[type="range"]::-webkit-slider-thumb {
   outline: none;
 }
 
+/* ─── Transition & animation classes ─── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes successPulse {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--duration-normal) ease-out;
+}
+
+.animate-fade-slide-in {
+  animation: fadeSlideIn var(--duration-slow) ease-out;
+}
+
+.animate-success {
+  animation: successPulse var(--duration-slow) ease-out;
+}
+
 /* Reduced motion: disable animations, set durations to 0 */
 @media (prefers-reduced-motion: reduce) {
   :root {

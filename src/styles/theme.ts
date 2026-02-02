@@ -150,6 +150,15 @@ export const COLOR_LINE_DIM = 'rgba(255, 255, 255, 0.10)';
 export const COLOR_DIATONIC_STROKE = 'rgba(255, 255, 255, 0.35)';
 export const COLOR_NON_DIATONIC_STROKE = 'rgba(255, 255, 255, 0.12)';
 
+/* ─── Chord-scale analysis colors ─── */
+export const COLOR_CHORD_TONE = '#3b82f6';        // blue-500
+export const COLOR_CHORD_TONE_LIGHT = '#60a5fa';   // blue-400
+export const COLOR_AVOID_NOTE = '#ef4444';          // red-500
+
+/* ─── Overlay colors ─── */
+export const COLOR_NEGATIVE_HARMONY = '#ec4899';    // pink-500
+export const COLOR_MODAL_INTERCHANGE = '#a855f7';   // purple-500
+
 /* ─── Font sizes for SVG (px) ─── */
 export const FONT_SIZE_3XS = 7;
 export const FONT_SIZE_2XS = 8;

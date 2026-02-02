@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ChordBubble } from '../ChordBubble';
 import { chord } from '../../../core/chords';
+import { QUALITY_COLORS } from '../../../styles/theme';
 
 const cMajor = chord(0, 'major');
 
@@ -17,7 +18,7 @@ const defaultProps = {
   isDiatonic: true,
   isDimmed: false,
   isNextMove: false,
-  fillColor: '#3b82f6',
+  fillColor: QUALITY_COLORS.major,
   onClick: vi.fn(),
   onHover: vi.fn(),
 };

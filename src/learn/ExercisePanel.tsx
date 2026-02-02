@@ -113,7 +113,7 @@ const BuildProgressionExercise: React.FC<{
       )}
 
       {isComplete && (
-        <div className="text-xs text-green-400" role="status" aria-live="polite">
+        <div className="text-xs text-green-400 animate-success" role="status" aria-live="polite">
           Progression complete!
         </div>
       )}
@@ -153,7 +153,7 @@ export const ExercisePanel: React.FC<ExercisePanelProps> = ({ exercises, onCompl
 
   if (completed) {
     return (
-      <div className="text-center py-4">
+      <div className="text-center py-4 animate-fade-slide-in">
         <div className="text-green-400 font-semibold text-sm">All exercises complete!</div>
         <button
           onClick={onComplete}
@@ -273,7 +273,7 @@ export const ExercisePanel: React.FC<ExercisePanelProps> = ({ exercises, onCompl
       )}
 
       {isCorrect === true && exercise.type !== 'build-progression' && (
-        <div className="text-xs text-green-400" role="status" aria-live="polite">Correct!</div>
+        <div className="text-xs text-green-400 animate-success" role="status" aria-live="polite">Correct!</div>
       )}
 
       {/* Feedback explanation */}

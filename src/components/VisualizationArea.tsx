@@ -63,22 +63,24 @@ export const VisualizationArea: React.FC = () => {
   return (
     <div ref={containerRef} className="flex-1 relative overflow-hidden">
       <Suspense fallback={<VizFallback />}>
-        {mode === 'learn' ? (
-          <LessonView width={width} height={height} />
-        ) : (
-          <>
-            {activeViz === 'circleOfFifths' && <CircleOfFifths {...vizProps} />}
-            {activeViz === 'proximityPyramid' && <ProximityPyramid {...vizProps} />}
-            {activeViz === 'tonalFunctionChart' && <TonalFunctionChart {...vizProps} />}
-            {activeViz === 'diminishedSymmetry' && <DiminishedSymmetry {...vizProps} />}
-            {activeViz === 'augmentedStar' && <AugmentedStar {...vizProps} />}
-            {activeViz === 'tritoneSubDiagram' && <TritoneSubDiagram {...vizProps} />}
-            {activeViz === 'alternationCircle' && <AlternationCircle {...vizProps} />}
-            {activeViz === 'modulationMap' && <ModulationMap {...vizProps} />}
-            {activeViz === 'chordScaleMap' && <ChordScaleMap {...vizProps} />}
-            {activeViz === 'negativeHarmonyMirror' && <NegativeHarmonyMirror {...vizProps} />}
-          </>
-        )}
+        <div key={mode === 'learn' ? 'learn' : activeViz} className="animate-fade-in w-full h-full">
+          {mode === 'learn' ? (
+            <LessonView width={width} height={height} />
+          ) : (
+            <>
+              {activeViz === 'circleOfFifths' && <CircleOfFifths {...vizProps} />}
+              {activeViz === 'proximityPyramid' && <ProximityPyramid {...vizProps} />}
+              {activeViz === 'tonalFunctionChart' && <TonalFunctionChart {...vizProps} />}
+              {activeViz === 'diminishedSymmetry' && <DiminishedSymmetry {...vizProps} />}
+              {activeViz === 'augmentedStar' && <AugmentedStar {...vizProps} />}
+              {activeViz === 'tritoneSubDiagram' && <TritoneSubDiagram {...vizProps} />}
+              {activeViz === 'alternationCircle' && <AlternationCircle {...vizProps} />}
+              {activeViz === 'modulationMap' && <ModulationMap {...vizProps} />}
+              {activeViz === 'chordScaleMap' && <ChordScaleMap {...vizProps} />}
+              {activeViz === 'negativeHarmonyMirror' && <NegativeHarmonyMirror {...vizProps} />}
+            </>
+          )}
+        </div>
       </Suspense>
     </div>
   );

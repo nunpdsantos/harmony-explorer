@@ -10,27 +10,35 @@ interface TourStep {
 const TOUR_STEPS: TourStep[] = [
   {
     title: 'Welcome to Harmony Explorer',
-    description: 'An interactive tool for exploring music theory concepts through visualizations, audio playback, and guided lessons. Let\'s take a quick tour!',
+    description: 'An interactive tool for exploring tonal and jazz harmony through 11 linked visualizations, audio playback, and 22 guided lessons. Let\'s take a quick tour!',
   },
   {
     title: 'Choose Your Key',
-    description: 'Select a key from the piano-style key selector in the sidebar. All chords and visualizations will update to reflect your chosen key.',
+    description: 'Select a key from the key selector in the sidebar. All chords, visualizations, and analysis will update to reflect your chosen key.',
   },
   {
     title: 'Explore Visualizations',
-    description: 'Switch between 7 different visualizations: Circle of Fifths, Proximity Pyramid, Tonal Function Chart, and more. Each reveals different harmonic relationships.',
+    description: 'Switch between 11 visualizations across 5 categories: Circle of Fifths, Tonal Function Chart, Proximity Pyramid, Modulation Map, Chord-Scale Map, Negative Harmony Mirror, and more.',
   },
   {
     title: 'Build Progressions',
-    description: 'Click chords to add them to your progression at the bottom. You can play them back, loop them, adjust tempo, and export as MIDI.',
+    description: 'Click chords to build a progression. The Next Moves panel suggests where to go next. Drag to reorder, use templates as starting points, and see voice-leading quality in real time.',
+  },
+  {
+    title: 'Overlays & Analysis',
+    description: 'Toggle overlays in the transport bar: Voices (V) shows voice-leading paths, Bridges (B) suggests chromatic passing chords, and Modal Interchange (M) reveals borrowed chords from parallel modes.',
+  },
+  {
+    title: 'Advanced Theory',
+    description: 'Explore chord extensions (9ths\u201313ths), all modes, chord-scale relationships, altered dominants, Coltrane changes (J), upper structure triads, and negative harmony.',
   },
   {
     title: 'Transport Controls',
-    description: 'Use the transport bar to play/stop your progression, toggle looping, adjust BPM, switch instrument presets, and export to MIDI.',
+    description: 'Play/stop your progression, toggle looping, adjust BPM, switch between 5 instrument presets, and undo/redo changes with Cmd+Z. Export to MIDI when ready.',
   },
   {
     title: 'Learn Mode',
-    description: 'Switch to Learn mode for 12 guided lessons covering scales, chords, the Circle of Fifths, secondary dominants, and more. Press ? anytime for keyboard shortcuts.',
+    description: 'Switch to Learn mode for 22 guided lessons \u2014 from basic scales to Coltrane changes. Each lesson includes interactive exercises. Press ? anytime for keyboard shortcuts.',
   },
 ];
 

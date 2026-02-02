@@ -9,6 +9,8 @@ import {
   COLOR_TEXT_FAINT,
   COLOR_TEXT_DIM,
   COLOR_RING_STROKE,
+  COLOR_CHORD_TONE,
+  COLOR_NEGATIVE_HARMONY,
   FONT_SIZE_XS,
   FONT_SIZE_SM,
   FONT_SIZE_LG,
@@ -109,7 +111,7 @@ export const NegativeHarmonyMirror: React.FC<VisualizationProps> = ({
               cy={y}
               r={dotRadius}
               fill={isChordTone ? 'rgba(59,130,246,0.3)' : 'rgba(255,255,255,0.05)'}
-              stroke={isChordTone ? '#3b82f6' : COLOR_RING_STROKE}
+              stroke={isChordTone ? COLOR_CHORD_TONE : COLOR_RING_STROKE}
               strokeWidth={isChordTone ? 2 : 1}
             />
             <text
@@ -130,7 +132,7 @@ export const NegativeHarmonyMirror: React.FC<VisualizationProps> = ({
               cy={negY}
               r={dotRadius}
               fill={isChordTone ? 'rgba(236,72,153,0.3)' : 'rgba(255,255,255,0.05)'}
-              stroke={isChordTone ? '#ec4899' : COLOR_RING_STROKE}
+              stroke={isChordTone ? COLOR_NEGATIVE_HARMONY : COLOR_RING_STROKE}
               strokeWidth={isChordTone ? 2 : 1}
             />
             <text
@@ -152,7 +154,7 @@ export const NegativeHarmonyMirror: React.FC<VisualizationProps> = ({
                 y1={y}
                 x2={rightX - dotRadius - 2}
                 y2={negY}
-                stroke={isChordTone ? '#ec4899' : COLOR_RING_STROKE}
+                stroke={isChordTone ? COLOR_NEGATIVE_HARMONY : COLOR_RING_STROKE}
                 strokeWidth={1.5}
                 opacity={0.6}
                 strokeDasharray={isChordTone ? undefined : '4 3'}
@@ -169,7 +171,7 @@ export const NegativeHarmonyMirror: React.FC<VisualizationProps> = ({
             x={leftX}
             y={startY + 12 * noteSpacing + 30}
             textAnchor="middle"
-            fill="#3b82f6"
+            fill={COLOR_CHORD_TONE}
             fontSize={FONT_SIZE_2XL}
             fontWeight={700}
           >
@@ -179,7 +181,7 @@ export const NegativeHarmonyMirror: React.FC<VisualizationProps> = ({
             x={rightX}
             y={startY + 12 * noteSpacing + 30}
             textAnchor="middle"
-            fill="#ec4899"
+            fill={COLOR_NEGATIVE_HARMONY}
             fontSize={FONT_SIZE_2XL}
             fontWeight={700}
           >

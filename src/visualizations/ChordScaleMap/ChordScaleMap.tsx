@@ -12,6 +12,10 @@ import {
   COLOR_TEXT_FAINT,
   COLOR_TEXT_DIM,
   COLOR_RING_STROKE,
+  COLOR_CHORD_TONE,
+  COLOR_CHORD_TONE_LIGHT,
+  COLOR_AVOID_NOTE,
+  COLOR_ACCENT,
   FONT_SIZE_XS,
   FONT_SIZE_SM,
   FONT_SIZE_BASE,
@@ -103,20 +107,20 @@ export const ChordScaleMap: React.FC<VisualizationProps> = ({
         let textColor = COLOR_TEXT_DIM;
 
         if (isChordTone) {
-          fill = '#3b82f6';
-          stroke = '#60a5fa';
+          fill = COLOR_CHORD_TONE;
+          stroke = COLOR_CHORD_TONE_LIGHT;
           strokeW = 2;
           textColor = COLOR_TEXT_PRIMARY;
         } else if (isAvoid) {
           fill = 'rgba(239,68,68,0.25)';
-          stroke = '#ef4444';
+          stroke = COLOR_AVOID_NOTE;
           strokeW = 2;
-          textColor = '#ef4444';
+          textColor = COLOR_AVOID_NOTE;
         } else if (isScaleTone) {
           fill = isCharacteristic ? 'rgba(251,191,36,0.25)' : 'rgba(59,130,246,0.12)';
-          stroke = isCharacteristic ? '#fbbf24' : 'rgba(59,130,246,0.4)';
+          stroke = isCharacteristic ? COLOR_ACCENT : 'rgba(59,130,246,0.4)';
           strokeW = isCharacteristic ? 2 : 1.5;
-          textColor = isCharacteristic ? '#fbbf24' : COLOR_TEXT_SECONDARY;
+          textColor = isCharacteristic ? COLOR_ACCENT : COLOR_TEXT_SECONDARY;
         }
 
         // Label position (outside circle)
@@ -144,8 +148,8 @@ export const ChordScaleMap: React.FC<VisualizationProps> = ({
             {/* Avoid X */}
             {isAvoid && !isChordTone && (
               <g>
-                <line x1={x - dotRadius * 0.5} y1={y - dotRadius * 0.5} x2={x + dotRadius * 0.5} y2={y + dotRadius * 0.5} stroke="#ef4444" strokeWidth={2} />
-                <line x1={x + dotRadius * 0.5} y1={y - dotRadius * 0.5} x2={x - dotRadius * 0.5} y2={y + dotRadius * 0.5} stroke="#ef4444" strokeWidth={2} />
+                <line x1={x - dotRadius * 0.5} y1={y - dotRadius * 0.5} x2={x + dotRadius * 0.5} y2={y + dotRadius * 0.5} stroke={COLOR_AVOID_NOTE} strokeWidth={2} />
+                <line x1={x + dotRadius * 0.5} y1={y - dotRadius * 0.5} x2={x - dotRadius * 0.5} y2={y + dotRadius * 0.5} stroke={COLOR_AVOID_NOTE} strokeWidth={2} />
               </g>
             )}
 
@@ -181,7 +185,7 @@ export const ChordScaleMap: React.FC<VisualizationProps> = ({
                 y={ty}
                 textAnchor="middle"
                 dominantBaseline="central"
-                fill={isAvoid ? '#ef4444' : isCharacteristic ? '#fbbf24' : COLOR_TEXT_MUTED}
+                fill={isAvoid ? COLOR_AVOID_NOTE : isCharacteristic ? COLOR_ACCENT : COLOR_TEXT_MUTED}
                 fontSize={FONT_SIZE_XS}
                 fontWeight={600}
               >
@@ -226,13 +230,13 @@ export const ChordScaleMap: React.FC<VisualizationProps> = ({
       {/* Legend */}
       <g transform={`translate(${width - 160}, ${height - 100})`}>
         <text x={0} y={0} fill={COLOR_TEXT_DIM} fontSize={FONT_SIZE_XS} fontWeight={600}>LEGEND</text>
-        <circle cx={8} cy={14} r={5} fill="#3b82f6" />
+        <circle cx={8} cy={14} r={5} fill={COLOR_CHORD_TONE} />
         <text x={20} y={18} fill={COLOR_TEXT_MUTED} fontSize={FONT_SIZE_XS}>Chord tone</text>
         <circle cx={8} cy={30} r={5} fill="rgba(59,130,246,0.12)" stroke="rgba(59,130,246,0.4)" strokeWidth={1.5} />
         <text x={20} y={34} fill={COLOR_TEXT_MUTED} fontSize={FONT_SIZE_XS}>Scale tone</text>
-        <circle cx={8} cy={46} r={5} fill="rgba(251,191,36,0.25)" stroke="#fbbf24" strokeWidth={2} />
+        <circle cx={8} cy={46} r={5} fill="rgba(251,191,36,0.25)" stroke={COLOR_ACCENT} strokeWidth={2} />
         <text x={20} y={50} fill={COLOR_TEXT_MUTED} fontSize={FONT_SIZE_XS}>Characteristic</text>
-        <circle cx={8} cy={62} r={5} fill="rgba(239,68,68,0.25)" stroke="#ef4444" strokeWidth={2} />
+        <circle cx={8} cy={62} r={5} fill="rgba(239,68,68,0.25)" stroke={COLOR_AVOID_NOTE} strokeWidth={2} />
         <text x={20} y={66} fill={COLOR_TEXT_MUTED} fontSize={FONT_SIZE_XS}>Avoid note</text>
       </g>
     </svg>

@@ -31,7 +31,6 @@ type UndoImpl = <
 
 // Zustand middleware internals require broad casts due to complex
 // generic constraints. The public API (UndoSlice) is fully typed.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const undoable: UndoImpl = (config) => (set, get, api) => {
   const past: HistoryEntry[] = [];
   const future: HistoryEntry[] = [];

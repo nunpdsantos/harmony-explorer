@@ -17,6 +17,8 @@ import {
   COLOR_FN_DOMINANT,
   COLOR_MOVE_STRONG,
   COLOR_MOVE_COMMON,
+  COLOR_ACCENT,
+  COLOR_MODAL_INTERCHANGE,
   BRIDGE_TYPE_COLORS,
   SHARED_NOTE_COLORS,
   QUALITY_COLORS,
@@ -425,7 +427,7 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
               cy={pos.y}
               r={bubbleRadius + 6}
               fill="none"
-              stroke="#a855f7"
+              stroke={COLOR_MODAL_INTERCHANGE}
               strokeWidth={1.5}
               strokeDasharray="4 3"
               opacity={0.5}
@@ -443,7 +445,7 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
               cy={pos.y}
               r={bubbleRadius * 0.85 + 5}
               fill="none"
-              stroke="#a855f7"
+              stroke={COLOR_MODAL_INTERCHANGE}
               strokeWidth={1.5}
               strokeDasharray="4 3"
               opacity={0.5}
@@ -467,7 +469,7 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
             <polygon
               points={points}
               fill="rgba(251,191,36,0.06)"
-              stroke="#fbbf24"
+              stroke={COLOR_ACCENT}
               strokeWidth={2}
               strokeDasharray="8 4"
               opacity={0.7}
@@ -484,7 +486,7 @@ export const CircleOfFifths: React.FC<VisualizationProps> = ({
                   y={midY}
                   textAnchor="middle"
                   dominantBaseline="central"
-                  fill="#fbbf24"
+                  fill={COLOR_ACCENT}
                   fontSize={FONT_SIZE_XS}
                   fontWeight={600}
                   opacity={0.7}

@@ -729,10 +729,72 @@ src/learn/__tests__/lessonData.test.ts — lessons 17–22 tests
 
 ---
 
-## Current State — End of Phase 7 (2026-02-01)
+## Phase 14: UX Polish & Animation — COMPLETE ✅
+
+Phase 14 delivered token cleanup, CSS transitions/animations, micro-interactions, and updated onboarding.
+
+### 14.4 — Token Cleanup ✅
+- Added 5 new semantic tokens to `theme.ts`: `COLOR_CHORD_TONE`, `COLOR_CHORD_TONE_LIGHT`, `COLOR_AVOID_NOTE`, `COLOR_NEGATIVE_HARMONY`, `COLOR_MODAL_INTERCHANGE`
+- Migrated 24 raw hex color literals across 5 files to token imports
+- Removed unused `eslint-disable` directive in `undoMiddleware.ts`
+- **Result: 0 ESLint warnings** (was 25)
+
+### 14.1 — Transitions & Animation ✅
+- Added CSS keyframe animations in `index.css`: `fadeIn`, `fadeSlideIn`, `successPulse`
+- Utility classes: `.animate-fade-in`, `.animate-fade-slide-in`, `.animate-success`
+- Visualization switch fade-in: keyed wrapper in `VisualizationArea.tsx` triggers fade on viz/mode change
+- Mobile sidebar overlay fade-in in `App.tsx`
+- All animations respect `prefers-reduced-motion` (durations zeroed via existing media query)
+
+### 14.2 — Micro-Interactions ✅
+- Button press feedback: `active:scale-[0.97]` on all Button components
+- Exercise success animation: `animate-success` pulse on correct answer and progression completion
+- Exercise completion animation: `animate-fade-slide-in` on "All exercises complete" state
+
+### 14.3 — Onboarding Updates ✅
+- Tour expanded from 6 to 8 steps reflecting Phases 5–7 features
+- Step 3 updated: "11 visualizations across 5 categories" (was 7)
+- Step 4 updated: Next Moves panel, drag-reorder, templates
+- New Step 5: Overlays & Analysis (Voices V, Bridges B, Modal Interchange M)
+- New Step 6: Advanced Theory (extensions, modes, chord-scale, altered doms, Coltrane J, negative harmony)
+- Step 7 updated: undo/redo, 5 presets
+- Step 8 updated: 22 lessons (was 12)
+- OnboardingTour tests updated for 8-step count
+
+### 14.5 — Tests & Verification ✅
+- All 804 tests passing (48 files)
+- Token audit: zero raw hex literals in `.tsx` files
+- TypeScript: zero errors
+- ESLint: zero errors, zero warnings
+- Build: succeeds in ~1s
+
+#### Files Created
+None — all changes to existing files.
+
+#### Files Modified
+```
+src/styles/theme.ts — 5 new semantic color tokens
+src/index.css — 3 CSS keyframe animations + 3 utility classes
+src/components/VisualizationArea.tsx — keyed fade-in wrapper
+src/components/App.tsx — mobile overlay fade-in
+src/components/ui/Button.tsx — active:scale press feedback
+src/components/OnboardingTour.tsx — 8 steps (was 6), updated content
+src/learn/ExercisePanel.tsx — success and completion animations
+src/visualizations/ChordScaleMap/ChordScaleMap.tsx — 13 hex → token imports
+src/visualizations/CircleOfFifths/CircleOfFifths.tsx — 4 hex → token imports
+src/visualizations/NegativeHarmonyMirror/NegativeHarmonyMirror.tsx — 5 hex → token imports
+src/components/Sidebar.tsx — 1 hex → token import
+src/visualizations/shared/__tests__/ChordBubble.test.tsx — 1 hex → token import
+src/state/undoMiddleware.ts — removed unused eslint-disable
+src/components/__tests__/OnboardingTour.test.tsx — updated step counts (6 → 8)
+```
+
+---
+
+## Current State — End of Phase 14 (2026-02-02)
 
 ### What's Done
-Phases 1–7 are complete. The app covers both tonal and extended jazz harmony:
+Phases 1–7 + 14 are complete. The app covers both tonal and extended jazz harmony:
 - All tonal harmony fundamentals from the "Illustrated Harmony" book
 - Full jazz theory: chord extensions, all modes (major/melodic minor/harmonic minor/symmetric), chord-scale theory, modal interchange, altered dominants, Coltrane changes, upper structure triads, negative harmony
 - Interactive chord exploration across 11 linked visualizations
@@ -740,7 +802,10 @@ Phases 1–7 are complete. The app covers both tonal and extended jazz harmony:
 - Modulation pathways between keys
 - Bridge chord suggestions (tritone sub, passing diminished, secondary dominants)
 - 22-lesson curriculum with 59 progressive exercises
-- Full design token system with enforcement
+- Full design token system with enforcement — zero lint warnings
+- CSS transition/animation system (fade-in, slide-in, success pulse) with reduced-motion support
+- Micro-interactions (button press feedback, exercise success animations)
+- 8-step onboarding tour covering all features through Phase 7
 - Custom visual identity (Bricolage Grotesque + Plus Jakarta Sans fonts, radial gradient bg)
 - Collapsible sidebar (desktop rail mode)
 - Undo/redo for progression changes
@@ -748,28 +813,35 @@ Phases 1–7 are complete. The app covers both tonal and extended jazz harmony:
 - Responsive at all breakpoints (320px–1280px+)
 - 804 tests, Lighthouse 100/100/100, CI/CD pipeline
 
+### Final Metrics (End of Phase 14)
+- **804 tests**, all passing (48 test files)
+- **TypeScript**: zero errors
+- **ESLint**: zero errors, **zero warnings**
+- **Build**: succeeds in ~1s, 124KB app + 192KB React initial, Tone.js 340KB lazy
+- **11 interactive visualizations**
+- **22 lessons** with **59 exercises**
+- **~40 chord qualities**
+- **8-step onboarding tour**
+
 ### Repository
 - **GitHub**: github.com/nunpdsantos/harmony-explorer
 - **Live**: harmony-explorer.vercel.app
-- **Branch**: `main` at commit `4476722`
 
-### Possible Phase 8 Directions (To Be Decided)
-The user should choose the next direction. Options:
+### Next Phase Options
+See `ROADMAP.md` for the full Phases 8–16 plan. Suggested order (Phase 14 is done):
 
-1. **Notation & Export** — render progressions as sheet music (VexFlow), MIDI file export with voice leading, PDF export of lesson progress/analysis reports
-2. **Piano Keyboard View** — new visualization showing chord voicings on a piano keyboard, voice movement animation, integrate with audio playback
-3. **Advanced Audio** — arpeggiation patterns, chord rhythm/strumming patterns, custom voicing editor, audio recording/export
-4. **PWA & Offline** — service worker for offline access, installable app, sync progress across devices
-5. **Performance & Analytics** — track student progress over time, spaced repetition for exercises, difficulty adaptation
-6. **Progression Save/Share** — save named progressions to IndexedDB, export as shareable URL or JSON, import shared progressions
-7. **Further UX Polish** — animations/transitions, micro-interactions, onboarding for Phase 5-7 features, better mobile touch, hex color token migration for remaining warnings
-8. **Guitar Fretboard View** — chord shapes on a fretboard, voicing comparison, fingering suggestions
-9. **Ear Training** — audio-based exercises: identify intervals, chord qualities, progressions by ear
+1. **Phase 9** (Piano Keyboard) — high visual impact, standalone
+2. **Phase 8** (Notation & Export) — pairs well with piano keyboard
+3. **Phase 10** (Advanced Audio) — enriches the audio experience
+4. **Phase 13** (Progression Save/Share) — enables persistence
+5. **Phase 11** (PWA & Offline) — depends on persistence being solid
+6. **Phase 12** (Performance & Analytics) — depends on persistence
+7. **Phase 15** (Guitar Fretboard) — new instrument view
+8. **Phase 16** (Ear Training) — depends on solid audio + exercise system
 
 ### How to Start Next Session
 1. Read this file (`SESSION_LOG.md`) for full project history and current state
-2. Read `ROADMAP.md` for the full Phases 8–16 plan with checkable sub-tasks
+2. Read `ROADMAP.md` for remaining phases
 3. Run `npx vitest run` to confirm 804 tests pass
 4. Run `npx tsc -b && npx vite build` to confirm clean build
-5. **Start with Phase 14 (UX Polish)** — quick wins, cleans up 25 lint warnings, low risk
-6. Then follow the suggested order in `ROADMAP.md` for subsequent phases
+5. Pick a phase from the list above
