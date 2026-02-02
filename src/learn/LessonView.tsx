@@ -90,6 +90,7 @@ export const LessonView: React.FC<LessonViewProps> = ({ width, height }) => {
           <div className="text-[10px] text-white/50 uppercase tracking-wider mb-2">Practice</div>
           <ExercisePanel
             exercises={lesson.exercises}
+            lessonIndex={currentLessonIndex}
             onComplete={() => completeLessonAt(currentLessonIndex)}
           />
         </div>

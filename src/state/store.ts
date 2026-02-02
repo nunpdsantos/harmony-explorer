@@ -5,6 +5,7 @@ import type { PresetName } from '../audio/presets';
 import type { ArpPatternName } from '../audio/arpeggiation';
 import type { RhythmPatternName } from '../audio/rhythmPatterns';
 import { generateId, saveProgression, listProgressions, deleteProgression as deleteProg, type SavedProgression } from '../utils/persistence';
+import { listReviewCards, countDueReviews } from '../learn/spacedRepetition';
 import { undoable, type UndoSlice } from './undoMiddleware';
 
 export type VisualizationMode =
@@ -146,6 +147,10 @@ interface AppState {
   setSidebarCollapsed: (collapsed: boolean) => void;
   toggleSidebarCollapsed: () => void;
 
+  // Spaced repetition review count
+  dueReviewCount: number;
+  loadDueReviewCount: () => Promise<void>;
+
   // Announcements for screen readers
   lastAnnouncement: string;
   announce: (text: string) => void;
@@ -281,6 +286,13 @@ export const useStore = create<AppState & UndoSlice>()(undoable<AppState>((set, 
   sidebarCollapsed: false,
   setSidebarCollapsed: (sidebarCollapsed) => set({ sidebarCollapsed }),
   toggleSidebarCollapsed: () => set(state => ({ sidebarCollapsed: !state.sidebarCollapsed })),
+
+  // Spaced repetition
+  dueReviewCount: 0,
+  loadDueReviewCount: async () => {
+    const cards = await listReviewCards();
+    set({ dueReviewCount: countDueReviews(cards) });
+  },
 
   // Announcements
   lastAnnouncement: '',

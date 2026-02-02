@@ -4,9 +4,12 @@ import { FeedbackExplanation } from './FeedbackExplanation';
 import { useExerciseState, useBuildProgressionSync } from './useExerciseState';
 import { useStore } from '../state/store';
 import { chordName, chord } from '../core/chords';
+import { saveAttempt, generateAttemptId, exerciseIdFromIndices, attemptToQuality } from './progressTracker';
+import { getReviewCard, saveReviewCard, processReview } from './spacedRepetition';
 
 interface ExercisePanelProps {
   exercises: LessonExercise[];
+  lessonIndex: number;
   onComplete: () => void;
 }
 
@@ -125,13 +128,16 @@ const BuildProgressionExercise: React.FC<{
   );
 };
 
-export const ExercisePanel: React.FC<ExercisePanelProps> = ({ exercises, onComplete }) => {
+export const ExercisePanel: React.FC<ExercisePanelProps> = ({ exercises, lessonIndex, onComplete }) => {
   const [currentEx, setCurrentEx] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [completed, setCompleted] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const exerciseStartRef = useRef(0);
   const resetExerciseProgression = useStore(s => s.resetExerciseProgression);
+  const loadDueReviewCount = useStore(s => s.loadDueReviewCount);
 
   // Reset state when exercises change (new lesson selected)
   useEffect(() => {
@@ -140,8 +146,14 @@ export const ExercisePanel: React.FC<ExercisePanelProps> = ({ exercises, onCompl
     setIsCorrect(null);
     setCompleted(false);
     setShowExplanation(false);
+    setRetryCount(0);
     resetExerciseProgression();
   }, [exercises, resetExerciseProgression]);
+
+  // Reset timer when exercise index changes
+  useEffect(() => {
+    exerciseStartRef.current = performance.now();
+  }, [currentEx]);
 
   if (exercises.length === 0) {
     return (
@@ -173,6 +185,7 @@ export const ExercisePanel: React.FC<ExercisePanelProps> = ({ exercises, onCompl
       setSelectedAnswer(null);
       setIsCorrect(null);
       setShowExplanation(false);
+      setRetryCount(0);
       resetExerciseProgression();
     } else {
       setCompleted(true);
@@ -193,6 +206,31 @@ export const ExercisePanel: React.FC<ExercisePanelProps> = ({ exercises, onCompl
     setIsCorrect(correct);
     setShowExplanation(true);
 
+    // Record attempt (schedule outside render)
+    const recordAttempt = () => {
+      const timeSpentMs = Math.round(performance.now() - exerciseStartRef.current);
+      const attempt = {
+        id: generateAttemptId(),
+        exerciseId: exerciseIdFromIndices(lessonIndex, currentEx),
+        lessonIndex,
+        exerciseIndex: currentEx,
+        timestamp: Date.now(),
+        isCorrect: correct,
+        quality: 0,
+        timeSpentMs,
+        retriesBeforeCorrect: retryCount,
+      };
+      attempt.quality = attemptToQuality(attempt);
+      saveAttempt(attempt).then(() => {
+        const eid = exerciseIdFromIndices(lessonIndex, currentEx);
+        getReviewCard(eid).then(card => {
+          const updated = processReview(card, eid, attempt.quality);
+          saveReviewCard(updated).then(() => loadDueReviewCount());
+        });
+      });
+    };
+    queueMicrotask(recordAttempt);
+
     if (correct) {
       setTimeout(() => {
         advanceOrComplete();
@@ -204,6 +242,7 @@ export const ExercisePanel: React.FC<ExercisePanelProps> = ({ exercises, onCompl
     setSelectedAnswer(null);
     setIsCorrect(null);
     setShowExplanation(false);
+    setRetryCount(prev => prev + 1);
   };
 
   const handleBuildProgressionComplete = () => {

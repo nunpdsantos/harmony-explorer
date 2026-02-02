@@ -4,6 +4,14 @@ import userEvent from '@testing-library/user-event';
 import { Sidebar } from '../Sidebar';
 import { useStore } from '../../state/store';
 
+// Mock idb-keyval (used by spacedRepetition via store)
+vi.mock('idb-keyval', () => ({
+  get: vi.fn(() => Promise.resolve(undefined)),
+  set: vi.fn(() => Promise.resolve()),
+  del: vi.fn(() => Promise.resolve()),
+  keys: vi.fn(() => Promise.resolve([])),
+}));
+
 // Mock audio modules
 vi.mock('../../audio/audioEngine', () => ({
   initAudio: vi.fn().mockResolvedValue(undefined),

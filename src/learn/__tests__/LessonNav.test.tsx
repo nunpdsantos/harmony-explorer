@@ -1,9 +1,17 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LessonNav } from '../LessonNav';
 import { useStore } from '../../state/store';
 import { LESSONS } from '../lessonData';
+
+// Mock idb-keyval so loadDueReviewCount doesn't hit IndexedDB
+vi.mock('idb-keyval', () => ({
+  get: vi.fn(() => Promise.resolve(undefined)),
+  set: vi.fn(() => Promise.resolve()),
+  del: vi.fn(() => Promise.resolve()),
+  keys: vi.fn(() => Promise.resolve([])),
+}));
 
 describe('LessonNav', () => {
   beforeEach(() => {

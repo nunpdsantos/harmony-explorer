@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useStore } from '../state/store';
 import { LESSONS } from './lessonData';
 
@@ -7,7 +7,13 @@ export const LessonNav: React.FC = () => {
     currentLessonIndex,
     setCurrentLessonIndex,
     lessonProgress,
+    dueReviewCount,
+    loadDueReviewCount,
   } = useStore();
+
+  useEffect(() => {
+    loadDueReviewCount();
+  }, [loadDueReviewCount]);
 
   return (
     <nav role="navigation" aria-label="Lesson navigation" className="flex flex-col gap-0.5">
@@ -62,6 +68,17 @@ export const LessonNav: React.FC = () => {
             style={{ width: `${(lessonProgress.filter(Boolean).length / LESSONS.length) * 100}%` }}
           />
         </div>
+
+        {dueReviewCount > 0 && (
+          <div className="mt-2 flex items-center gap-1.5">
+            <span className="w-5 h-5 rounded-full bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px] font-bold">
+              {dueReviewCount}
+            </span>
+            <span className="text-[10px] text-amber-300">
+              {dueReviewCount === 1 ? 'exercise' : 'exercises'} due for review
+            </span>
+          </div>
+        )}
       </div>
     </nav>
   );
