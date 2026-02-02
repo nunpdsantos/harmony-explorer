@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { VisualizationArea } from './components/VisualizationArea';
 import { TransportBar } from './components/TransportBar';
@@ -6,6 +6,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { useAnnouncements } from './hooks/useAnnouncements';
 import { useStore } from './state/store';
+import { decodeProgressionFromHash } from './utils/progressionSharing';
 
 // Lazy-load modals — not needed on initial render
 const ShortcutsReference = React.lazy(() =>
@@ -29,6 +30,18 @@ const App: React.FC = () => {
   const { sidebarOpen, setSidebarOpen } = useStore();
   useKeyboardShortcuts();
   useAnnouncements();
+
+  // Load progression from URL hash on mount
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash && hash.length > 1) {
+      const result = decodeProgressionFromHash(hash);
+      if (result) {
+        useStore.getState().setProgression(result.chords);
+        useStore.getState().setReferenceRoot(result.keyRoot);
+      }
+    }
+  }, []);
 
   return (
     <div className="h-screen w-screen flex flex-col text-white overflow-hidden" style={{ background: 'radial-gradient(ellipse at 30% 20%, #0c1222 0%, #030712 70%)' }}>

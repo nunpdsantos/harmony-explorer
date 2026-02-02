@@ -10,6 +10,8 @@ import { TEMPLATES, transposeTemplate } from '../core/progressionTemplates';
 import { getAllBorrowedChords } from '../core/modalInterchange';
 import { getAlteredDominantInfo, getAlteredVariants } from '../core/alteredDominants';
 import { exportProgressionAsPdf } from '../utils/pdfExport';
+import { exportProgressionAsJson, importProgressionFromJson, downloadJson, encodeProgressionToHash } from '../utils/progressionSharing';
+import { PROGRESSION_LIBRARY, LIBRARY_CATEGORIES, transposeLibraryEntry } from '../core/progressionLibrary';
 import { COLOR_QUALITY_FALLBACK } from '../styles/theme';
 import { VizSelector } from './VizSelector';
 import { LessonNav } from '../learn/LessonNav';
@@ -69,6 +71,7 @@ export const Sidebar: React.FC = () => {
 
   const [saveName, setSaveName] = useState('');
   const [showSaved, setShowSaved] = useState(false);
+  const [showLibrary, setShowLibrary] = useState(false);
 
   useEffect(() => { loadSavedProgressions(); }, [loadSavedProgressions]);
 
@@ -458,6 +461,47 @@ export const Sidebar: React.FC = () => {
             </div>
           </Card>
 
+          {/* Progression Library */}
+          <Card
+            title="Library"
+            action={
+              <Button variant="ghost" onClick={() => setShowLibrary(!showLibrary)}>
+                {showLibrary ? 'Hide' : 'Show'}
+              </Button>
+            }
+          >
+            {showLibrary && (
+              <div className="flex flex-col gap-2">
+                {LIBRARY_CATEGORIES.map(cat => (
+                  <div key={cat}>
+                    <div className="text-[10px] text-white/40 uppercase tracking-wider mb-1">{cat}</div>
+                    <div className="flex flex-col gap-0.5">
+                      {PROGRESSION_LIBRARY.filter(e => e.category === cat).map(entry => (
+                        <button
+                          key={entry.name}
+                          onClick={() => {
+                            const chords = transposeLibraryEntry(entry, referenceRoot);
+                            setProgression(chords);
+                          }}
+                          className="flex items-center justify-between text-left rounded px-2 py-1.5 hover:bg-white/5 transition-colors group"
+                          title={entry.description}
+                        >
+                          <span className="text-xs font-medium text-white/70 group-hover:text-white truncate">
+                            {entry.name}
+                          </span>
+                          <span className="text-[10px] text-white/40 ml-2 flex-shrink-0">{entry.chords.length}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {!showLibrary && (
+              <div className="text-xs text-white/40">{PROGRESSION_LIBRARY.length} famous progressions</div>
+            )}
+          </Card>
+
           {/* Voice Leading Quality */}
           {voicings.length >= 2 && (
             <Card>
@@ -501,6 +545,56 @@ export const Sidebar: React.FC = () => {
                   title="Export analysis report as PDF"
                 >
                   PDF
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    const json = exportProgressionAsJson(progression, referenceRoot, saveName || 'Untitled');
+                    downloadJson(json);
+                  }}
+                  title="Export as JSON"
+                >
+                  JSON
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    const hash = encodeProgressionToHash(progression, referenceRoot);
+                    const url = `${window.location.origin}${window.location.pathname}#${hash}`;
+                    navigator.clipboard.writeText(url);
+                  }}
+                  title="Copy share link"
+                >
+                  Link
+                </Button>
+              </div>
+            )}
+            {progression.length === 0 && (
+              <div className="flex gap-1">
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = '.json';
+                    input.onchange = (e) => {
+                      const file = (e.target as HTMLInputElement).files?.[0];
+                      if (!file) return;
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        const result = importProgressionFromJson(reader.result as string);
+                        if (result) {
+                          setProgression(result.chords);
+                          setReferenceRoot(result.key);
+                        }
+                      };
+                      reader.readAsText(file);
+                    };
+                    input.click();
+                  }}
+                  title="Import from JSON file"
+                >
+                  Import JSON
                 </Button>
               </div>
             )}
