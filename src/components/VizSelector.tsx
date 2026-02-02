@@ -50,6 +50,12 @@ const VIZ_CATEGORIES: VizCategory[] = [
     ],
   },
   {
+    name: 'Notation',
+    options: [
+      { value: 'sheetMusic', label: 'Sheet Music', shortLabel: 'Score', icon: '𝄞' },
+    ],
+  },
+  {
     name: 'Keyboard',
     options: [
       { value: 'pianoKeyboard', label: 'Piano Keyboard', shortLabel: 'Piano', icon: '🎹' },

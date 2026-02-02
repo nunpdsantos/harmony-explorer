@@ -1,5 +1,5 @@
 import type { Chord } from '../core/chords';
-import { getIntervals } from '../core/chords';
+import { getIntervals, chordName } from '../core/chords';
 
 /**
  * MIDI file generation — Type 0 (single track) with no external dependencies.
@@ -110,6 +110,90 @@ export function exportProgressionAsMidi(
   fileData.push(...write16(ticksPerBeat));
 
   // Track chunk: MTrk, length, data
+  fileData.push(...TRACK_HEADER);
+  fileData.push(...write32(trackData.length));
+  fileData.push(...trackData);
+
+  return new Uint8Array(fileData);
+}
+
+/** Encode a string as a MIDI text event: FF 01 <len> <bytes> */
+function writeTextEvent(text: string): number[] {
+  const bytes = Array.from(new TextEncoder().encode(text));
+  return [0xFF, 0x01, ...writeVLQ(bytes.length), ...bytes];
+}
+
+/** Key signature meta event: FF 59 02 <sf> <mi> */
+function writeKeySig(root: number, minor: boolean = false): number[] {
+  // sf: -7 (7 flats) to +7 (7 sharps)
+  const sfMap = [0, -5, 2, -3, 4, -1, 6, 1, -4, 3, -2, 5]; // C,Db,D,Eb,E,F,F#,G,Ab,A,Bb,B
+  const sf = sfMap[root] ?? 0;
+  return [0xFF, 0x59, 0x02, sf & 0xFF, minor ? 0x01 : 0x00];
+}
+
+/**
+ * Export a progression as MIDI using pre-computed voice-led voicings.
+ * Includes key signature, chord name text events, and proper voice leading.
+ */
+export function exportProgressionAsMidiVoiced(
+  chords: Chord[],
+  voicings: number[][],
+  bpm: number = 120,
+  keyRoot: number = 0,
+  beatsPerChord: number = 4,
+): Uint8Array {
+  const ticksPerBeat = 480;
+  const chordTicks = beatsPerChord * ticksPerBeat;
+  const velocity = 80;
+
+  const trackData: number[] = [];
+
+  // Tempo meta event
+  const usPerBeat = Math.round(60_000_000 / bpm);
+  trackData.push(
+    0x00, 0xFF, 0x51, 0x03,
+    (usPerBeat >> 16) & 0xFF,
+    (usPerBeat >> 8) & 0xFF,
+    usPerBeat & 0xFF,
+  );
+
+  // Key signature meta event
+  trackData.push(0x00, ...writeKeySig(keyRoot));
+
+  // Time signature meta event: 4/4
+  trackData.push(0x00, 0xFF, 0x58, 0x04, 0x04, 0x02, 0x18, 0x08);
+
+  // Program change to piano
+  trackData.push(0x00, 0xC0, 0x00);
+
+  for (let i = 0; i < chords.length; i++) {
+    const notes = voicings[i] ?? chordToMidiNotes(chords[i]);
+
+    // Chord name text event
+    trackData.push(0x00, ...writeTextEvent(chordName(chords[i])));
+
+    // Note On events
+    for (let n = 0; n < notes.length; n++) {
+      trackData.push(...writeVLQ(0));
+      trackData.push(0x90, notes[n] & 0x7F, velocity);
+    }
+
+    // Note Off events after duration
+    for (let n = 0; n < notes.length; n++) {
+      trackData.push(...writeVLQ(n === 0 ? chordTicks : 0));
+      trackData.push(0x80, notes[n] & 0x7F, 0x00);
+    }
+  }
+
+  // End of track
+  trackData.push(0x00, 0xFF, 0x2F, 0x00);
+
+  const fileData: number[] = [];
+  fileData.push(...MIDI_HEADER);
+  fileData.push(...write32(6));
+  fileData.push(...write16(0));
+  fileData.push(...write16(1));
+  fileData.push(...write16(ticksPerBeat));
   fileData.push(...TRACK_HEADER);
   fileData.push(...write32(trackData.length));
   fileData.push(...trackData);

@@ -16,7 +16,8 @@ export type VisualizationMode =
   | 'modulationMap'
   | 'chordScaleMap'
   | 'negativeHarmonyMirror'
-  | 'pianoKeyboard';
+  | 'pianoKeyboard'
+  | 'sheetMusic';
 export type AppMode = 'explore' | 'learn';
 export type RelationshipFilter = 'sharedNotes' | 'dominant' | 'tritone' | 'neoRiemannian';
 

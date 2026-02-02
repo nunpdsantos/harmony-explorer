@@ -4,7 +4,7 @@ import { useContainerSize } from '../hooks/useContainerSize';
 import { initAudio, playProgression, stopAll, setPreset, setVolume as setEngineVolume } from '../audio/audioEngine';
 import { voiceProgression } from '../audio/voicingEngine';
 import { Timeline } from '../visualizations/Timeline/Timeline';
-import { exportProgressionAsMidi, downloadMidi } from '../utils/midiExport';
+import { exportProgressionAsMidi, exportProgressionAsMidiVoiced, downloadMidi } from '../utils/midiExport';
 import { suggestBridgesForProgression, findChromaticBassLines } from '../core/bridgeChords';
 import { PRESET_NAMES, PRESETS } from '../audio/presets';
 import type { PresetName } from '../audio/presets';
@@ -12,7 +12,7 @@ import type { Chord } from '../core/chords';
 
 export const TransportBar: React.FC = () => {
   const {
-    progression, removeFromProgression, clearProgression, setProgression,
+    progression, removeFromProgression, clearProgression, setProgression, referenceRoot,
     isPlaying, setIsPlaying,
     playingIndex, setPlayingIndex,
     bpm, setBpm,
@@ -305,7 +305,9 @@ export const TransportBar: React.FC = () => {
 
           <button
             onClick={() => {
-              const midiData = exportProgressionAsMidi(progression, bpm);
+              const midiData = voicings.length > 0
+                ? exportProgressionAsMidiVoiced(progression, voicings, bpm, referenceRoot)
+                : exportProgressionAsMidi(progression, bpm);
               downloadMidi(midiData);
             }}
             disabled={progression.length === 0}

@@ -9,16 +9,16 @@ describe('VizSelector', () => {
     useStore.setState({ activeViz: 'circleOfFifths' });
   });
 
-  it('renders all 11 visualization options', () => {
+  it('renders all 12 visualization options', () => {
     render(<VizSelector />);
     const radios = screen.getAllByRole('radio');
-    expect(radios).toHaveLength(11);
+    expect(radios).toHaveLength(12);
   });
 
   it('renders category groups with radiogroup role', () => {
     render(<VizSelector />);
     const groups = screen.getAllByRole('radiogroup');
-    expect(groups).toHaveLength(6);
+    expect(groups).toHaveLength(7);
   });
 
   it('shows Circle of Fifths as checked by default', () => {
@@ -68,6 +68,7 @@ describe('VizSelector', () => {
     expect(screen.getByText('Function-based')).toBeInTheDocument();
     expect(screen.getByText('Symmetry')).toBeInTheDocument();
     expect(screen.getByText('Keys')).toBeInTheDocument();
+    expect(screen.getByText('Notation')).toBeInTheDocument();
     expect(screen.getByText('Keyboard')).toBeInTheDocument();
   });
 });

@@ -9,6 +9,7 @@ import { getDiatonicChords, getDiatonicInfo, functionColor } from '../core/harmo
 import { TEMPLATES, transposeTemplate } from '../core/progressionTemplates';
 import { getAllBorrowedChords } from '../core/modalInterchange';
 import { getAlteredDominantInfo, getAlteredVariants } from '../core/alteredDominants';
+import { exportProgressionAsPdf } from '../utils/pdfExport';
 import { COLOR_QUALITY_FALLBACK } from '../styles/theme';
 import { VizSelector } from './VizSelector';
 import { LessonNav } from '../learn/LessonNav';
@@ -494,6 +495,13 @@ export const Sidebar: React.FC = () => {
                   onKeyDown={e => e.key === 'Enter' && handleSave()}
                 />
                 <Button variant="primary" onClick={handleSave}>Save</Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => exportProgressionAsPdf(progression, referenceRoot)}
+                  title="Export analysis report as PDF"
+                >
+                  PDF
+                </Button>
               </div>
             )}
 

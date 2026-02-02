@@ -37,6 +37,9 @@ const NegativeHarmonyMirror = React.lazy(() =>
 const PianoKeyboard = React.lazy(() =>
   import('../visualizations/PianoKeyboard/PianoKeyboard').then(m => ({ default: m.PianoKeyboard }))
 );
+const SheetMusic = React.lazy(() =>
+  import('../visualizations/SheetMusic/SheetMusic').then(m => ({ default: m.SheetMusic }))
+);
 const LessonView = React.lazy(() =>
   import('../learn/LessonView').then(m => ({ default: m.LessonView }))
 );
@@ -82,6 +85,7 @@ export const VisualizationArea: React.FC = () => {
               {activeViz === 'chordScaleMap' && <ChordScaleMap {...vizProps} />}
               {activeViz === 'negativeHarmonyMirror' && <NegativeHarmonyMirror {...vizProps} />}
               {activeViz === 'pianoKeyboard' && <PianoKeyboard {...vizProps} />}
+              {activeViz === 'sheetMusic' && <SheetMusic {...vizProps} />}
             </>
           )}
         </div>
