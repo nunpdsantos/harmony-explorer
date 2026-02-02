@@ -4,14 +4,14 @@
 Interactive music theory education app built with React 19 + TypeScript 5.9 + Vite 7 + Zustand 5. Based on the "Illustrated Harmony" book. Deployed on Vercel at harmony-explorer.vercel.app.
 
 ## Current State (2026-02-02)
-- **Phases 1–7 + 14 complete** — tonal + jazz harmony, UX polish, all tested + deployed
-- **804 tests** (48 files), `tsc -b` clean, ESLint 0 errors, **0 warnings**, Lighthouse 100/100/100
+- **Phases 1–7 + 9 + 14 complete** — tonal + jazz harmony, piano keyboard, UX polish
+- **820 tests** (49 files), `tsc -b` clean, ESLint 0 errors, **0 warnings**, Lighthouse 100/100/100
 - **CSS animations**: fadeIn, fadeSlideIn, successPulse with reduced-motion support
 - **8-step onboarding tour** covering all features through Phase 7
 
 ## Key Architecture
 - **State**: Zustand store (`src/state/store.ts`) with undo middleware (`undoMiddleware.ts`)
-- **Visualizations**: 11 lazy-loaded SVG visualizations in `src/visualizations/`
+- **Visualizations**: 12 lazy-loaded SVG visualizations in `src/visualizations/` (incl. Piano Keyboard)
 - **Core theory**: `src/core/` — chords, scales, modes, chord-scale theory, modal interchange, altered dominants, Coltrane changes, upper structure triads, negative harmony, voice leading, relationships, harmony, modulation, bridge chords, symmetric structures, neo-Riemannian, secondary dominants, dominant chains
 - **Audio**: Tone.js lazy-loaded, 5 presets, humanization, MIDI input (`src/audio/`)
 - **Lessons**: 22 lessons, 59 exercises (`src/learn/lessonData.ts`)
@@ -22,7 +22,7 @@ Interactive music theory education app built with React 19 + TypeScript 5.9 + Vi
 ## Commands
 - `npm run dev` — Vite dev server
 - `npm run build` — `tsc -b && vite build`
-- `npm test` — `vitest run` (804 tests)
+- `npm test` — `vitest run` (820 tests)
 - `npm run lint` — ESLint
 
 ## Session Log

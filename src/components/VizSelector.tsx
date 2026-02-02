@@ -49,6 +49,12 @@ const VIZ_CATEGORIES: VizCategory[] = [
       { value: 'negativeHarmonyMirror', label: 'Negative Harmony', shortLabel: 'Neg', icon: '⇅' },
     ],
   },
+  {
+    name: 'Keyboard',
+    options: [
+      { value: 'pianoKeyboard', label: 'Piano Keyboard', shortLabel: 'Piano', icon: '🎹' },
+    ],
+  },
 ];
 
 interface VizSelectorProps {

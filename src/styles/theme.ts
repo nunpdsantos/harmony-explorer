@@ -155,6 +155,10 @@ export const COLOR_CHORD_TONE = '#3b82f6';        // blue-500
 export const COLOR_CHORD_TONE_LIGHT = '#60a5fa';   // blue-400
 export const COLOR_AVOID_NOTE = '#ef4444';          // red-500
 
+/* ─── Piano keyboard colors ─── */
+export const COLOR_KEY_WHITE = '#f8f8f8';
+export const COLOR_KEY_BLACK = '#1a1a2e';
+
 /* ─── Overlay colors ─── */
 export const COLOR_NEGATIVE_HARMONY = '#ec4899';    // pink-500
 export const COLOR_MODAL_INTERCHANGE = '#a855f7';   // purple-500

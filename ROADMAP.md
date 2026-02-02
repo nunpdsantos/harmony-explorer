@@ -41,37 +41,41 @@ Render progressions as sheet music, export to MIDI/PDF.
 
 ---
 
-## Phase 9: Piano Keyboard View
+## Phase 9: Piano Keyboard View ✅ COMPLETE (9.1, 9.2, 9.4)
 
 Interactive piano keyboard showing chord voicings and voice movement.
 
-### 9.1 — Piano Keyboard Component
-- [ ] New `src/visualizations/PianoKeyboard/PianoKeyboard.tsx` — SVG piano (3-4 octaves, C3–C6)
-- [ ] White and black keys with proper proportions
-- [ ] Highlight active chord tones with quality-based colors
-- [ ] Show note names on keys (toggle)
-- [ ] Click a key to hear the note (via audio engine)
-- [ ] Add to VizSelector under "Notation" or new "Keyboard" category
+### 9.1 — Piano Keyboard Component ✅
+- [x] New `src/visualizations/PianoKeyboard/PianoKeyboard.tsx` — SVG piano (3 octaves, C3–C6)
+- [x] White and black keys with proper proportions
+- [x] Highlight active chord tones with quality-based colors (root = full color, others = alpha)
+- [x] Show note names on keys (toggle button)
+- [x] Click a key to hear the note (via audio engine, lazy-loaded)
+- [x] Add to VizSelector under new "Keyboard" category
+- [x] Middle C indicator dot, responsive layout
 
-### 9.2 — Voicing Visualization
-- [ ] Show current voicing dots on keys (color-coded by voice: soprano/alto/tenor/bass)
-- [ ] When progression plays, animate dots moving between voicings
-- [ ] Show intervals between adjacent notes (2nds, 3rds, etc.)
-- [ ] Optional: split view — left hand (bass+tenor) / right hand (alto+soprano)
+### 9.2 — Voicing Visualization ✅
+- [x] Show current voicing dots on keys (color-coded by voice: bass/tenor/alto/soprano via VOICE_COLORS)
+- [x] Show intervals between adjacent voicing notes (m2, M3, P5, etc.)
+- [x] Voice legend below keyboard with note names
+- Progression animation deferred (requires tracking playingIndex transitions)
+- Split view deferred (optional enhancement)
 
-### 9.3 — Interactive Input
+### 9.3 — Interactive Input (deferred)
 - [ ] Click keys to build custom voicings
 - [ ] Chord detection: identify what chord the clicked notes form (reuse `identifyChordFromPitchClasses`)
 - [ ] Integrate with MIDI input — light up keys as user plays external MIDI keyboard
 
-### 9.4 — Tests
-- [ ] Keyboard renders correct number of keys
-- [ ] Highlights correct notes for chord
-- [ ] Click interaction tests
-- [ ] Voicing animation smoke tests
+### 9.4 — Tests ✅
+- [x] Keyboard renders correct number of keys (22 white + 15 black + toggle = 38 groups)
+- [x] Highlights correct notes for chord
+- [x] Click interaction tests
+- [x] Voicing dots and interval labels
+- [x] Handles empty state, different sizes
+- [x] 16 tests in 1 test file
 
-**New files:** ~3 source, ~2 test
-**Modified files:** VizSelector, VisualizationArea, store
+**New files:** 1 source (`PianoKeyboard.tsx`), 1 test
+**Modified files:** VizSelector, VisualizationArea, store, theme.ts, VizSelector.test.tsx
 
 ---
 
@@ -343,7 +347,7 @@ Audio-based exercises for interval, chord, and progression recognition.
 Phases can be done in any order, but this sequence builds naturally:
 
 1. ~~**Phase 14** (UX Polish)~~ ✅ DONE
-2. **Phase 9** (Piano Keyboard) — high visual impact, standalone
+2. ~~**Phase 9** (Piano Keyboard)~~ ✅ DONE (9.3 interactive input deferred)
 3. **Phase 8** (Notation & Export) — pairs well with piano keyboard
 4. **Phase 10** (Advanced Audio) — enriches the audio experience
 5. **Phase 13** (Progression Save/Share) — enables persistence

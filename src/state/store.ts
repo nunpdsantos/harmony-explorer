@@ -15,7 +15,8 @@ export type VisualizationMode =
   | 'alternationCircle'
   | 'modulationMap'
   | 'chordScaleMap'
-  | 'negativeHarmonyMirror';
+  | 'negativeHarmonyMirror'
+  | 'pianoKeyboard';
 export type AppMode = 'explore' | 'learn';
 export type RelationshipFilter = 'sharedNotes' | 'dominant' | 'tritone' | 'neoRiemannian';
 
