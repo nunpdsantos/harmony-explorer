@@ -15,6 +15,7 @@ import { PROGRESSION_LIBRARY, LIBRARY_CATEGORIES, transposeLibraryEntry } from '
 import { COLOR_QUALITY_FALLBACK } from '../styles/theme';
 import { VizSelector } from './VizSelector';
 import { LessonNav } from '../learn/LessonNav';
+import { EarTrainingPanel } from '../learn/EarTrainingPanel';
 import { Card } from './ui/Card';
 import { Button } from './ui/Button';
 import { Badge } from './ui/Badge';
@@ -317,10 +318,13 @@ export const Sidebar: React.FC = () => {
         </Card>
       )}
 
-      {/* Learn mode: lesson navigation */}
+      {/* Learn mode: lesson navigation + ear training */}
       {mode === 'learn' && (
-        <div className="px-4 py-3 flex-1 overflow-y-auto">
+        <div className="px-4 py-3 flex-1 overflow-y-auto space-y-4">
           <LessonNav />
+          <div className="pt-3 border-t border-white/10">
+            <EarTrainingPanel />
+          </div>
         </div>
       )}
 
