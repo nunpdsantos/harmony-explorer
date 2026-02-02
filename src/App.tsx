@@ -5,6 +5,8 @@ import { TransportBar } from './components/TransportBar';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { useAnnouncements } from './hooks/useAnnouncements';
+import { usePwaInstall } from './hooks/usePwaInstall';
+import { useOnlineStatus } from './hooks/useOnlineStatus';
 import { useStore } from './state/store';
 import { decodeProgressionFromHash } from './utils/progressionSharing';
 
@@ -30,6 +32,8 @@ const App: React.FC = () => {
   const { sidebarOpen, setSidebarOpen } = useStore();
   useKeyboardShortcuts();
   useAnnouncements();
+  const { canInstall, promptInstall } = usePwaInstall();
+  const isOnline = useOnlineStatus();
 
   // Load progression from URL hash on mount
   useEffect(() => {
@@ -64,8 +68,20 @@ const App: React.FC = () => {
             <path d="M3 12h18M3 6h18M3 18h18" />
           </svg>
         </button>
-        <span className="text-sm font-bold text-white/80">Harmony Explorer</span>
-        <div className="w-6" />
+        <div className="flex items-center gap-2">
+          {!isOnline && <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300">Offline</span>}
+          <span className="text-sm font-bold text-white/80">Harmony Explorer</span>
+        </div>
+        <div className="flex items-center gap-1">
+          {canInstall && (
+            <button
+              onClick={promptInstall}
+              className="text-xs px-2 py-1 rounded bg-blue-600/30 text-blue-300 hover:bg-blue-600/50 transition-colors"
+            >
+              Install
+            </button>
+          )}
+        </div>
       </header>
 
       {/* Main layout */}
