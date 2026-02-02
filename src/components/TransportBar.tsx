@@ -7,7 +7,11 @@ import { Timeline } from '../visualizations/Timeline/Timeline';
 import { exportProgressionAsMidi, exportProgressionAsMidiVoiced, downloadMidi } from '../utils/midiExport';
 import { suggestBridgesForProgression, findChromaticBassLines } from '../core/bridgeChords';
 import { PRESET_NAMES, PRESETS } from '../audio/presets';
+import { ARP_PATTERN_NAMES, ARP_PATTERNS } from '../audio/arpeggiation';
+import { RHYTHM_PATTERN_NAMES, RHYTHM_PATTERNS } from '../audio/rhythmPatterns';
 import type { PresetName } from '../audio/presets';
+import type { ArpPatternName } from '../audio/arpeggiation';
+import type { RhythmPatternName } from '../audio/rhythmPatterns';
 import type { Chord } from '../core/chords';
 
 export const TransportBar: React.FC = () => {
@@ -22,6 +26,8 @@ export const TransportBar: React.FC = () => {
     activePreset, setActivePreset,
     humanize, setHumanize,
     volume, setVolume,
+    arpPattern, setArpPattern,
+    rhythmPattern, setRhythmPattern,
     showVoiceLeading, setShowVoiceLeading,
     showBridgeChords, setShowBridgeChords,
     undo, redo, canUndo, canRedo,
@@ -78,8 +84,10 @@ export const TransportBar: React.FC = () => {
       },
       isLooping,
       humanize,
+      arpPattern,
+      rhythmPattern,
     );
-  }, [progression, voicings, bpm, isLooping, audioReady, humanize, setAudioReady, setIsPlaying, setPlayingIndex]);
+  }, [progression, voicings, bpm, isLooping, audioReady, humanize, arpPattern, rhythmPattern, setAudioReady, setIsPlaying, setPlayingIndex]);
 
   const handleStop = useCallback(() => {
     if (cancelRef.current) {
@@ -268,6 +276,28 @@ export const TransportBar: React.FC = () => {
           >
             Humanize
           </button>
+
+          <select
+            value={arpPattern}
+            onChange={e => setArpPattern(e.target.value as ArpPatternName)}
+            aria-label="Arpeggio pattern"
+            className="text-xs bg-white/5 border border-white/10 rounded px-1.5 py-1.5 text-white/70 focus:outline-none focus:border-white/30"
+          >
+            {ARP_PATTERN_NAMES.map(name => (
+              <option key={name} value={name}>{ARP_PATTERNS[name].name}</option>
+            ))}
+          </select>
+
+          <select
+            value={rhythmPattern}
+            onChange={e => setRhythmPattern(e.target.value as RhythmPatternName)}
+            aria-label="Rhythm pattern"
+            className="text-xs bg-white/5 border border-white/10 rounded px-1.5 py-1.5 text-white/70 focus:outline-none focus:border-white/30"
+          >
+            {RHYTHM_PATTERN_NAMES.map(name => (
+              <option key={name} value={name}>{RHYTHM_PATTERNS[name].name}</option>
+            ))}
+          </select>
         </div>
 
         {/* Group separator */}

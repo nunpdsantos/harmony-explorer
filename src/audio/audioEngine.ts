@@ -1,5 +1,7 @@
 import { PRESETS, type PresetName, type AudioPreset } from './presets';
 import { humanizeVelocity, humanizeTiming } from './humanize';
+import { ARP_PATTERNS, type ArpPatternName } from './arpeggiation';
+import { RHYTHM_PATTERNS, type RhythmPatternName } from './rhythmPatterns';
 
 /**
  * Singleton audio engine wrapping Tone.js.
@@ -100,6 +102,7 @@ export function playChordForDuration(midiNotes: number[], durationSec: number, v
 
 /**
  * Play a progression of voiced chords with a callback for each step.
+ * Supports arpeggiation and rhythm patterns.
  * Returns a cancel function.
  */
 export function playProgression(
@@ -109,6 +112,8 @@ export function playProgression(
   onComplete: () => void,
   loop: boolean = false,
   humanize: number = 0,
+  arpPattern: ArpPatternName = 'block',
+  rhythmPattern: RhythmPatternName = 'whole',
 ): () => void {
   if (!synth || !isInitialized) {
     onComplete();
@@ -119,7 +124,15 @@ export function playProgression(
   const chordDuration = beatDuration * 2; // 2 beats per chord
   let currentIndex = 0;
   let cancelled = false;
-  let timeoutId: ReturnType<typeof setTimeout>;
+  const timeoutIds: ReturnType<typeof setTimeout>[] = [];
+
+  function clearTimeouts() {
+    for (const id of timeoutIds) clearTimeout(id);
+    timeoutIds.length = 0;
+  }
+
+  const arp = ARP_PATTERNS[arpPattern];
+  const rhythm = RHYTHM_PATTERNS[rhythmPattern];
 
   function playNext() {
     if (cancelled) return;
@@ -135,25 +148,51 @@ export function playProgression(
 
     onStep(currentIndex);
 
-    const velocity = humanize > 0
-      ? humanizeVelocity(0.7, humanize)
-      : 0.7;
+    const voicing = voicedChords[currentIndex];
+    const arpNotes = arp.generate(voicing);
 
-    playChordForDuration(voicedChords[currentIndex], chordDuration * 0.9, velocity);
+    // Schedule rhythm hits within this chord's duration
+    for (const hit of rhythm.hits) {
+      const hitDelay = hit.offset * chordDuration * 1000;
+      const hitDuration = hit.duration * chordDuration;
+
+      const id = setTimeout(() => {
+        if (cancelled) return;
+
+        // For each rhythm hit, play arpeggiated notes subdivided within the hit
+        const arpCount = arpNotes.length;
+        const arpSubdivision = hitDuration / arpCount;
+
+        for (let a = 0; a < arpCount; a++) {
+          const arpDelay = a * arpSubdivision * 1000;
+          const arpId = setTimeout(() => {
+            if (cancelled) return;
+            const velocity = humanize > 0
+              ? humanizeVelocity(0.7 * hit.accent, humanize)
+              : 0.7 * hit.accent;
+            playChordForDuration(arpNotes[a], arpSubdivision * 0.9, velocity);
+          }, arpDelay);
+          timeoutIds.push(arpId);
+        }
+      }, humanize > 0 ? humanizeTiming(hitDelay, humanize) : hitDelay);
+      timeoutIds.push(id);
+    }
+
     currentIndex++;
 
     const nextTime = humanize > 0
       ? humanizeTiming(chordDuration * 1000, humanize)
       : chordDuration * 1000;
 
-    timeoutId = setTimeout(playNext, nextTime);
+    const nextId = setTimeout(playNext, nextTime);
+    timeoutIds.push(nextId);
   }
 
   playNext();
 
   return () => {
     cancelled = true;
-    clearTimeout(timeoutId);
+    clearTimeouts();
     if (synth) {
       synth.releaseAll();
     }

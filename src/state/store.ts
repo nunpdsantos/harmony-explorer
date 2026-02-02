@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import type { Chord } from '../core/chords';
 import type { ChordQuality } from '../core/constants';
 import type { PresetName } from '../audio/presets';
+import type { ArpPatternName } from '../audio/arpeggiation';
+import type { RhythmPatternName } from '../audio/rhythmPatterns';
 import { generateId, saveProgression, listProgressions, deleteProgression as deleteProg, type SavedProgression } from '../utils/persistence';
 import { undoable, type UndoSlice } from './undoMiddleware';
 
@@ -78,6 +80,10 @@ interface AppState {
   setHumanize: (amount: number) => void;
   volume: number;
   setVolume: (vol: number) => void;
+  arpPattern: ArpPatternName;
+  setArpPattern: (pattern: ArpPatternName) => void;
+  rhythmPattern: RhythmPatternName;
+  setRhythmPattern: (pattern: RhythmPatternName) => void;
 
   // Saved progressions
   savedProgressions: SavedProgression[];
@@ -211,6 +217,10 @@ export const useStore = create<AppState & UndoSlice>()(undoable<AppState>((set, 
   setHumanize: (humanize) => set({ humanize }),
   volume: -8,
   setVolume: (volume) => set({ volume }),
+  arpPattern: 'block',
+  setArpPattern: (arpPattern) => set({ arpPattern }),
+  rhythmPattern: 'whole',
+  setRhythmPattern: (rhythmPattern) => set({ rhythmPattern }),
 
   // Circle overlays
   showDom7Ring: false,
